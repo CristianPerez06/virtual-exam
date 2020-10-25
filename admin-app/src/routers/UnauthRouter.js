@@ -1,14 +1,17 @@
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 
 // Components
-import { Login } from '../scenes/Login'
+import { Login } from '../scenes/Account'
 
 const UnauthRouter = () => {
-  return <Switch>
-    <Route path='/login' component={Login} />
-    <Route name='Login' component={Login} />
-  </Switch>
+  console.log('UnauthRouter')
+  return (
+    <Switch>
+      <Route path='/login' name='Login' component={Login} />
+      <Redirect to='login' />
+    </Switch>
+  )
 }
 
 export default UnauthRouter
