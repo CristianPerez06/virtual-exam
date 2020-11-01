@@ -1,1 +1,2 @@
-export { default as Router } from './MainRouter.js'
+export { default as AuthRouter } from './AuthRouter.js'
+export { default as UnauthRouter } from './UnauthRouter.js'
