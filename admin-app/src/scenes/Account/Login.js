@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Form, Input, Button } from 'reactstrap'
 import { Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPE } from '../../common/constants'
-import { LoadingInline } from '../../components/common'
+import { LoadingInline, ErrorViewer } from '../../components/common'
 
 const { login } = Cognito()
 
@@ -13,6 +13,7 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
   // hooks
   const { dispatch } = useContext(AuthContext)
@@ -31,8 +32,7 @@ const Login = () => {
 
   const onError = (err) => {
     setIsLoading(false)
-    // TO DO - Handle login error
-    console.log(err)
+    setError(err.message)
   }
 
   const onSubmit = event => {
@@ -63,14 +63,13 @@ const Login = () => {
           value={password}
           onChange={event => setPassword(event.target.value)}
         />
-        <Button
-          color='primary'
-          disabled={isLoading}
-        >
+        <Button color='primary' disabled={isLoading}>
           Sign in
           {isLoading && <LoadingInline className='ml-3' />}
         </Button>
+
         <div className='d-flex justify-content-around pt-3'>
+          {!isLoading && error && <ErrorViewer error={error} className='ml-3' />}
           {/* <a href='#'>Register</a> */}
           {/* <a href='#'>Forgot password?</a> */}
         </div>
