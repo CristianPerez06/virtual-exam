@@ -52,17 +52,16 @@ const Cognito = () => {
                   reject(err)
                 } else {
                   const results = {}
-  
+
                   for (const attribute of attributes) {
                     const { Name, Value } = attribute
                     results[Name] = Value
                   }
-  
+
                   resolve(results)
                 }
               })
             })
-  
             resolve({
               user,
               ...session,
@@ -71,7 +70,9 @@ const Cognito = () => {
           }
         })
       } else {
-        reject()
+        // TO DO - Do something with error
+        const err = 'something happened'
+        reject(err)
       }
     })
   }

@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Form, Input, Button } from 'reactstrap'
 import { Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPE } from '../../common/constants'
+import { LoadingInline } from '../../components/common'
 
 const { login } = Cognito()
 
@@ -11,6 +12,7 @@ const Login = () => {
   // state
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   // hooks
   const { dispatch } = useContext(AuthContext)
@@ -23,16 +25,19 @@ const Login = () => {
       type: ACCOUNT_ACTION_TYPE.LOGIN,
       payload: { user: accessToken.payload.username, token: accessToken.jwtToken }
     })
+    setIsLoading(false)
     history.push('/')
   }
 
   const onError = (err) => {
+    setIsLoading(false)
     // TO DO - Handle login error
     console.log(err)
   }
 
   const onSubmit = event => {
     event.preventDefault()
+    setIsLoading(true)
 
     login(email, password)
       .then(data => onSuccess(data))
@@ -58,7 +63,13 @@ const Login = () => {
           value={password}
           onChange={event => setPassword(event.target.value)}
         />
-        <Button color='primary'>Sign in</Button>
+        <Button
+          color='primary'
+          disabled={isLoading}
+        >
+          Sign in
+          {isLoading && <LoadingInline className='ml-3' />}
+        </Button>
         <div className='d-flex justify-content-around pt-3'>
           {/* <a href='#'>Register</a> */}
           {/* <a href='#'>Forgot password?</a> */}
