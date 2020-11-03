@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { AuthRouter, UnauthRouter } from './routers'
 import { Layout } from './components/layout'
-import { ACCOUNT_ACTION_TYPE } from './common/constants'
+import { ACCOUNT_ACTION_TYPES } from './common/constants'
 import { Account } from './utils'
 
 export const AuthContext = createContext()
@@ -52,7 +52,7 @@ const App = () => {
 
     if (user && token) {
       dispatch({
-        type: ACCOUNT_ACTION_TYPE.LOGIN,
+        type: ACCOUNT_ACTION_TYPES.LOGIN,
         payload: { user, token }
       })
     }

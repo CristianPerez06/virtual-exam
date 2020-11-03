@@ -2,16 +2,20 @@ import React, { useState, useContext } from 'react'
 import { Form, Field } from 'react-final-form'
 import { AuthContext } from '../../App'
 import { useHistory } from 'react-router-dom'
-import { Button } from 'reactstrap'
+import { Input, Button } from 'reactstrap'
 import { Cognito } from '../../utils'
-import { ACCOUNT_ACTION_TYPES, COGNITO_CODES } from '../../common/constants'
-import { required, emailFormat, composeValidators } from '../../common/validators'
+import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
+import { required, shouldNotMatch, composeValidators } from '../../common/validators'
 import { LoadingInline, ErrorViewer, FieldError } from '../../components/common'
-import querystring from 'querystring'
+import { useQueryParams } from '../../hooks'
 
-const { login } = Cognito()
+const { loginAndChangePassword } = Cognito()
 
-const Login = () => {
+const PasswordChange = () => {
+  // props
+  const queryParams = useQueryParams()
+  const userEmail = queryParams.get('mail')
+
   // state
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -22,23 +26,14 @@ const Login = () => {
 
   // handlers
   const onSuccess = (data) => {
-    const { accessToken, code, email } = data
+    const { accessToken } = data
+
     setIsLoading(false)
-
-    // Normal workflow
-    if (accessToken) {
-      dispatch({
-        type: ACCOUNT_ACTION_TYPES.LOGIN,
-        payload: { user: accessToken.payload.username, token: accessToken.jwtToken }
-      })
-      history.push('/')
-    }
-
-    // Password change required
-    if (code === COGNITO_CODES.NEW_PASSWORD_REQUIRED) {
-      const params = querystring.stringify({ mail: email })
-      history.push(`/password-change?${params}`)
-    }
+    dispatch({
+      type: ACCOUNT_ACTION_TYPES.LOGIN,
+      payload: { user: accessToken.payload.username, token: accessToken.jwtToken }
+    })
+    history.push('/')
   }
 
   const onError = (err) => {
@@ -47,10 +42,10 @@ const Login = () => {
   }
 
   const onSubmit = values => {
-    const { email, password } = values
-    setIsLoading(true)
+    const { password, newPassword } = values
 
-    login(email, password)
+    setIsLoading(true)
+    loginAndChangePassword(userEmail, password, newPassword)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }
@@ -59,25 +54,20 @@ const Login = () => {
     <div className='d-flex h-100 align-items-center justify-content-center' style={{ background: 'rgba(0, 0, 0, 0.76)' }}>
       <Form
         onSubmit={onSubmit}
-        render={({ handleSubmit }) => (
+        render={({ handleSubmit, values }) => (
           <form
             onSubmit={handleSubmit}
             className='text-center bg-light p-5'
             style={{ minWidth: 400 + 'px' }}
           >
-            <p className='h4 mb-4'>Sign in</p>
-            <Field name='email' validate={composeValidators(required, emailFormat)}>
-              {({ input, meta }) => (
-                <div className='mb-4'>
-                  <input
-                    {...input}
-                    className='form-control'
-                    placeholder='Email'
-                  />
-                  {meta.error && meta.touched && <FieldError error={meta.error} />}
-                </div>
-              )}
-            </Field>
+            <p className='h4 mb-4'>Change password</p>
+            <Input
+              id='email'
+              className='form-control mb-4'
+              placeholder='Email'
+              value={userEmail}
+              readOnly
+            />
             <Field name='password' validate={required}>
               {({ input, meta }) => (
                 <div className='mb-4'>
@@ -91,15 +81,26 @@ const Login = () => {
                 </div>
               )}
             </Field>
+            <Field name='newPassword' validate={composeValidators(required, shouldNotMatch('Password', 'New password', values.password))}>
+              {({ input, meta }) => (
+                <div className='mb-4'>
+                  <input
+                    {...input}
+                    type='password'
+                    className='form-control'
+                    placeholder='New password'
+                  />
+                  {meta.error && meta.touched && <FieldError error={meta.error} />}
+                </div>
+              )}
+            </Field>
             <Button color='primary' disabled={isLoading}>
-              Sign in
+              Change password
               {isLoading && <LoadingInline className='ml-3' />}
             </Button>
 
             <div className='d-flex justify-content-around pt-3'>
               {!isLoading && error && <ErrorViewer error={error} className='ml-3' />}
-              {/* <a href='#'>Register</a> */}
-              {/* <a href='#'>Forgot password?</a> */}
             </div>
           </form>
         )}
@@ -108,4 +109,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default PasswordChange

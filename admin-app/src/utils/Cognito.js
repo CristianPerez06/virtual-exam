@@ -1,4 +1,5 @@
 import { CognitoUserPool, CognitoUser, AuthenticationDetails } from 'amazon-cognito-identity-js'
+import { COGNITO_CODES } from '../common/constants'
 
 const Cognito = () => {
   const Pool = new CognitoUserPool({
@@ -8,25 +9,49 @@ const Cognito = () => {
 
   let user = null
 
-  const login = (Username, Password) => {
+  const login = (userName, password) => {
     return new Promise((resolve, reject) => {
-      user = new CognitoUser({ Username, Pool })
-      const authDetails = new AuthenticationDetails({ Username, Password })
+      user = new CognitoUser({ Username: userName, Pool })
+      const authDetails = new AuthenticationDetails({ Username: userName, Password: password })
       const authCallbacks = {
         onSuccess: data => {
-          console.log('onSuccess:', data)
           resolve(data)
         },
         onFailure: err => {
-          console.error('onFailure:', err)
           reject(err)
         },
         newPasswordRequired: data => {
-          console.log('newPasswordRequired:', data)
-          resolve(data)
+          resolve({
+            ...data,
+            code: COGNITO_CODES.NEW_PASSWORD_REQUIRED
+          })
         }
       }
 
+      user.authenticateUser(authDetails, authCallbacks)
+    })
+  }
+
+  const loginAndChangePassword = (userName, password, newPassword) => {
+    return new Promise((resolve, reject) => {
+      user = new CognitoUser({ Username: userName, Pool })
+      const authDetails = new AuthenticationDetails({ Username: userName, Password: password })
+
+      const authCallbacks = {
+        onSuccess: data => {
+          resolve(data)
+        },
+        onFailure: err => {
+          reject(err)
+        },
+        newPasswordRequired: userAttr => {
+          const challengeCallbacks = {
+            onSuccess: data => resolve(data),
+            onFailure: err => reject(err)
+          }
+          user.completeNewPasswordChallenge(newPassword, null, challengeCallbacks)
+        }
+      }
       user.authenticateUser(authDetails, authCallbacks)
     })
   }
@@ -80,7 +105,8 @@ const Cognito = () => {
   return {
     login,
     logout,
-    getSession
+    getSession,
+    loginAndChangePassword
   }
 }
 
