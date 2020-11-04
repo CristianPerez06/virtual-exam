@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { Form, Field } from 'react-final-form'
 import { AuthContext } from '../../App'
-import { useHistory, Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Button } from 'reactstrap'
 import { Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPES, COGNITO_CODES } from '../../common/constants'
@@ -11,7 +11,7 @@ import querystring from 'querystring'
 
 const { login } = Cognito()
 
-const Login = () => {
+const SignUp = () => {
   // state
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -66,7 +66,19 @@ const Login = () => {
             style={{ minWidth: 400 + 'px' }}
           >
             <div className='pb-3'>
-              <p className='h4 mb-4'>Sign in</p>
+              <p className='h4 mb-4'>Register</p>
+              <Field name='Username' validate={required}>
+                {({ input, meta }) => (
+                  <div className='mb-4'>
+                    <input
+                      {...input}
+                      className='form-control'
+                      placeholder='Username'
+                    />
+                    {meta.error && meta.touched && <FieldError error={meta.error} />}
+                  </div>
+                )}
+              </Field>
               <Field name='email' validate={composeValidators(required, emailFormat)}>
                 {({ input, meta }) => (
                   <div className='mb-4'>
@@ -93,16 +105,12 @@ const Login = () => {
                 )}
               </Field>
               <Button color='primary' disabled={isLoading}>
-                Sign in
+                Register
                 {isLoading && <LoadingInline className='ml-3' />}
               </Button>
             </div>
             <div className='d-flex justify-content-around pt-3'>
               {!isLoading && error && <CustomAlert message={error} className='ml-3' />}
-            </div>
-            <div className='d-flex justify-content-around pt-3'>
-              <Link className='nav-link' to='/sign-up'>Sign up</Link>
-              <Link className='nav-link' to='/forgot-password'>Forgot password</Link>
             </div>
           </form>
         )}
@@ -111,4 +119,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default SignUp

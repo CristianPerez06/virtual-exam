@@ -63,6 +63,29 @@ const Cognito = () => {
     }
   }
 
+  const forgotPassword = (userName) => {
+    return new Promise((resolve, reject) => {
+      user = new CognitoUser({ Username: userName, Pool })
+      const callbacks = {
+        onSuccess: data => resolve(data),
+        onFailure: err => reject(err)
+      }
+      user.forgotPassword(callbacks)
+    })
+  }
+
+  const confirmPassword = (userName, verificationCode, newPassword) => {
+    return new Promise((resolve, reject) => {
+      user = new CognitoUser({ Username: userName, Pool })
+
+      const callbacks = {
+        onSuccess: data => resolve(data),
+        onFailure: err => reject(err)
+      }
+      user.confirmPassword(verificationCode, newPassword, callbacks)
+    })
+  }
+
   const getSession = async () => {
     await new Promise((resolve, reject) => {
       const user = Pool.getCurrentUser()
@@ -106,7 +129,9 @@ const Cognito = () => {
     login,
     logout,
     getSession,
-    loginAndChangePassword
+    loginAndChangePassword,
+    forgotPassword,
+    confirmPassword
   }
 }
 
