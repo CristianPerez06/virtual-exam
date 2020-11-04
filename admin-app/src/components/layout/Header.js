@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { AuthContext } from '../../App'
 import { Account, Cognito } from '../../utils'
-import { ACCOUNT_ACTION_TYPE } from '../../common/constants'
+import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { Link } from 'react-router-dom'
 import {
   Collapse,
@@ -30,7 +30,7 @@ const Header = () => {
   const handleLogout = () => {
     logout()
     dispatch({
-      type: ACCOUNT_ACTION_TYPE.LOGOUT,
+      type: ACCOUNT_ACTION_TYPES.LOGOUT,
       payload: { user: null, token: null }
     })
   }
