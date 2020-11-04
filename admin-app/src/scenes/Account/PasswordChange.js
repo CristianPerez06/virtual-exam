@@ -6,7 +6,7 @@ import { Input, Button } from 'reactstrap'
 import { Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { required, shouldNotMatch, composeValidators } from '../../common/validators'
-import { LoadingInline, ErrorViewer, FieldError } from '../../components/common'
+import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import { useQueryParams } from '../../hooks'
 
 const { loginAndChangePassword } = Cognito()
@@ -100,7 +100,7 @@ const PasswordChange = () => {
             </Button>
 
             <div className='d-flex justify-content-around pt-3'>
-              {!isLoading && error && <ErrorViewer error={error} className='ml-3' />}
+              {!isLoading && error && <CustomAlert message={error} className='ml-3' />}
             </div>
           </form>
         )}
