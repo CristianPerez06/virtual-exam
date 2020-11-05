@@ -59,63 +59,72 @@ const SignUp = () => {
           >
             <div className='pb-3'>
               <p className='h4 mb-4'>Forgot password</p>
-              <div>
-                <Field name='email' validate={composeValidators(required, emailFormat)}>
-                  {({ input, meta }) => (
-                    <div className='mb-4'>
-                      <input
-                        {...input}
-                        className='form-control'
-                        placeholder='Email'
-                        disabled={codeSent || confirmedPassword}
-                      />
-                      {meta.error && meta.touched && <FieldError error={meta.error} />}
-                    </div>
-                  )}
-                </Field>
-                {codeSent &&
-                  <div>
-                    <Field name='recoveryCode' validate={required}>
-                      {({ input, meta }) => (
-                        <div className='mb-4'>
-                          <input
-                            {...input}
-                            className='form-control'
-                            placeholder='Recovery code'
-                            disabled={confirmedPassword}
-                          />
-                          {meta.error && meta.touched && <FieldError error={meta.error} />}
-                        </div>
-                      )}
-                    </Field>
-                    <Field name='newPassword' validate={required}>
-                      {({ input, meta }) => (
-                        <div className='mb-4'>
-                          <input
-                            {...input}
-                            className='form-control'
-                            type='password'
-                            placeholder='New password'
-                            disabled={confirmedPassword}
-                          />
-                          {meta.error && meta.touched && <FieldError error={meta.error} />}
-                        </div>
-                      )}
-                    </Field>
-                  </div>}
-                <Button color='primary' disabled={isLoading || confirmedPassword}>
-                  {!codeSent ? 'Send recovery code' : 'Update password'}
-                  {isLoading && <LoadingInline className='ml-3' />}
-                </Button>
-              </div>
-
+              <Field name='email' validate={composeValidators(required, emailFormat)}>
+                {({ input, meta }) => (
+                  <div className='mb-4'>
+                    <input
+                      {...input}
+                      className='form-control'
+                      placeholder='Email'
+                      disabled={isLoading || codeSent || confirmedPassword}
+                    />
+                    {meta.error && meta.touched && <FieldError error={meta.error} />}
+                  </div>
+                )}
+              </Field>
+              {!confirmedPassword &&
+                <div>
+                  {/* Forgot password */}
+                  {!codeSent &&
+                    <div className='forgot-password-workflow'>
+                      <Button color='primary' disabled={isLoading}>
+                        Send recovery code
+                        {isLoading && <LoadingInline className='ml-3' />}
+                      </Button>
+                    </div>}
+                  {/* Update password */}
+                  {codeSent &&
+                    <div className='update-password-workflow'>
+                      <Field name='recoveryCode' validate={required}>
+                        {({ input, meta }) => (
+                          <div className='mb-4'>
+                            <input
+                              {...input}
+                              className='form-control'
+                              placeholder='Recovery code'
+                              disabled={isLoading}
+                            />
+                            {meta.error && meta.touched && <FieldError error={meta.error} />}
+                          </div>
+                        )}
+                      </Field>
+                      <Field name='newPassword' validate={required}>
+                        {({ input, meta }) => (
+                          <div className='mb-4'>
+                            <input
+                              {...input}
+                              className='form-control'
+                              type='password'
+                              placeholder='New password'
+                              disabled={isLoading}
+                            />
+                            {meta.error && meta.touched && <FieldError error={meta.error} />}
+                          </div>
+                        )}
+                      </Field>
+                      <Button color='primary' disabled={isLoading || confirmedPassword}>
+                        Update password
+                        {isLoading && <LoadingInline className='ml-3' />}
+                      </Button>
+                    </div>}
+                </div>}
             </div>
             <div className='d-flex justify-content-around pt-3'>
               {!isLoading && error &&
                 <CustomAlert message={error} className='ml-3' />}
-              {!isLoading && codeSent && !confirmedPassword &&
+              {!isLoading && codeSent &&
                 <CustomAlert message='Recovery code sent' color='success' className='ml-3' />}
-              {confirmedPassword &&
+              {!isLoading && confirmedPassword &&
                 <div>
                   <CustomAlert message='Password successfully updated' color='success' className='ml-3' />
                   <Link className='nav-link' to='/login'>Go back to Sign in page</Link>
