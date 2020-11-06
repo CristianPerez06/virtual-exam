@@ -5,13 +5,13 @@ export const mustBeNumber = value => (isNaN(value) ? 'Must be a number' : undefi
 export const shouldMatch = (field, fieldToCompare, valueToCompare) =>
   value =>
     (value !== valueToCompare)
-      ? `${field} and ${fieldToCompare} should match`
+      ? `${field} and ${fieldToCompare} fields should match`
       : undefined
 
 export const shouldNotMatch = (field, fieldToCompare, valueToCompare) =>
   value =>
     (value === valueToCompare)
-      ? `${field} and ${fieldToCompare} shouldn't match`
+      ? `${field} and ${fieldToCompare} fields shouldn't match`
       : undefined
 
 export const minValue = min =>

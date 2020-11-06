@@ -5,7 +5,7 @@ import { useHistory, Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
 import { Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPES, COGNITO_CODES } from '../../common/constants'
-import { required, emailFormat, composeValidators } from '../../common/validators'
+import { required } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import querystring from 'querystring'
 
@@ -47,10 +47,10 @@ const Login = () => {
   }
 
   const onSubmit = values => {
-    const { email, password } = values
+    const { username, password } = values
     setIsLoading(true)
 
-    login(email, password)
+    login(username, password)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }
@@ -67,13 +67,13 @@ const Login = () => {
           >
             <div className='pb-3'>
               <p className='h4 mb-4'>Sign in</p>
-              <Field name='email' validate={composeValidators(required, emailFormat)}>
+              <Field name='username' validate={required}>
                 {({ input, meta }) => (
                   <div className='mb-4'>
                     <input
                       {...input}
                       className='form-control'
-                      placeholder='Email'
+                      placeholder='Username'
                     />
                     {meta.error && meta.touched && <FieldError error={meta.error} />}
                   </div>
@@ -93,7 +93,7 @@ const Login = () => {
                 )}
               </Field>
               <Button color='primary' disabled={isLoading}>
-                Sign in
+                Log in
                 {isLoading && <LoadingInline className='ml-3' />}
               </Button>
             </div>
