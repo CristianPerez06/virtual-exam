@@ -21,19 +21,19 @@ const PasswordChange = () => {
   const [error, setError] = useState('')
 
   // hooks
-  const { dispatch } = useContext(AuthContext)
-  const history = useHistory()
+  // const { dispatch } = useContext(AuthContext)
+  // const history = useHistory()
 
   // handlers
   const onSuccess = (data) => {
     const { accessToken } = data
 
     setIsLoading(false)
-    dispatch({
-      type: ACCOUNT_ACTION_TYPES.LOGIN,
-      payload: { user: accessToken.payload.username, token: accessToken.jwtToken }
-    })
-    history.push('/')
+    // dispatch({
+    //   type: ACCOUNT_ACTION_TYPES.LOGIN,
+    //   payload: { user: accessToken.payload.username, token: accessToken.jwtToken }
+    // })
+    // history.push('/')
   }
 
   const onError = (err) => {

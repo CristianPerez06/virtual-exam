@@ -3,6 +3,8 @@ import { Route, Switch } from 'react-router-dom'
 import { PageNotFound } from '../components/common'
 import { Home, Contact } from '../components'
 import { JustTesting } from '../scenes/Other'
+import { withAuthenticator } from "@aws-amplify/ui-react"
+
 
 const AuthRouter = () => {
   return (

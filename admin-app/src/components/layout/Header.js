@@ -24,15 +24,15 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   // hooks
-  const { dispatch } = useContext(AuthContext)
+  // const { dispatch } = useContext(AuthContext)
 
   // handlers
   const handleLogout = () => {
     logout()
-    dispatch({
-      type: ACCOUNT_ACTION_TYPES.LOGOUT,
-      payload: { user: null, token: null }
-    })
+    // dispatch({
+    //   type: ACCOUNT_ACTION_TYPES.LOGOUT,
+    //   payload: { user: null, token: null }
+    // })
   }
 
   const toggle = () => setIsOpen(!isOpen)
