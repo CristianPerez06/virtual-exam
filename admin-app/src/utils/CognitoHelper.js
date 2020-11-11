@@ -1,17 +1,25 @@
 import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js'
 import { COGNITO_CODES } from '../common/constants'
 
-const Cognito = () => {
-  const pool = new CognitoUserPool({
-    UserPoolId: 'us-east-2_vUtKc2Ydz',
-    ClientId: '10hno18t9psaht9i5trb8eoquf'
-  })
+class Cognito {
+  constructor () {
+    this.pool = new CognitoUserPool({
+      UserPoolId: 'us-east-2_vUtKc2Ydz',
+      ClientId: '10hno18t9psaht9i5trb8eoquf'
+    })
+    this.user = null
+    this.login = this.login.bind(this)
+    this.loginAndChangePassword = this.loginAndChangePassword.bind(this)
+    this.logout = this.logout.bind(this)
+    this.forgotPassword = this.forgotPassword.bind(this)
+    this.confirmPassword = this.confirmPassword.bind(this)
+    this.signUp = this.signUp.bind(this)
+    this.getSession = this.getSession.bind(this)
+  }
 
-  let user = null
-
-  const login = (userName, password) => {
+  login (userName, password) {
     return new Promise((resolve, reject) => {
-      user = new CognitoUser({ Username: userName, Pool: pool })
+      this.user = new CognitoUser({ Username: userName, Pool: this.pool })
       const authDetails = new AuthenticationDetails({ Username: userName, Password: password })
       const authCallbacks = {
         onSuccess: data => {
@@ -28,13 +36,13 @@ const Cognito = () => {
         }
       }
 
-      user.authenticateUser(authDetails, authCallbacks)
+      this.user.authenticateUser(authDetails, authCallbacks)
     })
   }
 
-  const loginAndChangePassword = (userName, password, newPassword) => {
+  loginAndChangePassword (userName, password, newPassword) {
     return new Promise((resolve, reject) => {
-      user = new CognitoUser({ Username: userName, Pool: pool })
+      this.user = new CognitoUser({ Username: userName, Pool: this.pool })
       const authDetails = new AuthenticationDetails({ Username: userName, Password: password })
 
       const authCallbacks = {
@@ -49,44 +57,44 @@ const Cognito = () => {
             onSuccess: data => resolve(data),
             onFailure: err => reject(err)
           }
-          user.completeNewPasswordChallenge(newPassword, null, challengeCallbacks)
+          this.user.completeNewPasswordChallenge(newPassword, null, challengeCallbacks)
         }
       }
-      user.authenticateUser(authDetails, authCallbacks)
+      this.user.authenticateUser(authDetails, authCallbacks)
     })
   }
 
-  const logout = () => {
-    if (user) {
-      user.storage.clear()
-      user.signOut()
+  logout () {
+    if (this.user) {
+      this.user.storage.clear()
+      this.user.signOut()
     }
   }
 
-  const forgotPassword = (userName) => {
+  forgotPassword (userName) {
     return new Promise((resolve, reject) => {
-      user = new CognitoUser({ Username: userName, Pool: pool })
+      this.user = new CognitoUser({ Username: userName, Pool: this.pool })
       const callbacks = {
         onSuccess: data => resolve(data),
         onFailure: err => reject(err)
       }
-      user.forgotPassword(callbacks)
+      this.user.forgotPassword(callbacks)
     })
   }
 
-  const confirmPassword = (userName, verificationCode, newPassword) => {
+  confirmPassword (userName, verificationCode, newPassword) {
     return new Promise((resolve, reject) => {
-      user = new CognitoUser({ Username: userName, Pool: pool })
+      this.user = new CognitoUser({ Username: userName, Pool: this.pool })
 
       const callbacks = {
         onSuccess: data => resolve(data),
         onFailure: err => reject(err)
       }
-      user.confirmPassword(verificationCode, newPassword, callbacks)
+      this.user.confirmPassword(verificationCode, newPassword, callbacks)
     })
   }
 
-  const signUp = (username, password, attributes = [], customAttributes = []) => {
+  signUp (username, password, attributes = [], customAttributes = []) {
     const attrList = attributes.map(attr => {
       return new CognitoUserAttribute({ Name: attr.name, Value: attr.value })
     })
@@ -99,13 +107,13 @@ const Cognito = () => {
         if (err) reject(err)
         resolve(data)
       }
-      pool.signUp(username, password, [...attrList, ...customAttrList], null, callback)
+      this.pool.signUp(username, password, [...attrList, ...customAttrList], null, callback)
     })
   }
 
-  const getSession = async () => {
-    await new Promise((resolve, reject) => {
-      const user = pool.getCurrentUser()
+  getSession () {
+    return new Promise((resolve, reject) => {
+      const user = this.pool.getCurrentUser()
       if (user) {
         user.getSession(async (err, session) => {
           if (err) {
@@ -140,16 +148,6 @@ const Cognito = () => {
         reject(err)
       }
     })
-  }
-
-  return {
-    login,
-    logout,
-    getSession,
-    loginAndChangePassword,
-    forgotPassword,
-    confirmPassword,
-    signUp
   }
 }
 

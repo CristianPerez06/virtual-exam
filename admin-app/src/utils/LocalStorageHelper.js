@@ -1,32 +1,25 @@
-const Account = () => {
-  const getCurrentUser = () => {
+class LocalStorage {
+  getCurrentUser () {
     return JSON.parse(localStorage.getItem('user') || null)
   }
 
-  const getCurrentToken = () => {
+  getCurrentToken () {
     return JSON.parse(localStorage.getItem('token') || null)
   }
 
-  const setCurrentUser = (user) => {
+  setCurrentUser (user) {
     localStorage.setItem('user', JSON.stringify(user))
   }
 
-  const setCurrentToken = (token) => {
+  setCurrentToken (token) {
     localStorage.setItem('token', JSON.stringify(token))
   }
 
-  const clearSessionInfo = () => {
+  clearSessionInfo () {
     localStorage.setItem('user', JSON.stringify(null))
     localStorage.setItem('token', JSON.stringify(null))
     localStorage.clear()
   }
-
-  return {
-    getCurrentUser,
-    getCurrentToken,
-    setCurrentUser,
-    setCurrentToken,
-    clearSessionInfo
-  }
 }
-export default Account
+
+export default LocalStorage

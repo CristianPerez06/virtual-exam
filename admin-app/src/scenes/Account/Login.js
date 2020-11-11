@@ -3,13 +3,10 @@ import { Form, Field } from 'react-final-form'
 import { useAuthContext } from '../../hooks'
 import { useHistory, Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
-import { Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPES, COGNITO_CODES } from '../../common/constants'
 import { required } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import querystring from 'querystring'
-
-const { login } = Cognito()
 
 const Login = () => {
   // state
@@ -17,8 +14,7 @@ const Login = () => {
   const [error, setError] = useState('')
 
   // hooks
-
-  const { dispatch } = useAuthContext()
+  const { dispatch, cognitoHelper } = useAuthContext()
   const history = useHistory()
 
   // handlers
@@ -51,7 +47,7 @@ const Login = () => {
     const { username, password } = values
     setIsLoading(true)
 
-    login(username, password)
+    cognitoHelper.login(username, password)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }

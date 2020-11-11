@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useAuthContext } from '../../hooks'
-import { Account, Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { Link } from 'react-router-dom'
 import {
@@ -16,19 +15,16 @@ import {
   DropdownItem
 } from 'reactstrap'
 
-const { logout } = Cognito()
-const { getCurrentUser } = Account()
-
 const Header = () => {
   // state
   const [isOpen, setIsOpen] = useState(false)
 
   // hooks
-  const { dispatch } = useAuthContext()
+  const { dispatch, cognitoHelper, localStorageHelper } = useAuthContext()
 
   // handlers
   const handleLogout = () => {
-    logout()
+    cognitoHelper.logout()
     dispatch({
       type: ACCOUNT_ACTION_TYPES.LOGOUT,
       payload: { user: null, token: null }
@@ -70,7 +66,7 @@ const Header = () => {
         <Nav className='ml-auto' navbar>
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav caret>
-              {getCurrentUser()}
+              {localStorageHelper.getCurrentUser()}
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem onClick={handleLogout}>
