@@ -2,13 +2,10 @@ import React, { useState } from 'react'
 import { Form, Field } from 'react-final-form'
 import { useHistory } from 'react-router-dom'
 import { Input, Button } from 'reactstrap'
-import { Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { required, shouldNotMatch, composeValidators } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import { useQueryParams, useAuthContext } from '../../hooks'
-
-const { loginAndChangePassword } = Cognito()
 
 const PasswordChange = () => {
   // props
@@ -20,7 +17,7 @@ const PasswordChange = () => {
   const [error, setError] = useState('')
 
   // hooks
-  const { dispatch } = useAuthContext()
+  const { dispatch, cognitoHelper } = useAuthContext()
   const history = useHistory()
 
   // handlers
@@ -44,7 +41,7 @@ const PasswordChange = () => {
     const { password, newPassword } = values
 
     setIsLoading(true)
-    loginAndChangePassword(userEmail, password, newPassword)
+    cognitoHelper.loginAndChangePassword(userEmail, password, newPassword)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }

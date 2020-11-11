@@ -1,9 +1,10 @@
 import React, { useReducer } from 'react'
 import { AuthContext } from '../contexts'
-import { Account } from '../utils'
+import { LocalStorageHelper, CognitoHelper } from '../utils'
 import { ACCOUNT_ACTION_TYPES } from '../common/constants'
 
-const { getCurrentUser, setCurrentUser, getCurrentToken, setCurrentToken, clearSessionInfo } = Account()
+const localStorageHelper = new LocalStorageHelper()
+const cognitoHelper = new CognitoHelper()
 
 const initialState = {
   isAuthenticated: false,
@@ -14,8 +15,8 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case 'LOGIN':
-      setCurrentUser(action.payload.user)
-      setCurrentToken(action.payload.token)
+      localStorageHelper.setCurrentUser(action.payload.user)
+      localStorageHelper.setCurrentToken(action.payload.token)
       return {
         ...state,
         isAuthenticated: true,
@@ -23,7 +24,7 @@ const reducer = (state, action) => {
         token: action.payload.token
       }
     case 'LOGOUT':
-      clearSessionInfo()
+      localStorageHelper.clearSessionInfo()
       return {
         ...state,
         isAuthenticated: false,
@@ -35,17 +36,17 @@ const reducer = (state, action) => {
 }
 
 const AuthContextProvider = (props) => {
-  const currentState = getCurrentUser() && getCurrentToken()
-    ? { isAuthenticated: true, user: getCurrentUser(), token: getCurrentToken() }
+  const currentState = localStorageHelper.getCurrentUser() && localStorageHelper.getCurrentToken()
+    ? { isAuthenticated: true, user: localStorageHelper.getCurrentUser(), token: localStorageHelper.getCurrentToken() }
     : { initialState }
 
   const [state, dispatch] = useReducer(reducer, currentState)
 
-  const AuthContextStore = { state, dispatch }
+  const AuthContextStore = { state, dispatch, cognitoHelper, localStorageHelper }
 
   React.useEffect(() => {
-    const user = getCurrentUser()
-    const token = getCurrentToken()
+    const user = localStorageHelper.getCurrentUser()
+    const token = localStorageHelper.getCurrentToken()
 
     if (user && token) {
       dispatch({

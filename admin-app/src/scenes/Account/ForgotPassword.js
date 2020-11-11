@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { Form, Field } from 'react-final-form'
 import { Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
-import { Cognito } from '../../utils'
 import { required, emailFormat, composeValidators } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
-
-const { forgotPassword, confirmPassword } = Cognito()
+import { useAuthContext } from '../../hooks'
 
 const SignUp = () => {
   // state
@@ -14,6 +12,9 @@ const SignUp = () => {
   const [error, setError] = useState('')
   const [codeSent, setCodeSent] = useState(false)
   const [confirmedPassword, setConfirmedPassword] = useState(false)
+
+  // hooks
+  const { cognitoHelper } = useAuthContext()
 
   // handlers
   const onForgotPasswordSuccess = (data) => {
@@ -37,11 +38,11 @@ const SignUp = () => {
     setIsLoading(true)
 
     if (codeSent) {
-      confirmPassword(email, recoveryCode, newPassword)
+      cognitoHelper.confirmPassword(email, recoveryCode, newPassword)
         .then(data => onConfirmPasswordSuccess(data))
         .catch(err => onError(err))
     } else {
-      forgotPassword(email)
+      cognitoHelper.forgotPassword(email)
         .then(data => onForgotPasswordSuccess(data))
         .catch(err => onError(err))
     }
