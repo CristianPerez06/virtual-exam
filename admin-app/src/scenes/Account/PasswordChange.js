@@ -1,13 +1,12 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { Form, Field } from 'react-final-form'
-import { AuthContext } from '../../App'
 import { useHistory } from 'react-router-dom'
 import { Input, Button } from 'reactstrap'
 import { Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { required, shouldNotMatch, composeValidators } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
-import { useQueryParams } from '../../hooks'
+import { useQueryParams, useAuthContext } from '../../hooks'
 
 const { loginAndChangePassword } = Cognito()
 
@@ -21,7 +20,7 @@ const PasswordChange = () => {
   const [error, setError] = useState('')
 
   // hooks
-  const { dispatch } = useContext(AuthContext)
+  const { dispatch } = useAuthContext()
   const history = useHistory()
 
   // handlers

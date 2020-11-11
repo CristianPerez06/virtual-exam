@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { Form, Field } from 'react-final-form'
-import { AuthContext } from '../../App'
+import { useAuthContext } from '../../hooks'
 import { useHistory, Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
 import { Cognito } from '../../utils'
@@ -17,7 +17,8 @@ const Login = () => {
   const [error, setError] = useState('')
 
   // hooks
-  const { dispatch } = useContext(AuthContext)
+
+  const { dispatch } = useAuthContext()
   const history = useHistory()
 
   // handlers

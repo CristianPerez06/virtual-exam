@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react'
-import { AuthContext } from '../../App'
+import React, { useState } from 'react'
+import { useAuthContext } from '../../hooks'
 import { Account, Cognito } from '../../utils'
 import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { Link } from 'react-router-dom'
@@ -24,7 +24,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   // hooks
-  const { dispatch } = useContext(AuthContext)
+  const { dispatch } = useAuthContext()
 
   // handlers
   const handleLogout = () => {
