@@ -17,7 +17,7 @@ const PasswordChange = () => {
   const [error, setError] = useState('')
 
   // hooks
-  const { dispatch, cognitoHelper } = useAuthContext()
+  const { dispatch, cognito } = useAuthContext()
   const history = useHistory()
 
   // handlers
@@ -41,7 +41,7 @@ const PasswordChange = () => {
     const { password, newPassword } = values
 
     setIsLoading(true)
-    cognitoHelper.loginAndChangePassword(userEmail, password, newPassword)
+    cognito.loginAndChangePassword(userEmail, password, newPassword)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }

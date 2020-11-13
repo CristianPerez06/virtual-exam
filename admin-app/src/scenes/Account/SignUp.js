@@ -14,7 +14,7 @@ const SignUp = () => {
   const [userName, setUserName] = useState('')
 
   // hooks
-  const { cognitoHelper } = useAuthContext()
+  const { cognito } = useAuthContext()
 
   // handlers
   const onSuccess = (data) => {
@@ -37,7 +37,7 @@ const SignUp = () => {
     ]
     setIsLoading(true)
 
-    cognitoHelper.signUp(username, password, attributes)
+    cognito.signUp(username, password, attributes)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }

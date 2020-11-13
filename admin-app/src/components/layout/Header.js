@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useAuthContext } from '../../hooks'
+import { useCookies } from 'react-cookie'
 import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { Link } from 'react-router-dom'
 import {
@@ -18,13 +19,14 @@ import {
 const Header = () => {
   // state
   const [isOpen, setIsOpen] = useState(false)
+  const [cookies] = useCookies()
 
   // hooks
-  const { dispatch, cognitoHelper, localStorageHelper } = useAuthContext()
+  const { dispatch, cognito } = useAuthContext()
 
   // handlers
   const handleLogout = () => {
-    cognitoHelper.logout()
+    cognito.logout()
     dispatch({
       type: ACCOUNT_ACTION_TYPES.LOGOUT,
       payload: { user: null, token: null }
@@ -66,7 +68,7 @@ const Header = () => {
         <Nav className='ml-auto' navbar>
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav caret>
-              {localStorageHelper.getCurrentUser()}
+              {cookies.user}
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem onClick={handleLogout}>

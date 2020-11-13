@@ -14,7 +14,7 @@ const Login = () => {
   const [error, setError] = useState('')
 
   // hooks
-  const { dispatch, cognitoHelper } = useAuthContext()
+  const { dispatch, cognito } = useAuthContext()
   const history = useHistory()
 
   // handlers
@@ -47,7 +47,7 @@ const Login = () => {
     const { username, password } = values
     setIsLoading(true)
 
-    cognitoHelper.login(username, password)
+    cognito.login(username, password)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }

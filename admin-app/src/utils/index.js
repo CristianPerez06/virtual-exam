@@ -1,2 +1,1 @@
-export { default as CognitoHelper } from './CognitoHelper.js'
-export { default as LocalStorageHelper } from './LocalStorageHelper.js'
+export { default as Cognito } from './Cognito.js'
