@@ -14,7 +14,7 @@ const SignUp = () => {
   const [confirmedPassword, setConfirmedPassword] = useState(false)
 
   // hooks
-  const { cognitoHelper } = useAuthContext()
+  const { cognito } = useAuthContext()
 
   // handlers
   const onForgotPasswordSuccess = (data) => {
@@ -38,11 +38,11 @@ const SignUp = () => {
     setIsLoading(true)
 
     if (codeSent) {
-      cognitoHelper.confirmPassword(email, recoveryCode, newPassword)
+      cognito.confirmPassword(email, recoveryCode, newPassword)
         .then(data => onConfirmPasswordSuccess(data))
         .catch(err => onError(err))
     } else {
-      cognitoHelper.forgotPassword(email)
+      cognito.forgotPassword(email)
         .then(data => onForgotPasswordSuccess(data))
         .catch(err => onError(err))
     }
