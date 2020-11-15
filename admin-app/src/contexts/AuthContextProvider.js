@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react'
 import { AuthContext } from '../contexts'
-import { Cognito} from '../utils'
+import { Cognito } from '../utils'
 import { useCookies } from 'react-cookie'
 import { ACCOUNT_ACTION_TYPES, COOKIE_EXPIRATION } from '../common/constants'
 
@@ -20,7 +20,6 @@ const AuthContextProvider = (props) => {
   const reducer = (state, action) => {
     switch (action.type) {
       case 'LOGIN':
-
         setCookie('user', action.payload.user, { path: '/', maxAge: COOKIE_EXPIRATION.AN_HOUR })
         setCookie('token', action.payload.token, { path: '/', maxAge: COOKIE_EXPIRATION.AN_HOUR })
         return {
