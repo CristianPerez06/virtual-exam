@@ -65,6 +65,7 @@ class Cognito {
   }
 
   logout () {
+    this.user = this.pool.getCurrentUser()
     if (this.user) {
       this.user.storage.clear()
       this.user.signOut()
@@ -114,12 +115,15 @@ class Cognito {
   getSession () {
     return new Promise((resolve, reject) => {
       const user = this.pool.getCurrentUser()
+      debugger
       if (user) {
         user.getSession(async (err, session) => {
           if (err) {
+            debugger
             reject(err)
           } else {
             const attributes = await new Promise((resolve, reject) => {
+              debugger
               user.getUserAttributes((err, attributes) => {
                 if (err) {
                   reject(err)

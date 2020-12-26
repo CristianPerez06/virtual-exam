@@ -2,7 +2,7 @@ import React, { useReducer } from 'react'
 import { AuthContext } from '../contexts'
 import { Cognito } from '../utils'
 import { useCookies } from 'react-cookie'
-import { ACCOUNT_ACTION_TYPES, TIME } from '../common/constants'
+import { ACCOUNT_ACTION_TYPES } from '../common/constants'
 
 const cognito = new Cognito()
 
@@ -13,24 +13,18 @@ const initialState = {
 }
 
 const AuthContextProvider = (props) => {
-  const [cookies, setCookie, removeCookie] = useCookies([])
-  const currentState = cookies.user && cookies.token
-    ? { isAuthenticated: true, user: cookies.user, token: cookies.token }
-    : { ...initialState }
+  const [cookies, setCookie, removeCookie] = useCookies([]) // eslint-disable-line no-unused-vars
   const reducer = (state, action) => {
     switch (action.type) {
-      case 'LOGIN':
-        setCookie('user', action.payload.user, { path: '/', maxAge: TIME.AN_HOUR })
-        setCookie('token', action.payload.token, { path: '/', maxAge: TIME.AN_HOUR })
+      case ACCOUNT_ACTION_TYPES.LOGIN:
+        setCookie('user', action.payload.user, { path: '/' })
         return {
           ...state,
           isAuthenticated: true,
-          user: action.payload.user,
-          token: action.payload.token
+          user: action.payload.user
         }
-      case 'LOGOUT':
+      case ACCOUNT_ACTION_TYPES.LOGOUT:
         removeCookie('user', null)
-        removeCookie('token', null)
         return {
           ...state,
           isAuthenticated: false,
@@ -41,20 +35,9 @@ const AuthContextProvider = (props) => {
     }
   }
 
-  const [state, dispatch] = useReducer(reducer, currentState)
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   const AuthContextStore = { state, dispatch, cognito }
-
-  React.useEffect(() => {
-    const user = cookies.user
-    const token = cookies.token
-    if (user && token) {
-      dispatch({
-        type: ACCOUNT_ACTION_TYPES.LOGIN,
-        payload: { user, token }
-      })
-    }
-  }, [cookies.user, cookies.token])
 
   return (
     <AuthContext.Provider value={AuthContextStore}>

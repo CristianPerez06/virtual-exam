@@ -5,11 +5,16 @@ import { Layout } from '../components/layout'
 import { useAuthContext } from '../hooks'
 
 const Main = () => {
-  const { state } = useAuthContext()
+  const { state, cognito } = useAuthContext()
+
+  const cognitoAuthenticated = () => {
+    const user = cognito.pool.getCurrentUser()
+    return !!user
+  }
 
   return (
     <Router>
-      {state.isAuthenticated
+      {state.isAuthenticated || cognitoAuthenticated()
         ? <Layout><AuthRouter /></Layout>
         : <UnauthRouter />}
     </Router>
