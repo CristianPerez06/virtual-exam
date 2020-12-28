@@ -10,7 +10,8 @@ import { useQueryParams, useAuthContext } from '../../hooks'
 const PasswordChange = () => {
   // props
   const queryParams = useQueryParams()
-  const userEmail = queryParams.get('mail')
+  const username = queryParams.get('username')
+  const email = queryParams.get('email')
 
   // state
   const [isLoading, setIsLoading] = useState(false)
@@ -24,7 +25,7 @@ const PasswordChange = () => {
   const onSuccess = (data) => {
     const { accessToken } = data
 
-    setIsLoading(false)
+    setIsLoading(false) // TO DO - Review - States are being reset before accessing onSuccess/onError.
     dispatch({
       type: ACCOUNT_ACTION_TYPES.LOGIN,
       payload: { user: accessToken.payload.username, token: accessToken.jwtToken }
@@ -41,7 +42,7 @@ const PasswordChange = () => {
     const { password, newPassword } = values
 
     setIsLoading(true)
-    cognito.loginAndChangePassword(userEmail, password, newPassword)
+    cognito.loginAndChangePassword(username, password, newPassword)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }
@@ -58,10 +59,17 @@ const PasswordChange = () => {
           >
             <p className='h4 mb-4'>Change password</p>
             <Input
+              id='username'
+              className='form-control mb-4'
+              placeholder='Username'
+              value={username}
+              readOnly
+            />
+            <Input
               id='email'
               className='form-control mb-4'
               placeholder='Email'
-              value={userEmail}
+              value={email}
               readOnly
             />
             <Field name='password' validate={required}>

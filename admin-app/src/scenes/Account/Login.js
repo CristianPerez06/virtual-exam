@@ -19,7 +19,7 @@ const Login = () => {
 
   // handlers
   const onSuccess = (data) => {
-    const { accessToken, code, email } = data
+    const { accessToken, code, username, email } = data
     setIsLoading(false)
 
     // Normal workflow
@@ -33,7 +33,7 @@ const Login = () => {
 
     // Password change required
     if (code === COGNITO_CODES.NEW_PASSWORD_REQUIRED) {
-      const params = querystring.stringify({ mail: email })
+      const params = querystring.stringify({ username: username, email: email })
       history.push(`/password-change?${params}`)
     }
   }
@@ -48,7 +48,7 @@ const Login = () => {
     setIsLoading(true)
 
     cognito.login(username, password)
-      .then(data => onSuccess(data))
+      .then(data => onSuccess({ ...data, username: username }))
       .catch(err => onError(err))
   }
 

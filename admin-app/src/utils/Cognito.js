@@ -4,8 +4,8 @@ import { COGNITO_CODES } from '../common/constants'
 class Cognito {
   constructor () {
     this.pool = new CognitoUserPool({
-      UserPoolId: 'us-east-2_vUtKc2Ydz',
-      ClientId: '10hno18t9psaht9i5trb8eoquf'
+      UserPoolId: 'us-east-2_eUKPzGh9X',
+      ClientId: '5fm1ctb7h941c7iei3llda67nc'
     })
     this.user = null
     this.login = this.login.bind(this)
@@ -115,15 +115,12 @@ class Cognito {
   getSession () {
     return new Promise((resolve, reject) => {
       const user = this.pool.getCurrentUser()
-      debugger
       if (user) {
         user.getSession(async (err, session) => {
           if (err) {
-            debugger
             reject(err)
           } else {
             const attributes = await new Promise((resolve, reject) => {
-              debugger
               user.getUserAttributes((err, attributes) => {
                 if (err) {
                   reject(err)

@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { Form, Field } from 'react-final-form'
 import { Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
-import { required, shouldMatch, composeValidators } from '../../common/validators'
+import { required, shouldMatch, composeValidators, emailFormat, mustBeNumber, rangeValues } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
+import { ID_LENGTH } from '../../common/constants'
 import { useAuthContext } from '../../hooks'
 
 const SignUp = () => {
@@ -30,10 +31,12 @@ const SignUp = () => {
   }
 
   const onSubmit = values => {
-    const { username, password, email } = values
-
+    const { username, password, email, name, lastname, nickname } = values
     const attributes = [
-      { name: 'email', value: email }
+      { name: 'email', value: email },
+      { name: 'name', value: name },
+      { name: 'family_name', value: lastname },
+      { name: 'nickname', value: nickname }
     ]
     setIsLoading(true)
 
@@ -55,19 +58,43 @@ const SignUp = () => {
             <p className='h4 mb-4'>Sign up</p>
             {signUpInProgress &&
               <div>
-                <Field name='username' validate={required}>
+                <Field name='username' validate={composeValidators(required, mustBeNumber, rangeValues(ID_LENGTH.MIN, ID_LENGTH.MAX))}>
                   {({ input, meta }) => (
                     <div className='mb-4'>
                       <input
                         {...input}
                         className='form-control'
-                        placeholder='Username'
+                        placeholder='ID'
                       />
                       {meta.error && meta.touched && <FieldError error={meta.error} />}
                     </div>
                   )}
                 </Field>
-                <Field name='email' validate={required}>
+                <Field name='name' validate={required}>
+                  {({ input, meta }) => (
+                    <div className='mb-4'>
+                      <input
+                        {...input}
+                        className='form-control'
+                        placeholder='First name'
+                      />
+                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                    </div>
+                  )}
+                </Field>
+                <Field name='lastname' validate={required}>
+                  {({ input, meta }) => (
+                    <div className='mb-4'>
+                      <input
+                        {...input}
+                        className='form-control'
+                        placeholder='Last name'
+                      />
+                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                    </div>
+                  )}
+                </Field>
+                <Field name='email' validate={composeValidators(required, emailFormat)}>
                   {({ input, meta }) => (
                     <div className='mb-4'>
                       <input
@@ -79,6 +106,20 @@ const SignUp = () => {
                     </div>
                   )}
                 </Field>
+                {/* TO DO - Add regex validation for nickname */}
+                <Field name='nickname' validate={required}>
+                  {({ input, meta }) => (
+                    <div className='mb-4'>
+                      <input
+                        {...input}
+                        className='form-control'
+                        placeholder='Nick name'
+                      />
+                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                    </div>
+                  )}
+                </Field>
+                {/* TO DO - Add regex validation for password (use cognito format) */}
                 <Field name='password' validate={required}>
                   {({ input, meta }) => (
                     <div className='mb-4'>
