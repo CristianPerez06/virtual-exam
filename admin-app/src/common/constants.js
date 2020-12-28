@@ -14,3 +14,8 @@ export const COGNITO_CODES = {
   NOT_AUTHORIZED: 'NotAuthorizedException',
   NEW_PASSWORD_REQUIRED: 'newPasswordRequired'
 }
+
+export const ID_LENGTH = {
+  MIN: 1,
+  MAX: 99999
+}

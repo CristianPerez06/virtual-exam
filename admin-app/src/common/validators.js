@@ -1,31 +1,38 @@
-export const required = (value) => (value ? undefined : 'Required')
+export const required = (value) => (value ? undefined : 'REQUIRED')
 
-export const mustBeNumber = value => (isNaN(value) ? 'Must be a number' : undefined)
+export const mustBeNumber = value => (isNaN(value) ? 'MUST_BE_A_NUMBER' : undefined)
 
 export const shouldMatch = (field, fieldToCompare, valueToCompare) =>
   value =>
     (value !== valueToCompare)
-      ? `${field} and ${fieldToCompare} fields should match`
+      ? `{${field}}_AND_{${fieldToCompare}}_FIELDS_SHOULD_MATCH`
       : undefined
 
 export const shouldNotMatch = (field, fieldToCompare, valueToCompare) =>
   value =>
     (value === valueToCompare)
-      ? `${field} and ${fieldToCompare} fields shouldn't match`
+      ? `{${field}}_AND_{${fieldToCompare}}_FIELDS_SHOULDNT_MATCH`
       : undefined
 
 export const minValue = min =>
   value =>
-    isNaN(value) || value >= min
+    isNaN(value) || value > min
       ? undefined
-      : `Should be greater than ${min}`
+      : `VALUE_SHOULD_BE_GREATER_EQUAL_THAN_{${min}}`
+
 
 export const maxValue = max =>
   value =>
-    isNaN(value) || value > max
+    isNaN(value) || value < max
       ? undefined
-      : `Should be smaller than ${max}`
+      : `VALUE_SHOULD_BE_SMALLER_EQUAL_THAN_{${max}}`
 
-export const emailFormat = value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : 'Incorrect email format'
+export const rangeValues = (min, max) =>
+  value =>
+    isNaN(value) || (value >= min && value <= max) 
+      ? undefined
+      : `VALUE_SHOULD_BE_BETWEEN_{${min}}_AND_{${max}}`
+
+export const emailFormat = value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : 'INCORRECT_EMAIL_FORMAT'
 
 export const composeValidators = (...validators) => value => validators.reduce((error, validator) => error || validator(value), undefined)
