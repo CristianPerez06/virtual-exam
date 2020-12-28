@@ -20,6 +20,7 @@ const SignUp = () => {
   // handlers
   const onSuccess = (data) => {
     const { user } = data
+    setError(null)
     setIsLoading(false)
     setSignUpInProgress(false)
     setUserName(user.username)
