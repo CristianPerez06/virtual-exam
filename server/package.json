@@ -4,12 +4,18 @@
   "description": "server",
   "main": "server.js",
   "scripts": {
+    "server": "DEBUG=${DEBUG:=virtual-exam:*} node src/server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-express": "^2.19.1",
+    "cors": "^2.8.5",
+    "debug": "^4.3.1",
     "express": "^4.17.1",
+    "graphql-import-node": "0.0.4",
+    "mongodb": "^3.6.3",
     "nodemon": "^2.0.6"
   }
 }
