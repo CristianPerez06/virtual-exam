@@ -5,7 +5,6 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import { Login, PasswordChange, SignUp, ForgotPassword } from '../scenes/Account'
 
 const UnauthRouter = () => {
-  console.log('UnauthRouter')
   return (
     <Switch>
       <Route path='/login' name='Login' component={Login} />

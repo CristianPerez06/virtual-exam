@@ -2,20 +2,15 @@ import React from 'react'
 import { Alert } from 'reactstrap'
 
 const CustomAlert = (props) => {
-  const { message, color = 'danger' } = props
+  const { messages, color = 'danger' } = props
   // TO DO - use translations
-  // const errors = Array.isArray(error) && error.length > 0 ? error : [{}]
-
+  const messageList = Array.isArray(messages) && messages.length > 0 ? messages : [{}]
   return (
     <Alert className={`alert-${color} d-flex align-items-start justify-content-start flex-column`}>
       <ul className='text-left'>
-        {/* {
-          errors.map(({ id, message }) => id
-            ? <li key={id}>{message}</li>
-            : <li key='internal_server_error'>Oops. Something went wrong.</li>
-          )
-        } */}
-        <li>{message}</li>
+        {
+          messageList.map((value, index) => <li key={index}>{value.message}</li>)
+        }
       </ul>
     </Alert>
   )

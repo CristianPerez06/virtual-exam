@@ -7,13 +7,25 @@ const debug = require('debug')('virtual-exam:server')
 debug('Booting up server')
 
 // Grapqhl APIs
-const { userDefs, userResolvers } = require('./api/user/index')
+const { courseDefs, courseResolvers } = require('./api/course/index')
 
 // typeDefs & resolvers
-const typeDefs = [userDefs]
-const resolvers = [userResolvers]
+const typeDefs = [courseDefs]
+const resolvers = [courseResolvers]
 
-const server = new ApolloServer({ typeDefs, resolvers })
+const server = new ApolloServer({
+  typeDefs: typeDefs,
+  resolvers: resolvers,
+  formatError: err => {
+    debug({ err })
+    return err
+  },
+  context: ({ req }) => {
+    // inject request into apollo server context
+    const { db } = req
+    return { db }
+  }
+})
 
 const app = express()
 

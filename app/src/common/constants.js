@@ -19,3 +19,7 @@ export const ID_LENGTH = {
   MIN: 1,
   MAX: 99999
 }
+
+export const ERROR_MESSAGES = {
+  DUPLICATED_DOC: 'DUPLICATED_DOCUMENT'
+}
