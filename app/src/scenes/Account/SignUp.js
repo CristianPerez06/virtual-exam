@@ -4,31 +4,71 @@ import { Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
 import { required, shouldMatch, composeValidators, emailFormat, mustBeNumber, rangeValues } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
-import { ID_LENGTH } from '../../common/constants'
+import { injectIntl, defineMessages, FormattedMessage } from 'react-intl'
+import { ERROR_MESSAGES, COGNITO_ERROR_CODES, ID_LENGTH } from '../../common/constants'
+import { translateFieldError } from '../../common/translations'
 import { useAuthContext } from '../../hooks'
 
-const SignUp = () => {
+const messages = defineMessages({
+  internalServerError: {
+    id: 'common_error.internal_server_error',
+    defaultMessage: 'Internal server error'
+  },
+  invalidParameterException: {
+    id: 'cognito_error.invalid_parameter_exception',
+    defaultMessage: 'Incorrect value for some of the required fields'
+  },
+  usernameExists: {
+    id: 'cognito_error.username_exists',
+    defaultMessage: 'Username already exists'
+  },
+  invalidPasswordException: {
+    id: 'cognito_error.invalid_password_exception',
+    defaultMessage: 'Password did not conform with some policies'
+  },
+  registrationCompleted: {
+    id: 'registration_completed',
+    defaultMessage: 'Registration successful'
+  }
+})
+
+const SignUp = (props) => {
+  // Props and params
+  const { intl } = props
+  const { formatMessage } = intl
+
   // state
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [signUpInProgress, setSignUpInProgress] = useState(true)
-  const [userName, setUserName] = useState('')
 
   // hooks
   const { cognito } = useAuthContext()
 
   // handlers
   const onSuccess = (data) => {
-    const { user } = data
     setError(null)
     setIsLoading(false)
     setSignUpInProgress(false)
-    setUserName(user.username)
   }
 
   const onError = (err) => {
+    const { code } = err
+    switch (code) {
+      case COGNITO_ERROR_CODES.USERNAME_EXISTS:
+        setError({ id: COGNITO_ERROR_CODES.USERNAME_EXISTS, message: formatMessage(messages.usernameExists) })
+        break
+      case COGNITO_ERROR_CODES.INVALID_PASSWORD_EXCEPTION:
+        setError({ id: COGNITO_ERROR_CODES.INVALID_PASSWORD_EXCEPTION, message: formatMessage(messages.usernameExists) })
+        break
+      case COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION:
+        setError({ id: COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION, message: formatMessage(messages.invalidParameterException) })
+        break
+      default:
+        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage(messages.internalServerError)})
+        break
+    }
     setIsLoading(false)
-    setError(err.code)
   }
 
   const onSubmit = values => {
@@ -56,7 +96,10 @@ const SignUp = () => {
             className='text-center bg-light p-5'
             style={{ minWidth: 400 + 'px' }}
           >
-            <p className='h4 mb-4'>Sign up</p>
+            <p className='h4 mb-4'>
+              <FormattedMessage id='common_title.register_user' defaultMessage={'Register'} />
+            </p>
+
             {signUpInProgress &&
               <div>
                 <Field name='username' validate={composeValidators(required, mustBeNumber, rangeValues(ID_LENGTH.MIN, ID_LENGTH.MAX))}>
@@ -67,7 +110,7 @@ const SignUp = () => {
                         className='form-control'
                         placeholder='ID'
                       />
-                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
                   )}
                 </Field>
@@ -77,9 +120,9 @@ const SignUp = () => {
                       <input
                         {...input}
                         className='form-control'
-                        placeholder='First name'
+                        placeholder={intl.formatMessage({id: 'first_name'})}
                       />
-                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
                   )}
                 </Field>
@@ -89,9 +132,9 @@ const SignUp = () => {
                       <input
                         {...input}
                         className='form-control'
-                        placeholder='Last name'
+                        placeholder={intl.formatMessage({id: 'last_name'})}
                       />
-                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
                   )}
                 </Field>
@@ -103,7 +146,7 @@ const SignUp = () => {
                         className='form-control'
                         placeholder='Email'
                       />
-                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
                   )}
                 </Field>
@@ -114,9 +157,9 @@ const SignUp = () => {
                       <input
                         {...input}
                         className='form-control'
-                        placeholder='Nick name'
+                        placeholder={intl.formatMessage({id: 'nick_name'})}
                       />
-                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
                   )}
                 </Field>
@@ -128,36 +171,43 @@ const SignUp = () => {
                         {...input}
                         type='password'
                         className='form-control'
-                        placeholder='Password'
+                        placeholder={intl.formatMessage({id: 'password'})}
                       />
-                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
                   )}
                 </Field>
-                <Field name='confirmPassword' validate={composeValidators(required, shouldMatch('Password', 'Confirm password', values.password))}>
+                <Field name='confirmPassword' validate={composeValidators(required, shouldMatch(values.password))}>
                   {({ input, meta }) => (
                     <div className='mb-4'>
                       <input
                         {...input}
                         type='password'
                         className='form-control'
-                        placeholder='Confirm password'
+                        placeholder={intl.formatMessage({id: 'confirm_password'})}
                       />
-                      {meta.error && meta.touched && <FieldError error={meta.error} />}
+                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error, intl.formatMessage({id: 'password'}), intl.formatMessage({id: 'confirm_password'}))} />}
                     </div>
                   )}
                 </Field>
                 <Button color='primary' disabled={isLoading}>
-                  Register
+                  <FormattedMessage id='button.register' defaultMessage={'Register'} />
                   {isLoading && <LoadingInline className='ml-3' />}
                 </Button>
               </div>}
             <div className='d-flex justify-content-around pt-3'>
-              {!isLoading && error && <CustomAlert message={error} className='ml-3' />}
+              {/* TO DO - Error no se muestra */}
+              {!isLoading && error && <CustomAlert messages={error} className='ml-3' />}
               {!isLoading && !signUpInProgress &&
                 <div>
-                  <CustomAlert message={`Registration for user ${userName} completed!`} color='success' className='ml-3' />
-                  <Link className='nav-link' to='/login'>Go back to Sign in page</Link>
+                  <CustomAlert
+                    messages={{ id: 'registration_completed', message: formatMessage(messages.registrationCompleted) }}
+                    color='success'
+                    className='ml-3'
+                  />
+                  <Link className='nav-link' to='/login'>
+                    <FormattedMessage id='button.go_signin_page' defaultMessage={'Go to sign in page'} />
+                  </Link>
                 </div>}
             </div>
           </form>
@@ -167,4 +217,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default injectIntl(SignUp)

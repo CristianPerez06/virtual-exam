@@ -1,7 +1,10 @@
-const ERROR_MESSAGES = {
-  DUPLICATED_DOC: 'DUPLICATED_DOCUMENT'
+const BACKEND_ERRORS = {
+  DUPLICATED_ENTITY: {
+    code: 'duplicated_entity',
+    message: 'Duplicated entity'
+  }
 }
 
 module.exports = {
-  ERROR_MESSAGES
+  BACKEND_ERRORS
 }

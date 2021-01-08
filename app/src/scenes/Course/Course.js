@@ -3,13 +3,36 @@ import { Form, Field } from 'react-final-form'
 import { Button } from 'reactstrap'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
+import { ERROR_MESSAGES } from '../../common/constants' 
 import { required } from '../../common/validators'
 import { useRouteMatch } from 'react-router-dom'
+import { injectIntl, defineMessages } from 'react-intl'
+import { translateFieldError } from '../../common/translations'
 import { CREATE_COURSE, UPDATE_COURSE, GET_COURSE } from './requests'
+
+const messages = defineMessages({
+  internalServerError: {
+    id: 'common_error.internal_server_error',
+    defaultMessage: 'Internal server error'
+  },
+  duplicatedEntity: {
+    id: 'common_error.duplicated_entity',
+    defaultMessage: 'An entity with the same name already exists'
+  },
+  courseCreated: {
+    id: 'course_created',
+    defaultMessage: 'Course created succesfully'
+  },
+  courseUpdated: {
+    id: 'course_updated',
+    defaultMessage: 'Course updated succesfully'
+  }
+})
 
 const Course = (props) => {
   // Props and params
-  const { isCreating } = props
+  const { isCreating, intl } = props
+  const { formatMessage } = intl
   const { params } = useRouteMatch()
 
   // Default values
@@ -33,7 +56,18 @@ const Course = (props) => {
   const onError = (err) => {
     setCourseCreated()
     setCourseUpdated()
-    setErrors(err.graphQLErrors)
+        
+    const { graphQLErrors } = err
+    const translatedErrors = graphQLErrors.map(error => {
+      const errorCode = ((error || {}).extensions || {}).code || ''
+      switch (errorCode) {
+        case ERROR_MESSAGES.DUPLICATED_ENTITY:
+          return { id: errorCode, message: formatMessage(messages.duplicatedEntity) }
+        default:
+          return { id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage(messages.internalServerError)}
+      }
+    })
+    setErrors(translatedErrors)
   }
 
   const onSubmit = (values) => {
@@ -78,7 +112,7 @@ const Course = (props) => {
             style={{ minWidth: 400 + 'px' }}
           >
             <p className='h4 mb-5'>
-              {isCreating ? 'Create' : 'Update'} course
+              {isCreating ? `${intl.formatMessage({id: 'common_action.create'})}` : `${intl.formatMessage({id: 'common_action.edit'})}`} {intl.formatMessage({id: 'common_entity.course'}).toLowerCase()}
             </p>
 
             <div id='fields' className='mb-5'>
@@ -88,9 +122,9 @@ const Course = (props) => {
                     <input
                       {...input}
                       className='form-control'
-                      placeholder='Course name'
+                      placeholder={intl.formatMessage({id: 'course_name'})}
                     />
-                    {meta.error && meta.touched && <FieldError error={meta.error} />}
+                    {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                   </div>
                 )}
               </Field>
@@ -101,15 +135,15 @@ const Course = (props) => {
                 color='primary'
                 disabled={creating || updating || fetching || pristine}
               >
-                {isCreating ? 'Create' : 'Update'}
+                {isCreating ? intl.formatMessage({id: 'common_action.create'}) : intl.formatMessage({id: 'common_action.update'})}
                 {(creating || updating || fetching) && <LoadingInline className='ml-3' />}
               </Button>
             </div>
 
             <div id='info' className='d-flex justify-content-around mt-5'>
               {errors && <CustomAlert messages={errors} className='ml-3' />}
-              {!creating && courseCreated && <CustomAlert message='Course created successfully' color='success' className='ml-3' />}
-              {!updating && courseUpdated && <CustomAlert message='Course updated successfully' color='success' className='ml-3' />}
+              {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage(messages.courseCreated) }} color='success' className='ml-3' />}
+              {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage(messages.courseUpdated) }} color='success' className='ml-3' />}
             </div>
 
           </form>
@@ -119,4 +153,4 @@ const Course = (props) => {
   )
 }
 
-export default Course
+export default injectIntl(Course)

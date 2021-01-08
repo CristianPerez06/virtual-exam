@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useAuthContext } from '../../hooks'
 import { useCookies } from 'react-cookie'
 import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
+import { injectIntl, FormattedMessage } from 'react-intl'
 import { Link } from 'react-router-dom'
 import {
   Collapse,
@@ -42,25 +43,20 @@ const Header = () => {
       <Collapse isOpen={isOpen} navbar>
         <Nav className='mr-auto' navbar>
           <NavItem>
-            <Link className='nav-link' to='/'>Home</Link>
-          </NavItem>
-          <NavItem>
-            <Link className='nav-link' to='/contact'>Contact</Link>
+            <Link className='nav-link' to='/'>
+              Poner icono Casita
+            </Link>
           </NavItem>
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav caret>
-              Options
+              <FormattedMessage id='button.courses' defaultMessage={'Courses'} />
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem>
-                Option 1
+              <DropdownItem tag={Link} to='/course/new'>
+                <FormattedMessage id='button.create' defaultMessage={'Create'} />
               </DropdownItem>
-              <DropdownItem>
-                Option 2
-              </DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem>
-                Reset
+              <DropdownItem tag={Link} to='/course/find'>
+                <FormattedMessage id='button.find' defaultMessage={'Find'} />
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -71,8 +67,12 @@ const Header = () => {
               {cookies.user}
             </DropdownToggle>
             <DropdownMenu right>
+              <DropdownItem>
+                <FormattedMessage id='button.preferences' defaultMessage={'Preferences'} />
+              </DropdownItem>
+              <DropdownItem divider />
               <DropdownItem onClick={handleLogout}>
-                Logout
+                <FormattedMessage id='button.logout' defaultMessage={'Logout'} />
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -82,4 +82,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default injectIntl(Header)

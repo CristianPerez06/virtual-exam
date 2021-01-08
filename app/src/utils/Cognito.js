@@ -1,5 +1,5 @@
 import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js'
-import { COGNITO_CODES } from '../common/constants'
+import { COGNITO_ERROR_CODES } from '../common/constants'
 
 class Cognito {
   constructor () {
@@ -31,7 +31,7 @@ class Cognito {
         newPasswordRequired: data => {
           resolve({
             ...data,
-            code: COGNITO_CODES.NEW_PASSWORD_REQUIRED
+            code: COGNITO_ERROR_CODES.NEW_PASSWORD_REQUIRED
           })
         }
       }

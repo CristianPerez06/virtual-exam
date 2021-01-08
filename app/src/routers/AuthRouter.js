@@ -1,14 +1,13 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { PageNotFound } from '../components/common'
-import { Home, Contact } from '../components'
+import { Home } from '../components'
 import { Course } from '../scenes/Course'
 
 const AuthRouter = () => {
   return (
     <Switch>
       <Route path='/' exact name='Home' component={Home} />
-      <Route path='/contact' name='Contact' component={Contact} />
       <Route
         name='Create course'
         path='/course/new'

@@ -2,15 +2,20 @@ import React, { useState } from 'react'
 import { Form, Field } from 'react-final-form'
 import { useHistory } from 'react-router-dom'
 import { Input, Button } from 'reactstrap'
+import { injectIntl, FormattedMessage } from 'react-intl'
 import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
+import { translateFieldError } from '../../common/translations'
 import { required, shouldNotMatch, composeValidators } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import { useQueryParams, useAuthContext } from '../../hooks'
 
-const PasswordChange = () => {
+const PasswordChange = (props) => {
+  // Props and params
+  const { intl } = props
+
   // props
   const queryParams = useQueryParams()
-  const username = queryParams.get('username')
+  const id = queryParams.get('id')
   const email = queryParams.get('email')
 
   // state
@@ -42,7 +47,7 @@ const PasswordChange = () => {
     const { password, newPassword } = values
 
     setIsLoading(true)
-    cognito.loginAndChangePassword(username, password, newPassword)
+    cognito.loginAndChangePassword(id, password, newPassword)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }
@@ -57,12 +62,14 @@ const PasswordChange = () => {
             className='text-center bg-light p-5'
             style={{ minWidth: 400 + 'px' }}
           >
-            <p className='h4 mb-4'>Change password</p>
+            <p className='h4 mb-4'>
+              <FormattedMessage id='common_title.change_password' defaultMessage={'Change password'} />
+            </p>
             <Input
-              id='username'
+              id='id'
               className='form-control mb-4'
-              placeholder='Username'
-              value={username}
+              placeholder='ID'
+              value={id}
               readOnly
             />
             <Input
@@ -79,27 +86,27 @@ const PasswordChange = () => {
                     {...input}
                     type='password'
                     className='form-control'
-                    placeholder='Password'
+                    placeholder={intl.formatMessage({id: 'password'})}
                   />
-                  {meta.error && meta.touched && <FieldError error={meta.error} />}
+                  {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                 </div>
               )}
             </Field>
-            <Field name='newPassword' validate={composeValidators(required, shouldNotMatch('Password', 'New password', values.password))}>
+            <Field name='newPassword' validate={composeValidators(required, shouldNotMatch(values.password))}>
               {({ input, meta }) => (
                 <div className='mb-4'>
                   <input
                     {...input}
                     type='password'
                     className='form-control'
-                    placeholder='New password'
+                    placeholder={intl.formatMessage({id: 'new_password'})}
                   />
-                  {meta.error && meta.touched && <FieldError error={meta.error} />}
+                  {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error, intl.formatMessage({id: 'password'}), intl.formatMessage({id: 'new_password'}))} />}
                 </div>
               )}
             </Field>
             <Button color='primary' disabled={isLoading}>
-              Change password
+              <FormattedMessage id='button.update_password' defaultMessage={'Update password'} />
               {isLoading && <LoadingInline className='ml-3' />}
             </Button>
 
@@ -113,4 +120,4 @@ const PasswordChange = () => {
   )
 }
 
-export default PasswordChange
+export default injectIntl(PasswordChange)
