@@ -1,0 +1,18 @@
+
+type Course {
+  id: ID!
+  name: String
+}
+
+type VoidResponse {
+  done: Boolean
+}
+
+type Query {
+  getCourse(id: ID!): Course
+}
+
+type Mutation {
+  createCourse(name: String!): Course
+  updateCourse(id: ID!, name: String!): Course
+}
