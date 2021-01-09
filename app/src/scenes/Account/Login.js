@@ -3,12 +3,29 @@ import { Form, Field } from 'react-final-form'
 import { useAuthContext } from '../../hooks'
 import { useHistory, Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
-import { ACCOUNT_ACTION_TYPES, COGNITO_CODES } from '../../common/constants'
-import { required } from '../../common/validators'
+import { injectIntl, defineMessages, FormattedMessage } from 'react-intl'
+import { ERROR_MESSAGES, COGNITO_ERROR_CODES, ACCOUNT_ACTION_TYPES } from '../../common/constants'
+import { translateFieldError } from '../../common/translations'
+import { required, composeValidators, mustBeNumber } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import querystring from 'querystring'
 
-const Login = () => {
+const messages = defineMessages({
+  internalServerError: {
+    id: 'common_error.internal_server_error',
+    defaultMessage: 'Internal server error'
+  },
+  notAuthorizedException: {
+    id: 'cognito_error.not_authorized_exception',
+    defaultMessage: 'Incorrect user or password'
+  }
+})
+
+const Login = (props) => {
+  // Props and params
+  const { intl } = props
+  const { formatMessage } = intl
+
   // state
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -32,15 +49,23 @@ const Login = () => {
     }
 
     // Password change required
-    if (code === COGNITO_CODES.NEW_PASSWORD_REQUIRED) {
-      const params = querystring.stringify({ username: username, email: email })
+    if (code === COGNITO_ERROR_CODES.NEW_PASSWORD_REQUIRED) {
+      const params = querystring.stringify({ id: username, email: email })
       history.push(`/password-change?${params}`)
     }
   }
 
   const onError = (err) => {
+    const { code } = err
+    switch (code) {
+      case COGNITO_ERROR_CODES.NOT_AUTHORIZED:
+        setError({ id: COGNITO_ERROR_CODES.NOT_AUTHORIZED, message: formatMessage(messages.notAuthorizedException) })
+        break
+      default:
+        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage(messages.internalServerError)})
+        break
+    }
     setIsLoading(false)
-    setError(err.message)
   }
 
   const onSubmit = values => {
@@ -63,16 +88,18 @@ const Login = () => {
             style={{ minWidth: 400 + 'px' }}
           >
             <div className='pb-3'>
-              <p className='h4 mb-4'>Sign in</p>
-              <Field name='username' validate={required}>
+              <p className='h4 mb-4'>
+                <FormattedMessage id='common_title.sign_in' defaultMessage={'Sign in'} />
+              </p>
+              <Field name='username' validate={composeValidators(required, mustBeNumber)}>
                 {({ input, meta }) => (
                   <div className='mb-4'>
                     <input
                       {...input}
                       className='form-control'
-                      placeholder='Username'
+                      placeholder='ID'
                     />
-                    {meta.error && meta.touched && <FieldError error={meta.error} />}
+                    {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                   </div>
                 )}
               </Field>
@@ -83,23 +110,27 @@ const Login = () => {
                       {...input}
                       type='password'
                       className='form-control'
-                      placeholder='Password'
+                      placeholder={intl.formatMessage({id: 'password'})}
                     />
-                    {meta.error && meta.touched && <FieldError error={meta.error} />}
+                    {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                   </div>
                 )}
               </Field>
               <Button color='primary' disabled={isLoading}>
-                Log in
+                <FormattedMessage id='button.signin' defaultMessage={'Sign in'} />
                 {isLoading && <LoadingInline className='ml-3' />}
               </Button>
             </div>
             <div className='d-flex justify-content-around pt-3'>
-              {!isLoading && error && <CustomAlert message={error} className='ml-3' />}
+              {!isLoading && error && <CustomAlert messages={error} className='ml-3' />}
             </div>
             <div className='d-flex justify-content-around pt-3'>
-              <Link className='nav-link' to='/sign-up'>Sign up</Link>
-              <Link className='nav-link' to='/forgot-password'>Forgot password</Link>
+              <Link className='nav-link' to='/sign-up'>
+                <FormattedMessage id='button.signup' defaultMessage={'Sign up'} />
+              </Link>
+              <Link className='nav-link' to='/forgot-password'>
+                <FormattedMessage id='button.forgot_password' defaultMessage={'Forgot password'} />
+              </Link>
             </div>
           </form>
         )}
@@ -108,4 +139,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default injectIntl(Login)
