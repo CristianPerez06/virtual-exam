@@ -12,6 +12,7 @@ import { useQueryParams, useAuthContext } from '../../hooks'
 const PasswordChange = (props) => {
   // Props and params
   const { intl } = props
+  const { formatMessage } = intl
 
   // props
   const queryParams = useQueryParams()
@@ -63,7 +64,7 @@ const PasswordChange = (props) => {
             style={{ minWidth: 400 + 'px' }}
           >
             <p className='h4 mb-4'>
-              <FormattedMessage id='common_title.change_password' defaultMessage={'Change password'} />
+              <FormattedMessage id='common_title.change_password' />
             </p>
             <Input
               id='id'
@@ -86,7 +87,7 @@ const PasswordChange = (props) => {
                     {...input}
                     type='password'
                     className='form-control'
-                    placeholder={intl.formatMessage({id: 'password'})}
+                    placeholder={formatMessage({ id: 'password' })}
                   />
                   {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                 </div>
@@ -99,19 +100,19 @@ const PasswordChange = (props) => {
                     {...input}
                     type='password'
                     className='form-control'
-                    placeholder={intl.formatMessage({id: 'new_password'})}
+                    placeholder={formatMessage({ id: 'new_password' })}
                   />
-                  {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error, intl.formatMessage({id: 'password'}), intl.formatMessage({id: 'new_password'}))} />}
+                  {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error, formatMessage({ id: 'password' }), formatMessage({ id: 'new_password' }))} />}
                 </div>
               )}
             </Field>
             <Button color='primary' disabled={isLoading}>
-              <FormattedMessage id='button.update_password' defaultMessage={'Update password'} />
+              <FormattedMessage id='button.update_password' />
               {isLoading && <LoadingInline className='ml-3' />}
             </Button>
 
             <div className='d-flex justify-content-around pt-3'>
-              {!isLoading && error && <CustomAlert message={error} className='ml-3' />}
+              {!isLoading && error && <CustomAlert message={error} />}
             </div>
           </form>
         )}

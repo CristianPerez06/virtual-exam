@@ -7,7 +7,7 @@ const prepSingleResultForUser = (data) => {
     ...rest
   }
 
-  debug('Single result: ', singleResult)
+  debug('prepSingleResultForUser: ', singleResult)
   return singleResult
 }
 

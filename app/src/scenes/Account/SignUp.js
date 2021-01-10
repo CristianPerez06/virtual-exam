@@ -4,33 +4,10 @@ import { Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
 import { required, shouldMatch, composeValidators, emailFormat, mustBeNumber, rangeValues } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
-import { injectIntl, defineMessages, FormattedMessage } from 'react-intl'
+import { injectIntl, FormattedMessage } from 'react-intl'
 import { ERROR_MESSAGES, COGNITO_ERROR_CODES, ID_LENGTH } from '../../common/constants'
 import { translateFieldError } from '../../common/translations'
 import { useAuthContext } from '../../hooks'
-
-const messages = defineMessages({
-  internalServerError: {
-    id: 'common_error.internal_server_error',
-    defaultMessage: 'Internal server error'
-  },
-  invalidParameterException: {
-    id: 'cognito_error.invalid_parameter_exception',
-    defaultMessage: 'Incorrect value for some of the required fields'
-  },
-  usernameExists: {
-    id: 'cognito_error.username_exists',
-    defaultMessage: 'Username already exists'
-  },
-  invalidPasswordException: {
-    id: 'cognito_error.invalid_password_exception',
-    defaultMessage: 'Password did not conform with some policies'
-  },
-  registrationCompleted: {
-    id: 'registration_completed',
-    defaultMessage: 'Registration successful'
-  }
-})
 
 const SignUp = (props) => {
   // Props and params
@@ -56,16 +33,16 @@ const SignUp = (props) => {
     const { code } = err
     switch (code) {
       case COGNITO_ERROR_CODES.USERNAME_EXISTS:
-        setError({ id: COGNITO_ERROR_CODES.USERNAME_EXISTS, message: formatMessage(messages.usernameExists) })
+        setError({ id: COGNITO_ERROR_CODES.USERNAME_EXISTS, message: formatMessage({ id: 'cognito_error.username_exists' }) })
         break
       case COGNITO_ERROR_CODES.INVALID_PASSWORD_EXCEPTION:
-        setError({ id: COGNITO_ERROR_CODES.INVALID_PASSWORD_EXCEPTION, message: formatMessage(messages.usernameExists) })
+        setError({ id: COGNITO_ERROR_CODES.INVALID_PASSWORD_EXCEPTION, message: formatMessage({ id: 'cognito_error.invalid_parameter_exception' }) })
         break
       case COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION:
-        setError({ id: COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION, message: formatMessage(messages.invalidParameterException) })
+        setError({ id: COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION, message: formatMessage({ id: 'cognito_error.invalid_parameter_exception' }) })
         break
       default:
-        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage(messages.internalServerError)})
+        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common.internal_server_error' }) })
         break
     }
     setIsLoading(false)
@@ -97,7 +74,7 @@ const SignUp = (props) => {
             style={{ minWidth: 400 + 'px' }}
           >
             <p className='h4 mb-4'>
-              <FormattedMessage id='common_title.register_user' defaultMessage={'Register'} />
+              <FormattedMessage id='common_title.register_user' />
             </p>
 
             {signUpInProgress &&
@@ -120,7 +97,7 @@ const SignUp = (props) => {
                       <input
                         {...input}
                         className='form-control'
-                        placeholder={intl.formatMessage({id: 'first_name'})}
+                        placeholder={formatMessage({ id: 'first_name' })}
                       />
                       {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
@@ -132,7 +109,7 @@ const SignUp = (props) => {
                       <input
                         {...input}
                         className='form-control'
-                        placeholder={intl.formatMessage({id: 'last_name'})}
+                        placeholder={formatMessage({ id: 'last_name' })}
                       />
                       {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
@@ -157,7 +134,7 @@ const SignUp = (props) => {
                       <input
                         {...input}
                         className='form-control'
-                        placeholder={intl.formatMessage({id: 'nick_name'})}
+                        placeholder={formatMessage({ id: 'nick_name' })}
                       />
                       {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
@@ -171,7 +148,7 @@ const SignUp = (props) => {
                         {...input}
                         type='password'
                         className='form-control'
-                        placeholder={intl.formatMessage({id: 'password'})}
+                        placeholder={formatMessage({ id: 'password' })}
                       />
                       {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                     </div>
@@ -184,14 +161,14 @@ const SignUp = (props) => {
                         {...input}
                         type='password'
                         className='form-control'
-                        placeholder={intl.formatMessage({id: 'confirm_password'})}
+                        placeholder={formatMessage({ id: 'confirm_password' })}
                       />
-                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error, intl.formatMessage({id: 'password'}), intl.formatMessage({id: 'confirm_password'}))} />}
+                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error, formatMessage({ id: 'password' }), formatMessage({ id: 'confirm_password' }))} />}
                     </div>
                   )}
                 </Field>
                 <Button color='primary' disabled={isLoading}>
-                  <FormattedMessage id='button.register' defaultMessage={'Register'} />
+                  <FormattedMessage id='button.register' />
                   {isLoading && <LoadingInline className='ml-3' />}
                 </Button>
               </div>}
@@ -201,12 +178,12 @@ const SignUp = (props) => {
               {!isLoading && !signUpInProgress &&
                 <div>
                   <CustomAlert
-                    messages={{ id: 'registration_completed', message: formatMessage(messages.registrationCompleted) }}
+                    messages={{ id: 'registration_completed', message: formatMessage({ id: 'registration_completed' }) }}
                     color='success'
                     className='ml-3'
                   />
                   <Link className='nav-link' to='/login'>
-                    <FormattedMessage id='button.go_signin_page' defaultMessage={'Go to sign in page'} />
+                    <FormattedMessage id='button.go_signin_page' />
                   </Link>
                 </div>}
             </div>

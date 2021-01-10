@@ -7,11 +7,11 @@ import { Login, PasswordChange, SignUp, ForgotPassword } from '../scenes/Account
 const UnauthRouter = () => {
   return (
     <Switch>
-      <Route path='/login' name='Login' component={Login} />
-      <Route path='/password-change' name='Password change' component={PasswordChange} />
-      <Route path='/sign-up' name='Register' component={SignUp} />
-      <Route path='/forgot-password' name='Forgot password' component={ForgotPassword} />
-      <Redirect to='login' />
+      <Route path='/login' name='Login' component={Login} exact />
+      <Route path='/password-change' name='Password change' component={PasswordChange} exact />
+      <Route path='/sign-up' name='Register' component={SignUp} exact />
+      <Route path='/forgot-password' name='Forgot password' component={ForgotPassword} exact />
+      <Redirect push to='/login' />
     </Switch>
   )
 }

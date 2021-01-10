@@ -3,31 +3,12 @@ import { Form, Field } from 'react-final-form'
 import { Button } from 'reactstrap'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
-import { ERROR_MESSAGES } from '../../common/constants' 
+import { ERROR_MESSAGES } from '../../common/constants'
 import { required } from '../../common/validators'
 import { useRouteMatch } from 'react-router-dom'
-import { injectIntl, defineMessages } from 'react-intl'
+import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
 import { CREATE_COURSE, UPDATE_COURSE, GET_COURSE } from './requests'
-
-const messages = defineMessages({
-  internalServerError: {
-    id: 'common_error.internal_server_error',
-    defaultMessage: 'Internal server error'
-  },
-  duplicatedEntity: {
-    id: 'common_error.duplicated_entity',
-    defaultMessage: 'An entity with the same name already exists'
-  },
-  courseCreated: {
-    id: 'course_created',
-    defaultMessage: 'Course created succesfully'
-  },
-  courseUpdated: {
-    id: 'course_updated',
-    defaultMessage: 'Course updated succesfully'
-  }
-})
 
 const Course = (props) => {
   // Props and params
@@ -56,15 +37,15 @@ const Course = (props) => {
   const onError = (err) => {
     setCourseCreated()
     setCourseUpdated()
-        
+
     const { graphQLErrors } = err
     const translatedErrors = graphQLErrors.map(error => {
       const errorCode = ((error || {}).extensions || {}).code || ''
       switch (errorCode) {
         case ERROR_MESSAGES.DUPLICATED_ENTITY:
-          return { id: errorCode, message: formatMessage(messages.duplicatedEntity) }
+          return { id: errorCode, message: formatMessage({ id: 'common_error.duplicated_entity' }) }
         default:
-          return { id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage(messages.internalServerError)}
+          return { id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common.internal_server_error' }) }
       }
     })
     setErrors(translatedErrors)
@@ -101,7 +82,7 @@ const Course = (props) => {
   const [updateCourse, { loading: updating }] = useMutation(UPDATE_COURSE, { onCompleted: onSuccess, onError })
 
   return (
-    <div className='Course'>
+    <div className='course-editor'>
       <Form
         onSubmit={onSubmit}
         initialValues={initialValues}
@@ -112,7 +93,7 @@ const Course = (props) => {
             style={{ minWidth: 400 + 'px' }}
           >
             <p className='h4 mb-5'>
-              {isCreating ? `${intl.formatMessage({id: 'common_action.create'})}` : `${intl.formatMessage({id: 'common_action.edit'})}`} {intl.formatMessage({id: 'common_entity.course'}).toLowerCase()}
+              {isCreating ? `${formatMessage({ id: 'common_action.create' })}` : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.course' }).toLowerCase()}
             </p>
 
             <div id='fields' className='mb-5'>
@@ -122,7 +103,7 @@ const Course = (props) => {
                     <input
                       {...input}
                       className='form-control'
-                      placeholder={intl.formatMessage({id: 'course_name'})}
+                      placeholder={formatMessage({ id: 'course_name' })}
                     />
                     {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                   </div>
@@ -135,15 +116,15 @@ const Course = (props) => {
                 color='primary'
                 disabled={creating || updating || fetching || pristine}
               >
-                {isCreating ? intl.formatMessage({id: 'common_action.create'}) : intl.formatMessage({id: 'common_action.update'})}
+                {formatMessage({ id: 'button.save' })}
                 {(creating || updating || fetching) && <LoadingInline className='ml-3' />}
               </Button>
             </div>
 
             <div id='info' className='d-flex justify-content-around mt-5'>
               {errors && <CustomAlert messages={errors} className='ml-3' />}
-              {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage(messages.courseCreated) }} color='success' className='ml-3' />}
-              {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage(messages.courseUpdated) }} color='success' className='ml-3' />}
+              {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage({ id: 'course_created' }) }} color='success' className='ml-3' />}
+              {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage({ id: 'updated' }) }} color='success' className='ml-3' />}
             </div>
 
           </form>
