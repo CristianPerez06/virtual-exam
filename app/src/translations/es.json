@@ -34,7 +34,7 @@
   "button.send_recovery_code": "Enviar codigo",
   "button.update_password": "Actualizar password",
   "button.logout": "Cerrar sesión",
-  "button.preferences": "Preferencias",
+  "button.settings": "Configuración",
   "button.courses": "Cursos",
   "button.save": "Guardar",
   "button.create": "Crear",
@@ -53,6 +53,7 @@
   "recovery_code_sent": "Codigo de recuperación enviado",
   "recovery_code": "Codigo de recuperación",
   "change_language": "Seleccionar idioma",
+  "settings": "Configuración",
 
   "language.spanish": "Español",
   "language.english": "Ingles"

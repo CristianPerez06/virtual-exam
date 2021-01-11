@@ -68,8 +68,8 @@ const Header = () => {
               {cookies.user}
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem>
-                <FormattedMessage id='button.preferences' />
+              <DropdownItem tag={Link} to='/settings'>
+                <FormattedMessage id='button.settings' />
               </DropdownItem>
               <DropdownItem divider />
               <DropdownItem onClick={handleLogout}>
