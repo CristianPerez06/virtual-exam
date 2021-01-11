@@ -6,8 +6,7 @@ export const TIME = {
 
 export const ACCOUNT_ACTION_TYPES = {
   LOGIN: 'LOGIN',
-  LOGOUT: 'LOGOUT',
-  REFRESH: 'REFRESH'
+  LOGOUT: 'LOGOUT'
 }
 
 export const COGNITO_ERROR_CODES = {
@@ -37,4 +36,7 @@ export const ERROR_MESSAGES = {
   INTERNAL_SERVER_ERROR: 'internal_server_error'
 }
 
-
+export const LOCALE = {
+  ES: 'es',
+  EN: 'en'
+}

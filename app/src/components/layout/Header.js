@@ -4,6 +4,7 @@ import { useCookies } from 'react-cookie'
 import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { Link } from 'react-router-dom'
+import { FaHome } from 'react-icons/fa'
 import {
   Collapse,
   Navbar,
@@ -44,19 +45,19 @@ const Header = () => {
         <Nav className='mr-auto' navbar>
           <NavItem>
             <Link className='nav-link' to='/'>
-              Poner icono Casita
+              <FaHome style={{ fontSize: 25 + 'px' }} />
             </Link>
           </NavItem>
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav caret>
-              <FormattedMessage id='button.courses' defaultMessage={'Courses'} />
+              <FormattedMessage id='button.courses' />
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem tag={Link} to='/course/new'>
-                <FormattedMessage id='button.create' defaultMessage={'Create'} />
+                <FormattedMessage id='button.create' />
               </DropdownItem>
               <DropdownItem tag={Link} to='/course/find'>
-                <FormattedMessage id='button.find' defaultMessage={'Find'} />
+                <FormattedMessage id='button.find' />
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -68,11 +69,11 @@ const Header = () => {
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem>
-                <FormattedMessage id='button.preferences' defaultMessage={'Preferences'} />
+                <FormattedMessage id='button.preferences' />
               </DropdownItem>
               <DropdownItem divider />
               <DropdownItem onClick={handleLogout}>
-                <FormattedMessage id='button.logout' defaultMessage={'Logout'} />
+                <FormattedMessage id='button.logout' />
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>

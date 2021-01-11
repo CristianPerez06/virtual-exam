@@ -1,0 +1,59 @@
+{
+  "common_action.create": "Create",
+  "common_action.edit": "Edit",
+  "common_action.update": "Update",
+
+  "cognito_error.username_exists": "A user with same ID already exists",
+  "cognito_error.not_authorized_exception": "Incorrect user or password", 
+  "cognito_error.new_password_required": "Change password required",
+  "cognito_error.invalid_parameter_exception": "Invalid parameter",
+  "cognito_error.code_mismatch_exception": "Invalid recovery code",
+  "cognito_error.invalid_password_exception": "Invalid password",
+
+  "common_error.internal_server_error": "Internal server error",
+  "common_error.duplicated_entity": "An entity with the same name already exist",
+
+  "common_field_error.required": "Required field",
+  "common_field_error.must_be_a_number": "Field can only accept numbers",
+  "common_field_error.incorrect_email_format": "Incorrect email address format",
+  "common_field_error.fields_should_match": "Fields '{fieldA}' and '{fieldB}' should be the same",
+  "common_field_error.fields_shouldnt_match": "Fields '{fieldA}' and '{fieldB}' should not be the same",
+
+  "common_entity.course": "Course",
+
+  "common_title.register_user": "Register user",
+  "common_title.sign_in": "Sign in",
+  "common_title.forgot_password": "Forgot password",
+  "common_title.change_password": "Change password",
+
+  "button.register": "Register",
+  "button.signin": "Sign in",
+  "button.signup": "Sign up",
+  "button.forgot_password": "Forgot password",
+  "button.go_signin_page": "Go to login page",
+  "button.send_recovery_code": "Send recovery code",
+  "button.update_password": "Update password",
+  "button.logout": "Logout",
+  "button.preferences": "Preferences",
+  "button.courses": "Courses",
+  "button.save": "Save",
+  "button.create": "Create",
+  "button.find": "Find",
+
+  "course_name": "Course name",
+  "course_created": "Course created succesfully",
+  "course_updated": "Course updated succesfully",
+  "registration_completed": "Registration succesful",
+  "first_name": "Name",
+  "last_name": "Last name",
+  "nick_name": "Username",
+  "password": "Password",
+  "new_password": "New password",
+  "confirm_password": "Confirm password",
+  "recovery_code_sent": "Recovery code sent",
+  "recovery_code": "Recovery code",
+  "change_language": "Change language",
+
+  "language.spanish": "Spanish",
+  "language.english": "English"
+}

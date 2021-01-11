@@ -3,23 +3,12 @@ import { Form, Field } from 'react-final-form'
 import { useAuthContext } from '../../hooks'
 import { useHistory, Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
-import { injectIntl, defineMessages, FormattedMessage } from 'react-intl'
+import { injectIntl, FormattedMessage } from 'react-intl'
 import { ERROR_MESSAGES, COGNITO_ERROR_CODES, ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { translateFieldError } from '../../common/translations'
 import { required, composeValidators, mustBeNumber } from '../../common/validators'
-import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
+import { LoadingInline, CustomAlert, FieldError, LocaleSelector } from '../../components/common'
 import querystring from 'querystring'
-
-const messages = defineMessages({
-  internalServerError: {
-    id: 'common_error.internal_server_error',
-    defaultMessage: 'Internal server error'
-  },
-  notAuthorizedException: {
-    id: 'cognito_error.not_authorized_exception',
-    defaultMessage: 'Incorrect user or password'
-  }
-})
 
 const Login = (props) => {
   // Props and params
@@ -59,10 +48,10 @@ const Login = (props) => {
     const { code } = err
     switch (code) {
       case COGNITO_ERROR_CODES.NOT_AUTHORIZED:
-        setError({ id: COGNITO_ERROR_CODES.NOT_AUTHORIZED, message: formatMessage(messages.notAuthorizedException) })
+        setError({ id: COGNITO_ERROR_CODES.NOT_AUTHORIZED, message: formatMessage({ id: 'cognito_error.not_authorized_exception' }) })
         break
       default:
-        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage(messages.internalServerError)})
+        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common.internal_server_error' }) })
         break
     }
     setIsLoading(false)
@@ -89,7 +78,7 @@ const Login = (props) => {
           >
             <div className='pb-3'>
               <p className='h4 mb-4'>
-                <FormattedMessage id='common_title.sign_in' defaultMessage={'Sign in'} />
+                <FormattedMessage id='common_title.sign_in' />
               </p>
               <Field name='username' validate={composeValidators(required, mustBeNumber)}>
                 {({ input, meta }) => (
@@ -110,14 +99,14 @@ const Login = (props) => {
                       {...input}
                       type='password'
                       className='form-control'
-                      placeholder={intl.formatMessage({id: 'password'})}
+                      placeholder={formatMessage({ id: 'password' })}
                     />
                     {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                   </div>
                 )}
               </Field>
               <Button color='primary' disabled={isLoading}>
-                <FormattedMessage id='button.signin' defaultMessage={'Sign in'} />
+                <FormattedMessage id='button.signin' />
                 {isLoading && <LoadingInline className='ml-3' />}
               </Button>
             </div>
@@ -126,11 +115,14 @@ const Login = (props) => {
             </div>
             <div className='d-flex justify-content-around pt-3'>
               <Link className='nav-link' to='/sign-up'>
-                <FormattedMessage id='button.signup' defaultMessage={'Sign up'} />
+                <FormattedMessage id='button.signup' />
               </Link>
               <Link className='nav-link' to='/forgot-password'>
-                <FormattedMessage id='button.forgot_password' defaultMessage={'Forgot password'} />
+                <FormattedMessage id='button.forgot_password' />
               </Link>
+            </div>
+            <div className='mt-2'>
+              <LocaleSelector />
             </div>
           </form>
         )}

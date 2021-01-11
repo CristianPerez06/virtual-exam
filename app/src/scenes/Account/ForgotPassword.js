@@ -2,31 +2,12 @@ import React, { useState } from 'react'
 import { Form, Field } from 'react-final-form'
 import { Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
-import { injectIntl, defineMessages, FormattedMessage } from 'react-intl'
+import { injectIntl, FormattedMessage } from 'react-intl'
 import { ERROR_MESSAGES, COGNITO_ERROR_CODES } from '../../common/constants'
 import { translateFieldError } from '../../common/translations'
 import { required, emailFormat, composeValidators } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import { useAuthContext } from '../../hooks'
-
-const messages = defineMessages({
-  internalServerError: {
-    id: 'common_error.internal_server_error',
-    defaultMessage: 'Internal server error'
-  },
-  invalidParameterException: {
-    id: 'cognito_error.invalid_parameter_exception',
-    defaultMessage: 'Incorrect value for some of the required fields'
-  },
-  codeMismatchException: {
-    id: 'cognito_error.code_mismatch_exception',
-    defaultMessage: 'Invalid verification code provided'
-  },
-  recoveryCodeSent: {
-    id: 'recovery_code_sent',
-    defaultMessage: 'Recovery code sent'
-  }
-})
 
 const SignUp = (props) => {
   // Props and params
@@ -58,13 +39,13 @@ const SignUp = (props) => {
     const { code } = err
     switch (code) {
       case COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION:
-        setError({ id: COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION, message: formatMessage(messages.invalidParameterException) })
+        setError({ id: COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION, message: formatMessage({ id: 'cognito_error.invalid_parameter_exception' }) })
         break
       case COGNITO_ERROR_CODES.CODE_MISMATCH_EXCEPTION:
-        setError({ id: COGNITO_ERROR_CODES.CODE_MISMATCH_EXCEPTION, message: formatMessage(messages.codeMismatchException) })
+        setError({ id: COGNITO_ERROR_CODES.CODE_MISMATCH_EXCEPTION, message: formatMessage({ id: 'cognito_error.code_mismatch_exception' }) })
         break
       default:
-        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage(messages.internalServerError)})
+        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common.internal_server_error' }) })
         break
     }
     setIsLoading(false)
@@ -99,7 +80,7 @@ const SignUp = (props) => {
           >
             <div className='pb-3'>
               <p className='h4 mb-4'>
-                <FormattedMessage id='common_title.forgot_password' defaultMessage={'Reset your password'} />
+                <FormattedMessage id='common_title.forgot_password' />
               </p>
               <Field name='email' validate={composeValidators(required, emailFormat)}>
                 {({ input, meta }) => (
@@ -120,7 +101,7 @@ const SignUp = (props) => {
                   {!codeSent &&
                     <div className='forgot-password-workflow'>
                       <Button color='primary' disabled={isLoading}>
-                        <FormattedMessage id='button.send_recovery_code' defaultMessage={'Send recovery code'} />
+                        <FormattedMessage id='button.send_recovery_code' />
                         {isLoading && <LoadingInline className='ml-3' />}
                       </Button>
                     </div>}
@@ -133,7 +114,7 @@ const SignUp = (props) => {
                             <input
                               {...input}
                               className='form-control'
-                              placeholder={intl.formatMessage({id: 'recovery_code'})}
+                              placeholder={formatMessage({ id: 'recovery_code' })}
                               disabled={isLoading}
                             />
                             {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
@@ -147,7 +128,7 @@ const SignUp = (props) => {
                               {...input}
                               className='form-control'
                               type='password'
-                              placeholder={intl.formatMessage({id: 'new_password'})}
+                              placeholder={formatMessage({ id: 'new_password' })}
                               disabled={isLoading}
                             />
                             {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
@@ -155,7 +136,7 @@ const SignUp = (props) => {
                         )}
                       </Field>
                       <Button color='primary' disabled={isLoading || confirmedPassword}>
-                        <FormattedMessage id='button.update_password' defaultMessage={'Update password'} />
+                        <FormattedMessage id='button.update_password' />
                         {isLoading && <LoadingInline className='ml-3' />}
                       </Button>
                     </div>}
@@ -166,7 +147,7 @@ const SignUp = (props) => {
                 <CustomAlert messages={error} className='ml-3' />}
               {!isLoading && codeSent &&
                 <CustomAlert
-                  messages={{id: 'recovery_code_sent', message: formatMessage(messages.recoveryCodeSent)}}
+                  messages={{ id: 'recovery_code_sent', message: formatMessage({ id: 'recovery_code_sent' }) }}
                   color='success'
                   className='ml-3'
                 />}
@@ -174,7 +155,7 @@ const SignUp = (props) => {
                 <div>
                   <CustomAlert message='Password successfully updated' color='success' className='ml-3' />
                   <Link className='nav-link' to='/login'>
-                    <FormattedMessage id='button.go_signin_page' defaultMessage={'Go to sign in page'} />
+                    <FormattedMessage id='button.go_signin_page' />
                   </Link>
                 </div>}
             </div>

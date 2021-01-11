@@ -22,7 +22,6 @@ export const minValue = min =>
       ? undefined
       : 'VALUE_SHOULD_BE_GREATER_EQUAL_THAN'
 
-
 export const maxValue = max =>
   value =>
     isNaN(value) || value < max
@@ -31,7 +30,7 @@ export const maxValue = max =>
 
 export const rangeValues = (min, max) =>
   value =>
-    isNaN(value) || (value >= min && value <= max) 
+    isNaN(value) || (value >= min && value <= max)
       ? undefined
       : 'VALUE_SHOULD_BE_BETWEEN'
 
