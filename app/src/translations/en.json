@@ -20,11 +20,13 @@
   "common_field_error.fields_shouldnt_match": "Fields '{fieldA}' and '{fieldB}' should not be the same",
 
   "common_entity.course": "Course",
+  "common_entity.courses": "Courses",
 
   "common_title.register_user": "Register user",
   "common_title.sign_in": "Sign in",
   "common_title.forgot_password": "Forgot password",
   "common_title.change_password": "Change password",
+  "common_title.delete_confirmation": "Delete confirmation",
 
   "button.register": "Register",
   "button.signin": "Sign in",
@@ -37,12 +39,17 @@
   "button.settings": "Settings",
   "button.courses": "Courses",
   "button.save": "Save",
+  "button.list": "List",
   "button.create": "Create",
-  "button.find": "Find",
+  "button.edit": "Edit",
+  "button.delete": "Delete",
+  "button.cancel": "Cancel",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
   "course_updated": "Course updated succesfully",
+  "course_deleted": "Course deleted successfully",
+
   "registration_completed": "Registration succesful",
   "first_name": "Name",
   "last_name": "Last name",
@@ -54,6 +61,8 @@
   "recovery_code": "Recovery code",
   "change_language": "Change language",
   "settings": "Settings",
+  "action": "Action",
+  "delete_this_record": "Are you sure you want to delete this record?",
   
   "language.spanish": "Spanish",
   "language.english": "English"

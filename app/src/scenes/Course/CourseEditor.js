@@ -22,8 +22,8 @@ const Course = (props) => {
   }
 
   // State
-  const [courseCreated, setCourseCreated] = useState()
-  const [courseUpdated, setCourseUpdated] = useState()
+  const [courseCreated, setCourseCreated] = useState(false)
+  const [courseUpdated, setCourseUpdated] = useState(false)
   const [initialValues, setInitialValues] = useState(defaultValues)
   const [errors, setErrors] = useState()
 
@@ -35,8 +35,8 @@ const Course = (props) => {
   }
 
   const onError = (err) => {
-    setCourseCreated()
-    setCourseUpdated()
+    setCourseCreated(false)
+    setCourseUpdated(false)
 
     const { graphQLErrors } = err
     const translatedErrors = graphQLErrors.map(error => {
@@ -45,7 +45,7 @@ const Course = (props) => {
         case ERROR_MESSAGES.DUPLICATED_ENTITY:
           return { id: errorCode, message: formatMessage({ id: 'common_error.duplicated_entity' }) }
         default:
-          return { id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common.internal_server_error' }) }
+          return { id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) }
       }
     })
     setErrors(translatedErrors)
@@ -54,14 +54,9 @@ const Course = (props) => {
   const onSubmit = (values) => {
     const { name } = values
 
-    try {
-      isCreating
-        ? createCourse({ variables: { name: name } })
-        : updateCourse({ variables: { id: params.id, name: name } })
-    } catch (e) {
-      // show the error
-      setErrors(e)
-    }
+    isCreating
+      ? createCourse({ variables: { name: name } })
+      : updateCourse({ variables: { id: params.id, name: name } })
   }
 
   // Queries and mutations
@@ -111,9 +106,11 @@ const Course = (props) => {
               </Field>
             </div>
 
-            <div id='buttons' className='d-flex justify-content-around'>
+            <div id='buttons' className='d-flex justify-content-center'>
               <Button
                 color='primary'
+                type='submit'
+                className='m-2'
                 disabled={creating || updating || fetching || pristine}
               >
                 {formatMessage({ id: 'button.save' })}
@@ -123,8 +120,8 @@ const Course = (props) => {
 
             <div id='info' className='d-flex justify-content-around mt-5'>
               {errors && <CustomAlert messages={errors} className='ml-3' />}
-              {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage({ id: 'course_created' }) }} color='success' className='ml-3' />}
-              {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage({ id: 'updated' }) }} color='success' className='ml-3' />}
+              {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage({ id: 'course_created' }) }} color='success' />}
+              {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage({ id: 'course_updated' }) }} color='success' />}
             </div>
 
           </form>

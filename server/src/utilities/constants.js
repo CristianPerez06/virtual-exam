@@ -1,7 +1,11 @@
 const BACKEND_ERRORS = {
   DUPLICATED_ENTITY: {
-    code: 'duplicated_entity',
-    message: 'Duplicated entity'
+    Code: 'duplicated_entity',
+    Message: 'Duplicated entity'
+  },
+  DELETE_FAILED: {
+    Code: 'delete_failed',
+    Message: 'Delete failed'
   }
 }
 

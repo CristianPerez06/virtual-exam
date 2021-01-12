@@ -56,8 +56,8 @@ const Header = () => {
               <DropdownItem tag={Link} to='/course/new'>
                 <FormattedMessage id='button.create' />
               </DropdownItem>
-              <DropdownItem tag={Link} to='/course/find'>
-                <FormattedMessage id='button.find' />
+              <DropdownItem tag={Link} to='/course/list'>
+                <FormattedMessage id='button.list' />
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>

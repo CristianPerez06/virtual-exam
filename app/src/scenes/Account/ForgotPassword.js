@@ -45,7 +45,7 @@ const SignUp = (props) => {
         setError({ id: COGNITO_ERROR_CODES.CODE_MISMATCH_EXCEPTION, message: formatMessage({ id: 'cognito_error.code_mismatch_exception' }) })
         break
       default:
-        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common.internal_server_error' }) })
+        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) })
         break
     }
     setIsLoading(false)
@@ -153,7 +153,7 @@ const SignUp = (props) => {
                 />}
               {!isLoading && confirmedPassword &&
                 <div>
-                  <CustomAlert message='Password successfully updated' color='success' className='ml-3' />
+                  <CustomAlert message='Password successfully updated' color='success' />
                   <Link className='nav-link' to='/login'>
                     <FormattedMessage id='button.go_signin_page' />
                   </Link>

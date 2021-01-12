@@ -51,7 +51,7 @@ const Login = (props) => {
         setError({ id: COGNITO_ERROR_CODES.NOT_AUTHORIZED, message: formatMessage({ id: 'cognito_error.not_authorized_exception' }) })
         break
       default:
-        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common.internal_server_error' }) })
+        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) })
         break
     }
     setIsLoading(false)
@@ -111,7 +111,7 @@ const Login = (props) => {
               </Button>
             </div>
             <div className='d-flex justify-content-around pt-3'>
-              {!isLoading && error && <CustomAlert messages={error} className='ml-3' />}
+              {!isLoading && error && <CustomAlert messages={error} />}
             </div>
             <div className='d-flex justify-content-around pt-3'>
               <Link className='nav-link' to='/sign-up'>

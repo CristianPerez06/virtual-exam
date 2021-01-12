@@ -4,15 +4,17 @@ type Course {
   name: String
 }
 
-type VoidResponse {
+type Response {
   done: Boolean
 }
 
 type Query {
   getCourse(id: ID!): Course
+  listCourses(q: String, offset: Int, limit: Int): [Course]
 }
 
 type Mutation {
   createCourse(name: String!): Course
   updateCourse(id: ID!, name: String!): Course
+  deleteCourse(id: ID!): Response
 }
