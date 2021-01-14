@@ -11,6 +11,16 @@ const prepSingleResultForUser = (data) => {
   return singleResult
 }
 
+const prepMultipleResultsForUser = (data) => {
+  const multipleResults = data.map(item => {
+    return prepSingleResultForUser(item)
+  })
+
+  debug('prepMultipleResultsForUser: ', multipleResults)
+  return multipleResults
+}
+
 module.exports = {
-  prepSingleResultForUser
+  prepSingleResultForUser,
+  prepMultipleResultsForUser
 }

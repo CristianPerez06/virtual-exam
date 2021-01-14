@@ -42,7 +42,7 @@ const SignUp = (props) => {
         setError({ id: COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION, message: formatMessage({ id: 'cognito_error.invalid_parameter_exception' }) })
         break
       default:
-        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common.internal_server_error' }) })
+        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) })
         break
     }
     setIsLoading(false)
@@ -174,7 +174,7 @@ const SignUp = (props) => {
               </div>}
             <div className='d-flex justify-content-around pt-3'>
               {/* TO DO - Error no se muestra */}
-              {!isLoading && error && <CustomAlert messages={error} className='ml-3' />}
+              {!isLoading && error && <CustomAlert messages={error} />}
               {!isLoading && !signUpInProgress &&
                 <div>
                   <CustomAlert
