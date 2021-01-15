@@ -3,8 +3,24 @@ const { ObjectId } = require('bson')
 const moment = require('moment')
 const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
+const { maintainIndex } = require('../../indexer')
 
 const debug = require('debug')('virtual-exam:course-resolver')
+
+const init = () => {
+  maintainIndex({
+    shared: true,
+    collectionName: 'courses',
+    indexVersion: 1,
+    spec: { 'name.text': 'text' },
+    options: {
+      // weights: { 'name.text': 100 },
+      name: 'search_index'
+    }
+  })
+}
+
+init()
 
 const resolver = {
   Query: {
