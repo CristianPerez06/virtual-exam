@@ -12,7 +12,7 @@ const dbPromise = MongoClient.connect(
 /**
  * Returns a promise for the database
  */
-async function db () {
+async function virtualExamDb () {
   const client = await dbPromise
   const db = client.db(process.env.DB || DEFAULT_MONGO_DB)
   return db
@@ -22,7 +22,7 @@ async function db () {
  * Middleware that populates req.db
  */
 function loadDb (req, res, next) {
-  db()
+  virtualExamDb()
     .then(db => {
       debug(`Connected succesfully to database: ${db.databaseName}`)
       req.db = db
@@ -32,5 +32,6 @@ function loadDb (req, res, next) {
 }
 
 module.exports = {
-  loadDb
+  loadDb,
+  virtualExamDb
 }
