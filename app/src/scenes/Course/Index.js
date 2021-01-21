@@ -6,26 +6,24 @@ import { PageNotFound } from '../../components/common'
 
 const Index = () => {
   return (
-    <div>
-      <Switch>
-        <Route
-          name='List courses'
-          path='/course/list'
-          render={(props) => <CoursesList {...props} />}
-        />
-        <Route
-          name='Create course'
-          path='/course/new'
-          render={(props) => <CourseEditor {...props} isCreating />}
-        />
-        <Route
-          name='Edit course'
-          path='/course/edit/:id'
-          render={(props) => <CourseEditor {...props} isCreating={false} />}
-        />
-        <Route name='Page Not Found' component={PageNotFound} />
-      </Switch>
-    </div>
+    <Switch>
+      <Route
+        name='List courses'
+        path='/course/list'
+        render={(props) => <CoursesList {...props} />}
+      />
+      <Route
+        name='Course editor'
+        path='/course/new'
+        render={(props) => <CourseEditor {...props} isCreating />}
+      />
+      <Route
+        name='Edit course'
+        path='/course/edit/:id'
+        render={(props) => <CourseEditor {...props} isCreating={false} />}
+      />
+      <Route name='Page Not Found' component={PageNotFound} />
+    </Switch>
   )
 }
 

@@ -44,6 +44,7 @@
   "button.edit": "Editar",
   "button.delete": "Borrar",
   "button.cancel": "Cancelar",
+  "button.go_to_list": "Ir al listado",
 
   "course_name": "Nombre del curso",
   "course_created": "Curso creado exitosamente",

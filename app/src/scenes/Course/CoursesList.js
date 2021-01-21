@@ -97,7 +97,7 @@ const CoursesList = (props) => {
       {
         Header: columnTranslations.action,
         Cell: ({ row }) => (
-          <div>
+          <div className='d-flex justify-content-center'>
             <Link to={`/course/edit/${row.original.id}`}>
               <Button color='info'>{columnTranslations.edit}</Button>
             </Link>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Form, Field } from 'react-final-form'
 import { Button } from 'reactstrap'
+import { useHistory, Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import { ERROR_MESSAGES } from '../../common/constants'
@@ -15,6 +16,7 @@ const Course = (props) => {
   const { isCreating, intl } = props
   const { formatMessage } = intl
   const { params } = useRouteMatch()
+  const history = useHistory()
 
   // Default values
   const defaultValues = {
@@ -29,8 +31,17 @@ const Course = (props) => {
 
   // Handlers
   const onSuccess = (result) => {
-    const { name } = isCreating ? result.createCourse : result.updateCourse
-    isCreating ? setCourseCreated(name) : setCourseUpdated(name)
+    const { id, name } = isCreating ? result.createCourse : result.updateCourse
+    if (isCreating) {
+      setCourseCreated(name)
+      history.push({
+        pathname: `/course/edit/${id}`,
+        state: { isCreating: false }
+      })
+    } else {
+      setCourseCreated()
+      setCourseUpdated(name)
+    }
     setErrors()
   }
 
@@ -85,7 +96,7 @@ const Course = (props) => {
           <form
             onSubmit={handleSubmit}
             className='text-center bg-light p-5'
-            style={{ minWidth: 400 + 'px' }}
+            style={{ maxWidth: 600 + 'px' }}
           >
             <p className='h4 mb-5'>
               {isCreating ? `${formatMessage({ id: 'common_action.create' })}` : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.course' }).toLowerCase()}
@@ -116,6 +127,17 @@ const Course = (props) => {
                 {formatMessage({ id: 'button.save' })}
                 {(creating || updating || fetching) && <LoadingInline className='ml-3' />}
               </Button>
+              <Link to={'/course/list'}>
+                <Button
+                  color='secondary'
+                  type='submit'
+                  className='m-2'
+                  disabled={creating || updating || fetching}
+                >
+                  {formatMessage({ id: 'button.go_to_list' })}
+                </Button>
+              </Link>
+
             </div>
 
             <div id='info' className='d-flex justify-content-around mt-5'>
