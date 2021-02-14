@@ -12,7 +12,7 @@ import es from '../translations/es.json'
 import en from '../translations/en.json'
 
 const Main = () => {
-  const { state, cognito } = useAuthContext()
+  const { cognito } = useAuthContext()
 
   // hooks
   const [cookies] = useCookies([])
@@ -29,7 +29,7 @@ const Main = () => {
     <Suspense fallback={<Loading />}>
       <IntlProvider locale={loc} messages={messages}>
         <Router>
-          {state.isAuthenticated || cognitoAuthenticated()
+          {cognitoAuthenticated()
             ? <Layout><AuthRouter /></Layout>
             : <UnauthRouter />}
         </Router>
