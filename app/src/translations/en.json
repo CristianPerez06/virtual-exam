@@ -44,6 +44,7 @@
   "button.edit": "Edit",
   "button.delete": "Delete",
   "button.cancel": "Cancel",
+  "button.go_to_list": "Go to list",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",

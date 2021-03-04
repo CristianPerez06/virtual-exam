@@ -5,16 +5,14 @@ import { PageNotFound } from '../../components/common'
 
 const Index = () => {
   return (
-    <div>
-      <Switch>
-        <Route
-          name='Settings'
-          path='/settings'
-          render={(props) => <Settings {...props} />}
-        />
-        <Route name='Page Not Found' component={PageNotFound} />
-      </Switch>
-    </div>
+    <Switch>
+      <Route
+        name='Settings'
+        path='/settings'
+        render={(props) => <Settings {...props} />}
+      />
+      <Route name='Page Not Found' component={PageNotFound} />
+    </Switch>
   )
 }
 
