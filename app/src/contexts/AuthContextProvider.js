@@ -17,7 +17,9 @@ const AuthContextProvider = (props) => {
   const reducer = (state, action) => {
     switch (action.type) {
       case ACCOUNT_ACTION_TYPES.LOGIN:
+      case ACCOUNT_ACTION_TYPES.REFRESH:
         setCookie('user', action.payload.user, { path: '/' })
+        setCookie('token', action.payload.token, { path: '/' })
         return {
           ...state,
           isAuthenticated: true,
@@ -25,6 +27,7 @@ const AuthContextProvider = (props) => {
         }
       case ACCOUNT_ACTION_TYPES.LOGOUT:
         removeCookie('user', null)
+        removeCookie('token', null)
         return {
           ...state,
           isAuthenticated: false,
