@@ -33,6 +33,8 @@ const Header = () => {
       type: ACCOUNT_ACTION_TYPES.LOGOUT,
       payload: { user: null, token: null }
     })
+    // Full page refresh to reload MainRouter and check session
+    window.location.replace('/')
   }
 
   const toggle = () => setIsOpen(!isOpen)

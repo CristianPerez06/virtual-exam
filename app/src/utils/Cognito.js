@@ -144,8 +144,7 @@ class Cognito {
           }
         })
       } else {
-        // TO DO - Do something with error
-        const err = 'something happened'
+        const err = 'no user logged in'
         reject(err)
       }
     })

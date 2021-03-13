@@ -1,40 +1,41 @@
-import React, { Suspense } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { AuthRouter, UnauthRouter } from '../routers'
-import { Layout } from '../components/layout'
-import { IntlProvider } from 'react-intl'
-import { useAuthContext } from '../hooks'
-import { useCookies } from 'react-cookie'
-import { LOCALE } from '../common/constants'
 import { Loading } from '../components/common'
-
-import es from '../translations/es.json'
-import en from '../translations/en.json'
+import { ACCOUNT_ACTION_TYPES } from '../common/constants'
+import { useAuthContext } from '../hooks'
 
 const Main = () => {
-  const { cognito } = useAuthContext()
+  const { dispatch, cognito } = useAuthContext()
 
   // hooks
-  const [cookies] = useCookies([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState(null)
 
-  const cognitoAuthenticated = () => {
-    const user = cognito.pool.getCurrentUser()
-    return !!user
-  }
+  useEffect(() => {
+    cognito.getSession()
+      .then(data => {
+        const { user, accessToken } = data
+        dispatch({
+          type: ACCOUNT_ACTION_TYPES.REFRESH,
+          payload: { user: user.username, token: accessToken.jwtToken }
+        })
+        setUser(user.username)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setUser(null)
+        setIsLoading(false)
+      })
+  }, [dispatch, cognito])
 
-  const loc = cookies.virtualExamLocale || LOCALE.ES
-  const messages = loc === LOCALE.EN ? en : es
+  if (isLoading) { return <Loading /> }
 
   return (
-    <Suspense fallback={<Loading />}>
-      <IntlProvider locale={loc} messages={messages}>
-        <Router>
-          {cognitoAuthenticated()
-            ? <Layout><AuthRouter /></Layout>
-            : <UnauthRouter />}
-        </Router>
-      </IntlProvider>
-    </Suspense>
+    <Router>
+      {user ? <AuthRouter /> : <UnauthRouter />}
+    </Router>
   )
 }
 

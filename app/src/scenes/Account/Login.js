@@ -34,7 +34,8 @@ const Login = (props) => {
         type: ACCOUNT_ACTION_TYPES.LOGIN,
         payload: { user: accessToken.payload.username, token: accessToken.jwtToken }
       })
-      history.push('/')
+      // Full page refresh to reload MainRouter and check session
+      window.location.replace('/')
     }
 
     // Password change required
