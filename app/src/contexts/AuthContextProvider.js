@@ -1,8 +1,8 @@
 import React, { useReducer } from 'react'
 import { AuthContext } from '../contexts'
 import { Cognito } from '../utils'
-import { useCookies } from 'react-cookie'
-import { ACCOUNT_ACTION_TYPES } from '../common/constants'
+import Cookies from 'js-cookie'
+import { ACCOUNT_ACTION_TYPES, COOKIE_NAMES } from '../common/constants'
 
 const cognito = new Cognito()
 
@@ -13,21 +13,28 @@ const initialState = {
 }
 
 const AuthContextProvider = (props) => {
-  const [cookies, setCookie, removeCookie] = useCookies([]) // eslint-disable-line no-unused-vars
+  // Expiration set to 60 minutes
+  const cookieExpiration = new Date(
+    new Date().getTime() +
+      60 * // Minutes
+      60 * // Seconds
+      1000 // Milliseconds
+  )
+
   const reducer = (state, action) => {
     switch (action.type) {
       case ACCOUNT_ACTION_TYPES.LOGIN:
       case ACCOUNT_ACTION_TYPES.REFRESH:
-        setCookie('user', action.payload.user, { path: '/' })
-        setCookie('token', action.payload.token, { path: '/' })
+        Cookies.set(COOKIE_NAMES.USER, action.payload.user, { expires: cookieExpiration })
+        Cookies.set(COOKIE_NAMES.TOKEN, action.payload.token, { expires: cookieExpiration })
         return {
           ...state,
           isAuthenticated: true,
           user: action.payload.user
         }
       case ACCOUNT_ACTION_TYPES.LOGOUT:
-        removeCookie('user', null)
-        removeCookie('token', null)
+        Cookies.remove(COOKIE_NAMES.USER)
+        Cookies.remove(COOKIE_NAMES.TOKEN)
         return {
           ...state,
           isAuthenticated: false,

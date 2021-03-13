@@ -1,3 +1,5 @@
+export const APP_NAME = 'virtualExam'
+
 export const TIME = {
   A_MINUTE: 60,
   HALF_HOUR: 1800,
@@ -40,4 +42,10 @@ export const ERROR_MESSAGES = {
 export const LOCALE = {
   ES: 'es',
   EN: 'en'
+}
+
+export const COOKIE_NAMES = {
+  USER: APP_NAME + 'User',
+  TOKEN: APP_NAME + 'Token',
+  LOCALE: APP_NAME + 'Locale'
 }

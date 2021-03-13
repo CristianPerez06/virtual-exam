@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useAuthContext } from '../../hooks'
-import { useCookies } from 'react-cookie'
-import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
+import Cookies from 'js-cookie'
+import { ACCOUNT_ACTION_TYPES, COOKIE_NAMES } from '../../common/constants'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { Link } from 'react-router-dom'
 import { FaHome } from 'react-icons/fa'
@@ -21,7 +21,6 @@ import {
 const Header = () => {
   // state
   const [isOpen, setIsOpen] = useState(false)
-  const [cookies] = useCookies()
 
   // hooks
   const { dispatch, cognito } = useAuthContext()
@@ -67,7 +66,7 @@ const Header = () => {
         <Nav className='ml-auto' navbar>
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav caret>
-              {cookies.user}
+              {Cookies.get(COOKIE_NAMES.USER)}
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem tag={Link} to='/settings'>
