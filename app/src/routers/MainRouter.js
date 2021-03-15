@@ -25,6 +25,10 @@ const Main = () => {
       })
       .catch(err => {
         console.log(err)
+        dispatch({
+          type: ACCOUNT_ACTION_TYPES.LOGOUT,
+          payload: {}
+        })
         setUser(null)
         setIsLoading(false)
       })

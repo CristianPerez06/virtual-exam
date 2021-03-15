@@ -49,3 +49,7 @@ export const COOKIE_NAMES = {
   TOKEN: APP_NAME + 'Token',
   LOCALE: APP_NAME + 'Locale'
 }
+
+export const GRAPHQL_ERRORS = {
+  UNAUTHENTICATED: 'UNAUTHENTICATED'
+}
