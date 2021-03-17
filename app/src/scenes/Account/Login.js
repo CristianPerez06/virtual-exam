@@ -25,14 +25,14 @@ const Login = (props) => {
 
   // handlers
   const onSuccess = (data) => {
-    const { accessToken, code, username, email } = data
+    const { idToken, code, username, email } = data
     setIsLoading(false)
 
     // Normal workflow
-    if (accessToken) {
+    if (idToken) {
       dispatch({
         type: ACCOUNT_ACTION_TYPES.LOGIN,
-        payload: { user: accessToken.payload.username, token: accessToken.jwtToken }
+        payload: { user: idToken.payload.username, token: idToken.jwtToken }
       })
       // Full page refresh to reload MainRouter and check session
       window.location.replace('/')

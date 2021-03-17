@@ -1,4 +1,5 @@
 export { default as PageNotFound } from './PageNotFound.js'
+export { default as Error } from './Error.js'
 export { Loading } from './Loading/Loading'
 export { LoadingInline } from './Loading/Loading'
 export { default as CustomAlert } from './CustomAlert.js'
