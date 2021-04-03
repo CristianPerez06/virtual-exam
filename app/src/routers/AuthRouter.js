@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import { Layout } from '../components/layout'
 import { PageNotFound, Error } from '../components/common'
 import { Home } from '../components'
@@ -10,6 +10,9 @@ const AuthRouter = () => {
     <Layout>
       <Switch>
         <Route path='/' exact name='Home' component={Home} />
+        <Route exact path='/login'>
+          <Redirect to='/' />
+        </Route>
         <Route path='/course' name='Course' component={AsyncCourse} />
         <Route path='/settings' name='Settings' component={AsyncSettings} />
         <Route name='/error' component={Error} />

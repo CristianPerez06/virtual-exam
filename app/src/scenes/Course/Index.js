@@ -19,7 +19,7 @@ const Index = () => {
       />
       <Route
         name='Edit course'
-        path='/course/edit/:id'
+        path='/course/:id'
         render={(props) => <CourseEditor {...props} isCreating={false} />}
       />
       <Route name='Page Not Found' component={PageNotFound} />

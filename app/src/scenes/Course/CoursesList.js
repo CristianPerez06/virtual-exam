@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Card, CardBody, CardHeader, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_COURSES, DELETE_COURSE } from './requests'
@@ -6,6 +6,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import { ERROR_MESSAGES } from '../../common/constants'
 import { Loading, LoadingInline, CustomAlert, Table } from '../../components/common'
 import { Link } from 'react-router-dom'
+import { syncCacheOnDelete } from './cacheHelpers'
 
 const CoursesList = (props) => {
   // Props and params
@@ -13,16 +14,16 @@ const CoursesList = (props) => {
   const { formatMessage } = intl
 
   // State
-  const [courses, setCourses] = useState()
-  const [errors, setErrors] = useState()
-  const [courseToDelete, setCourseToDelete] = useState()
+  const [courses, setCourses] = useState([])
+  const [errors, setErrors] = useState(null)
+  const [courseToDelete, setCourseToDelete] = useState(null)
   const [courseDeleted, setCourseDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 
   // handlers
-  const onCompleted = (data) => {
-    if (!data) return
-    setCourses(data.listCourses)
+  const onCompleted = (res) => {
+    if (!res) return
+    setCourses(res.listCourses.data)
   }
 
   const onError = (err) => {
@@ -40,45 +41,37 @@ const CoursesList = (props) => {
     setDeleteModalIsOpen(false)
   }
 
-  const onDeleteSuccess = () => {
+  // Button handlers
+  const onDeleteClicked = (course) => {
+    setCourseToDelete(course)
+    setDeleteModalIsOpen(true)
+  }
+
+  const onDeleteConfirmClicked = () => {
+    deleteCourse({
+      variables: { id: courseToDelete.id },
+      update: (cache, result) => {
+        const updatedCoursesList = syncCacheOnDelete(cache, courseToDelete)
+        setCourses(updatedCoursesList.data)
+      }
+    })
+  }
+
+  const onCancelClicked = () => {
+    if (deleting) return
+    setDeleteModalIsOpen(!deleteModalIsOpen)
+  }
+
+  // Other
+  const stateCleanupOnDelete = () => {
     setErrors()
     setDeleteModalIsOpen(false)
     setCourseDeleted(true)
   }
 
-  const onDelete = (course) => {
-    setCourseToDelete(course)
-    setDeleteModalIsOpen(true)
-  }
-
-  const onDeleteConfirm = () => {
-    deleteCourse({ variables: { id: courseToDelete.id } })
-  }
-
-  const toggleModal = () => {
-    if (deleting) return
-    setDeleteModalIsOpen(!deleteModalIsOpen)
-  }
-
   // Queries and mutations
-  const { loading: fetching, fetchMore } = useQuery(LIST_COURSES, { variables: { q: '', offset: 0, limit: 100 }, onCompleted, onError })
-  const [deleteCourse, { loading: deleting }] = useMutation(DELETE_COURSE, { onCompleted: onDeleteSuccess, onError })
-
-  useEffect(() => {
-    fetchMore({
-      query: LIST_COURSES,
-      variables: { q: '', offset: 0, limit: 100 },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (fetchMoreResult) {
-          const { listCourses } = fetchMoreResult
-          setCourses(listCourses)
-          // TO DO - Implement Apollo Cache
-          // return { listCourses }
-        }
-        // return { ...prev }
-      }
-    })
-  }, [courseDeleted, fetchMore])
+  const { loading: fetching } = useQuery(LIST_COURSES, { variables: { q: '', offset: 0, limit: 100 }, onCompleted, onError })
+  const [deleteCourse, { loading: deleting }] = useMutation(DELETE_COURSE, { onCompleted: stateCleanupOnDelete, onError })
 
   const columnTranslations = {
     courseName: formatMessage({ id: 'course_name' }),
@@ -98,13 +91,13 @@ const CoursesList = (props) => {
         Header: columnTranslations.action,
         Cell: ({ row }) => (
           <div className='d-flex justify-content-center'>
-            <Link to={`/course/edit/${row.original.id}`}>
+            <Link to={`/course/${row.original.id}`}>
               <Button color='info'>{columnTranslations.edit}</Button>
             </Link>
             <Button
               className='ml-1'
               color='danger'
-              onClick={() => onDelete({ ...row.original })}
+              onClick={() => onDeleteClicked({ ...row.original })}
             >
               {columnTranslations.delete}
             </Button>
@@ -134,8 +127,8 @@ const CoursesList = (props) => {
 
             {/* Modal */}
             <div id='modal'>
-              <Modal isOpen={deleteModalIsOpen} toggle={toggleModal} disabled>
-                <ModalHeader toggle={toggleModal} disabled>
+              <Modal isOpen={deleteModalIsOpen} toggle={onCancelClicked} disabled>
+                <ModalHeader toggle={onCancelClicked} disabled>
                   {formatMessage({ id: 'common_title.delete_confirmation' })}
                 </ModalHeader>
                 <ModalBody>
@@ -144,7 +137,7 @@ const CoursesList = (props) => {
                 <ModalFooter>
                   <Button
                     color='danger'
-                    onClick={onDeleteConfirm}
+                    onClick={onDeleteConfirmClicked}
                     disabled={deleting}
                   >
                     {formatMessage({ id: 'button.delete' })}
@@ -152,7 +145,7 @@ const CoursesList = (props) => {
                   </Button>
                   <Button
                     color='secondary'
-                    onClick={toggleModal}
+                    onClick={onCancelClicked}
                     disabled={deleting}
                   >
                     {formatMessage({ id: 'button.cancel' })}

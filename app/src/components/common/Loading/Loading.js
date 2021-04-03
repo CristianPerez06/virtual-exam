@@ -8,7 +8,7 @@ export const Loading = (props) => {
   return (
     <div className='loader-outer'>
       <div className='loader-inner'>
-        <FaSpinner style={{ color: 'white', fontSize: '72px' }} className={`fa-pulse ${className}`} />
+        <FaSpinner style={{ color: 'grey', fontSize: '72px' }} className={`fa-pulse ${className}`} />
       </div>
     </div>
   )
