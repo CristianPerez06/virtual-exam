@@ -1,11 +1,15 @@
 const { MongoClient } = require('mongodb')
 const debug = require('debug')('virtual-exam:mongo')
 
-const CONNECTION_URL = 'mongodb://localhost:27017'
+// const DEFAULT_CONNECTION_URL = 'mongodb+srv://admin:admin@virtualexam.mqcgh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+const DEFAULT_CONNECTION_URL = 'mongodb://localhost:27017'
 const DEFAULT_MONGO_DB = 'virtual-exam'
 
+const connUrl = process.env.CONNECTION || DEFAULT_CONNECTION_URL
+const dbName = process.env.DB || DEFAULT_MONGO_DB
+
 const dbPromise = MongoClient.connect(
-  CONNECTION_URL,
+  connUrl,
   { useUnifiedTopology: true }
 )
 
@@ -14,7 +18,7 @@ const dbPromise = MongoClient.connect(
  */
 async function virtualExamDb () {
   const client = await dbPromise
-  const db = client.db(process.env.DB || DEFAULT_MONGO_DB)
+  const db = client.db(dbName)
   return db
 }
 
