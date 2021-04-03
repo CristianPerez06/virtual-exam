@@ -119,11 +119,9 @@ const CoursesList = (props) => {
             </p>
           </CardHeader>
           <CardBody className='d-flex flex-column text-center'>
-            {/* Table */}
-            <Table
-              columns={columns}
-              data={courses}
-            />
+            {courses.length === 0
+              ? formatMessage({ id: 'common_message.no_results' })
+              : <Table columns={columns} data={courses} />}
 
             {/* Modal */}
             <div id='modal'>
