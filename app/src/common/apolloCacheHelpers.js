@@ -4,7 +4,7 @@ export const readCacheList = (cache, query, variables) => {
     const result = cache.readQuery(fromQuery)
     return result
   } catch (e) {
-    return { data: [], count: 0 }
+    return {}
   }
 }
 

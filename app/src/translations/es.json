@@ -1,4 +1,6 @@
 {
+  "common_message.no_results": "No hay resultados para mostrar",
+
   "common_action.create": "Crear",
   "common_action.edit": "Editar",
   "common_action.update": "Actualizar",
