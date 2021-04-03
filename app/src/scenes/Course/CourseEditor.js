@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Field } from 'react-final-form'
 import { Button } from 'reactstrap'
-import { useHistory, Link } from 'react-router-dom'
+import { useHistory, Link, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import { ERROR_MESSAGES } from '../../common/constants'
 import { required } from '../../common/validators'
-import { useRouteMatch } from 'react-router-dom'
 import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
 import { CREATE_COURSE, UPDATE_COURSE, GET_COURSE } from './requests'
+import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
 
 const Course = (props) => {
   // Props and params
@@ -18,29 +18,25 @@ const Course = (props) => {
   const { params } = useRouteMatch()
   const history = useHistory()
 
-  // Default values
-  const defaultValues = {
-    name: ''
-  }
-
   // State
   const [courseCreated, setCourseCreated] = useState(false)
   const [courseUpdated, setCourseUpdated] = useState(false)
-  const [initialValues, setInitialValues] = useState(defaultValues)
+  const [initialValues, setInitialValues] = useState({})
   const [errors, setErrors] = useState()
 
   // Handlers
   const onSuccess = (result) => {
-    const { id, name } = isCreating ? result.createCourse : result.updateCourse
+    const { id } = isCreating ? result.createCourse : result.updateCourse
     if (isCreating) {
-      setCourseCreated(name)
+      setCourseCreated(true)
+      setCourseUpdated(false)
       history.push({
-        pathname: `/course/edit/${id}`,
+        pathname: `/course/${id}`,
         state: { isCreating: false }
       })
     } else {
-      setCourseCreated()
-      setCourseUpdated(name)
+      setCourseCreated(false)
+      setCourseUpdated(true)
     }
     setErrors()
   }
@@ -66,8 +62,18 @@ const Course = (props) => {
     const { name } = values
 
     isCreating
-      ? createCourse({ variables: { name: name } })
-      : updateCourse({ variables: { id: params.id, name: name } })
+      ? createCourse({
+        variables: { name: name },
+        update: (cache, result) => {
+          syncCacheOnCreate(cache, result.data.createCourse)
+        }
+      })
+      : updateCourse({
+        variables: { id: params.id, name: name },
+        update: (cache, result) => {
+          syncCacheOnUpdate(cache, result.data.updateCourse)
+        }
+      })
   }
 
   // Queries and mutations
@@ -86,6 +92,14 @@ const Course = (props) => {
   )
   const [createCourse, { loading: creating }] = useMutation(CREATE_COURSE, { onCompleted: onSuccess, onError })
   const [updateCourse, { loading: updating }] = useMutation(UPDATE_COURSE, { onCompleted: onSuccess, onError })
+
+  useEffect(() => {
+    // State cleanup in case user was editing and now wants to create
+    if (isCreating) {
+      setCourseUpdated(false)
+      setInitialValues({})
+    }
+  }, [isCreating])
 
   return (
     <div className='course-editor'>
@@ -111,7 +125,7 @@ const Course = (props) => {
                       className='form-control'
                       placeholder={formatMessage({ id: 'course_name' })}
                     />
-                    {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
+                    {meta.error && meta.modified && <FieldError error={translateFieldError(intl, meta.error)} />}
                   </div>
                 )}
               </Field>
@@ -127,7 +141,7 @@ const Course = (props) => {
                 {formatMessage({ id: 'button.save' })}
                 {(creating || updating || fetching) && <LoadingInline className='ml-3' />}
               </Button>
-              <Link to={'/course/list'}>
+              <Link to='/course/list'>
                 <Button
                   color='secondary'
                   type='submit'

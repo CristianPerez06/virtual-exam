@@ -1,6 +1,11 @@
 import { ERROR_FIELDS } from '../common/constants'
 
-export const required = (value) => (value ? undefined : ERROR_FIELDS.REQUIRED)
+export const required = (value) => {
+  if (!value) return
+  const allWhiteSpaces = value.match(/^ *$/)
+  if (allWhiteSpaces) return ERROR_FIELDS.REQUIRED
+  return (value ? undefined : ERROR_FIELDS.REQUIRED)
+}
 
 export const mustBeNumber = value => (isNaN(value) ? ERROR_FIELDS.MUST_BE_A_NUMBER : undefined)
 

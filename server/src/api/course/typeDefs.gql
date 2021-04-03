@@ -1,7 +1,11 @@
-
 type Course {
   id: ID!
   name: String
+}
+
+type Courses {
+  data: [Course]
+  count: Int!
 }
 
 type Response {
@@ -10,7 +14,7 @@ type Response {
 
 type Query {
   getCourse(id: ID!): Course
-  listCourses(q: String, offset: Int, limit: Int): [Course]
+  listCourses(q: String, offset: Int, limit: Int): Courses
 }
 
 type Mutation {

@@ -1,7 +1,7 @@
 const debug = require('debug')('virtual-exam:prepResults')
 
-const prepSingleResultForUser = (data) => {
-  const { _id, ...rest } = data
+const prepSingleResultForUser = (item) => {
+  const { _id, ...rest } = item
   const singleResult = {
     id: _id,
     ...rest
@@ -11,10 +11,15 @@ const prepSingleResultForUser = (data) => {
   return singleResult
 }
 
-const prepMultipleResultsForUser = (data) => {
-  const multipleResults = data.map(item => {
+const prepMultipleResultsForUser = (items) => {
+  const data = items.map(item => {
     return prepSingleResultForUser(item)
   })
+
+  const multipleResults = {
+    data: data,
+    count: data.length
+  }
 
   debug('prepMultipleResultsForUser: ', multipleResults)
   return multipleResults

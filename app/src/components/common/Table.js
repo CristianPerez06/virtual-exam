@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useTable } from 'react-table'
+import { useTable, usePagination } from 'react-table'
 
 const Styles = styled.div`
   padding: 1rem;
@@ -36,16 +36,37 @@ const Styles = styled.div`
 `
 
 const Table = (props) => {
-  const { columns = [], data = []} = props
+  const {
+    columns = [],
+    data = []
+  } = props
 
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
-    prepareRow
-  } = useTable({ columns, data })
+    page,
+    prepareRow,
+    canPreviousPage,
+    canNextPage,
+    nextPage,
+    previousPage,
+    pageCount,
+    gotoPage,
+    pageOptions,
+    state: { pageIndex }
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: {
+        pageIndex: 0,
+        pageSize: 5
+      }
+    },
+    usePagination
+  )
 
   // Render the UI for your table
   return (
@@ -64,22 +85,71 @@ const Table = (props) => {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {rows.map((row, rowIndex) => {
+            {page.map((row, rowIndex) => {
               prepareRow(row)
               return (
                 <tr {...row.getRowProps()} key={rowIndex}>
                   {row.cells.map((cell, cellIndex) => {
-                    return (
-                      <td {...cell.getCellProps()} key={cellIndex}>
-                        {cell.render('Cell')}
-                      </td>
-                    )
+                    return <td {...cell.getCellProps()} key={cellIndex}>{cell.render('Cell')}</td>
                   })}
                 </tr>
               )
             })}
           </tbody>
         </table>
+        <div className='pagination d-flex justify-content-center'>
+          <button
+            onClick={() => gotoPage(0)} disabled={!canPreviousPage}
+          >
+            {'<<'}
+          </button>
+          &nbsp;
+          <button
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+          >
+            {'<'}
+          </button>
+          &nbsp;
+          <button
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+          >
+            {'>'}
+          </button>
+          &nbsp;
+          <button
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
+          >
+            {'>>'}
+          </button>
+          &nbsp;
+          <span>
+            &nbsp;
+            Page
+            &nbsp;
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>
+            &nbsp;
+          </span>
+          {/*
+          <span>
+            | Go to page:
+            &nbsp;
+            <input
+              type='number'
+              defaultValue={pageIndex + 1}
+              onChange={e => {
+                const page = e.target.value ? Number(e.target.value) - 1 : 0
+                gotoPage(page)
+              }}
+              style={{ width: '100px' }}
+            />
+          </span>
+          */}
+        </div>
       </Styles>
     </div>
   )
