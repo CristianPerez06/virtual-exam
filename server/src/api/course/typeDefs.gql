@@ -12,12 +12,12 @@ type Response {
   done: Boolean
 }
 
-type Query {
+extend type Query {
   getCourse(id: ID!): Course
   listCourses(q: String, offset: Int, limit: Int): Courses
 }
 
-type Mutation {
+extend type Mutation {
   createCourse(name: String!): Course
   updateCourse(id: ID!, name: String!): Course
   deleteCourse(id: ID!): Response
