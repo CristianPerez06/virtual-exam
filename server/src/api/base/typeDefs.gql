@@ -1,0 +1,11 @@
+type BaseResponse {
+  done: Boolean
+}
+
+type Query {
+  baseQuery: BaseResponse
+}
+
+type Mutation {
+  baseMutation: BaseResponse
+}

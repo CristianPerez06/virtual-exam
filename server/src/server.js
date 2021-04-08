@@ -37,11 +37,12 @@ const jsonWebKeys = [
 const JWT_PUBLIC_KEY = jtp(jsonWebKeys[1])
 
 // Grapqhl APIs
+const { baseDefs, baseResolvers } = require('./api/base/index')
 const { courseDefs, courseResolvers } = require('./api/course/index')
 
 // typeDefs & resolvers
-const typeDefs = [courseDefs]
-const resolvers = [courseResolvers]
+const typeDefs = [baseDefs, courseDefs]
+const resolvers = [baseResolvers, courseResolvers]
 
 const server = new ApolloServer({
   typeDefs: typeDefs,
