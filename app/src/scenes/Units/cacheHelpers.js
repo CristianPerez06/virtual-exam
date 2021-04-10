@@ -1,61 +1,33 @@
 import { readCacheList, writeCacheList } from '../../common/apolloCacheHelpers'
+import { addItemToList, updateItemInList, removeItemFromList } from '../../common/arrayHelpers'
 import { LIST_UNITS } from './requests'
 
-export const syncCacheOnCreate = (cache, unit) => {
+export const syncCacheOnCreate = (cache, item, query) => {
   // Read Cache Query
   const { listUnits } = readCacheList(cache, LIST_UNITS, { q: '', offset: 0, limit: 100 })
-
-  // If listUnits not in cache then don't do anything
-  if (!listUnits) return
-
-  // If listUnits is in cache then we can update it
-  const newListUnits = listUnits.data
-  newListUnits.push(unit)
-  const unitsData = {
-    data: [...newListUnits], count: newListUnits.length, __typename: listUnits.__typename
-  }
-
+  // Add new item to list
+  const listData = addItemToList(listUnits.data, item)
   // Update Cache Query
-  writeCacheList(cache, LIST_UNITS, { listUnits: { ...unitsData } })
-
-  return unitsData
+  writeCacheList(cache, LIST_UNITS, { listUnits: { ...listData } })
+  return listData
 }
 
-export const syncCacheOnUpdate = (cache, unit) => {
+export const syncCacheOnUpdate = (cache, item, query) => {
   // Read Cache
   const { listUnits } = readCacheList(cache, LIST_UNITS, { q: '', offset: 0, limit: 100 })
-
-  // If listUnits not in cache then don't do anything
-  if (!listUnits) return
-
-  // If listUnits is in cache then we can update it
-  const newListUnits = listUnits.data.filter(c => c.id !== unit.id)
-  newListUnits.push(unit)
-  const unitsData = {
-    data: [...newListUnits], count: newListUnits.length, __typename: newListUnits.__typename
-  }
-
+  // Update item in list
+  const listData = updateItemInList(listUnits.data, item)
   // Update Cache
-  writeCacheList(cache, LIST_UNITS, { listUnits: { ...unitsData } })
-
-  return unitsData
+  writeCacheList(cache, LIST_UNITS, { listUnits: { ...listData } })
+  return listData
 }
 
-export const syncCacheOnDelete = (cache, unit) => {
+export const syncCacheOnDelete = (cache, item, query) => {
   // Read Cache
   const { listUnits } = readCacheList(cache, LIST_UNITS, { q: '', offset: 0, limit: 100 })
-
-  // If listUnits not in cache then don't do anything
-  if (!listUnits) return
-
-  // If listUnits is in cache then we can update it
-  const newListUnits = listUnits.data.filter(c => c.id !== unit.id)
-  const unitsData = {
-    data: [...newListUnits], count: newListUnits.length, __typename: listUnits.__typename
-  }
-
+  // Remove item from list
+  const listData = removeItemFromList(listUnits.data, item)
   // Update Cache
-  writeCacheList(cache, LIST_UNITS, { listUnits: { ...unitsData } })
-
-  return unitsData
+  writeCacheList(cache, LIST_UNITS, { listUnits: { ...listData } })
+  return listData
 }

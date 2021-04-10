@@ -1,61 +1,33 @@
 import { readCacheList, writeCacheList } from '../../common/apolloCacheHelpers'
+import { addItemToList, updateItemInList, removeItemFromList } from '../../common/arrayHelpers'
 import { LIST_COURSES } from './requests'
 
-export const syncCacheOnCreate = (cache, course) => {
+export const syncCacheOnCreate = (cache, item, query) => {
   // Read Cache Query
   const { listCourses } = readCacheList(cache, LIST_COURSES, { q: '', offset: 0, limit: 100 })
-
-  // If listCourses not in cache then don't do anything
-  if (!listCourses) return
-
-  // If listCourses is in cache then we can update it
-  const newListCourses = listCourses.data
-  newListCourses.push(course)
-  const coursesData = {
-    data: [...newListCourses], count: newListCourses.length, __typename: listCourses.__typename
-  }
-
+  // Add new item to list
+  const listData = addItemToList(listCourses.data, item)
   // Update Cache Query
-  writeCacheList(cache, LIST_COURSES, { listCourses: { ...coursesData } })
-
-  return coursesData
+  writeCacheList(cache, LIST_COURSES, { listCourses: { ...listData } })
+  return listData
 }
 
-export const syncCacheOnUpdate = (cache, course) => {
+export const syncCacheOnUpdate = (cache, item, query) => {
   // Read Cache
   const { listCourses } = readCacheList(cache, LIST_COURSES, { q: '', offset: 0, limit: 100 })
-
-  // If listCourses not in cache then don't do anything
-  if (!listCourses) return
-
-  // If listCourses is in cache then we can update it
-  const newListCourses = listCourses.data.filter(c => c.id !== course.id)
-  newListCourses.push(course)
-  const coursesData = {
-    data: [...newListCourses], count: newListCourses.length, __typename: listCourses.__typename
-  }
-
+  // Update item in list
+  const listData = updateItemInList([...listCourses.data], item)
   // Update Cache
-  writeCacheList(cache, LIST_COURSES, { listCourses: { ...coursesData } })
-
-  return coursesData
+  writeCacheList(cache, LIST_COURSES, { listCourses: { ...listData } })
+  return listData
 }
 
-export const syncCacheOnDelete = (cache, course) => {
+export const syncCacheOnDelete = (cache, item, query) => {
   // Read Cache
   const { listCourses } = readCacheList(cache, LIST_COURSES, { q: '', offset: 0, limit: 100 })
-
-  // If listCourses not in cache then don't do anything
-  if (!listCourses) return
-
-  // If listCourses is in cache then we can update it
-  const newListCourses = listCourses.data.filter(c => c.id !== course.id)
-  const coursesData = {
-    data: [...newListCourses], count: newListCourses.length, __typename: listCourses.__typename
-  }
-
+  // Remove item from list
+  const listData = removeItemFromList(listCourses.data, item)
   // Update Cache
-  writeCacheList(cache, LIST_COURSES, { listCourses: { ...coursesData } })
-
-  return coursesData
+  writeCacheList(cache, LIST_COURSES, { listCourses: { ...listData } })
+  return listData
 }
