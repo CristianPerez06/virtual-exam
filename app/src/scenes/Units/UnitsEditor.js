@@ -3,9 +3,9 @@ import { Form, Field } from 'react-final-form'
 import { Button } from 'reactstrap'
 import { useHistory, Link, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { LoadingInline, CustomAlert, FieldError, Select } from '../../components/common'
-import { ERROR_MESSAGES } from '../../common/constants'
+import { LoadingInline, CustomAlert, TranslatableErrors, FieldError, Select } from '../../components/common'
 import { required } from '../../common/validators'
+import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
 import { CREATE_UNIT, UPDATE_UNIT, GET_UNIT } from './requests'
@@ -59,19 +59,9 @@ const UnitsEditor = (props) => {
     setUnitUpdated(false)
 
     const { graphQLErrors } = err
-    const translatedErrors = graphQLErrors.map(error => {
-      const errorCode = ((error || {}).extensions || {}).code || ''
-      switch (errorCode) {
-        case ERROR_MESSAGES.DUPLICATED_ENTITY:
-          return { id: errorCode, message: formatMessage({ id: 'common_error.duplicated_entity' }) }
-        default:
-          return { id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) }
-      }
-    })
-    if (translatedErrors.length === 0) {
-      translatedErrors.push({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) })
-    }
-    setErrors(translatedErrors)
+    const translatableErrors = getTranslatableErrors(graphQLErrors)
+
+    setErrors(translatableErrors)
   }
 
   const onSubmit = (values) => {
@@ -206,7 +196,7 @@ const UnitsEditor = (props) => {
             </div>
 
             <div id='info' className='d-flex justify-content-around mt-5'>
-              {errors && <CustomAlert messages={errors} className='ml-3' />}
+              {errors && <TranslatableErrors errors={errors} className='ml-3' />}
               {!creating && unitCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'unit_created' }) }} color='success' />}
               {!updating && unitUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'unit_updated' }) }} color='success' />}
             </div>

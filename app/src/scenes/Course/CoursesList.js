@@ -3,10 +3,10 @@ import { Card, CardBody, CardHeader, Button, Modal, ModalHeader, ModalBody, Moda
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_COURSES, DELETE_COURSE } from './requests'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { ERROR_MESSAGES } from '../../common/constants'
-import { Loading, LoadingInline, CustomAlert, Table } from '../../components/common'
+import { Loading, LoadingInline, CustomAlert, TranslatableErrors, Table } from '../../components/common'
 import { Link } from 'react-router-dom'
 import { syncCacheOnDelete } from './cacheHelpers'
+import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
 const CoursesList = (props) => {
   // Props and params
@@ -28,15 +28,9 @@ const CoursesList = (props) => {
 
   const onError = (err) => {
     const { graphQLErrors } = err
-    const translatedErrors = graphQLErrors.map(error => {
-      const errorCode = ((error || {}).extensions || {}).code || ''
-      switch (errorCode) {
-        default:
-          return { id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) }
-      }
-    })
+    const translatableErrors = getTranslatableErrors(graphQLErrors)
 
-    setErrors(translatedErrors)
+    setErrors(translatableErrors)
     setCourseDeleted(false)
     setDeleteModalIsOpen(false)
   }
@@ -156,7 +150,7 @@ const CoursesList = (props) => {
             {!deleting && courseDeleted && <CustomAlert messages={{ id: 'course_deleted', message: `${formatMessage({ id: 'course_deleted' })}: ${courseToDelete.name}` }} color='success' />}
           </CardBody>
         </Card>}
-      {errors && <CustomAlert messages={errors} />}
+      {errors && <TranslatableErrors errors={errors} />}
     </div>
   )
 }
