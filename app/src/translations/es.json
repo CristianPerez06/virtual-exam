@@ -1,5 +1,7 @@
 {
+  "common_message.loading": "Cargando...",
   "common_message.no_results": "No hay resultados para mostrar",
+  "common_message.select_value": "Seleccione un valor",
 
   "common_action.create": "Crear",
   "common_action.edit": "Editar",
@@ -23,6 +25,8 @@
 
   "common_entity.course": "Curso",
   "common_entity.courses": "Cursos",
+  "common_entity.unit": "Unidad",
+  "common_entity.units": "Unidades",
 
   "common_title.register_user": "Registrar usuario",
   "common_title.sign_in": "Iniciar sesión",
@@ -40,6 +44,7 @@
   "button.logout": "Cerrar sesión",
   "button.settings": "Configuración",
   "button.courses": "Cursos",
+  "button.units": "Unidades",
   "button.save": "Guardar",
   "button.list": "Buscar",
   "button.create": "Crear",
@@ -52,6 +57,11 @@
   "course_created": "Curso creado exitosamente",
   "course_updated": "Curso actualizado exitosamente",
   "course_deleted": "Curso eliminado exitosamente",
+
+  "unit_name": "Nombre de la Unidad",
+  "unit_created": "Unidad creada exitosamente",
+  "unit_updated": "Unidad actualizada exitosamente",
+  "unit_deleted": "Unidad eliminada exitosamente",
 
   "registration_completed": "Registracion exitosa",
   "first_name": "Nombre",

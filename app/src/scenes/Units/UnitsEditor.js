@@ -3,15 +3,16 @@ import { Form, Field } from 'react-final-form'
 import { Button } from 'reactstrap'
 import { useHistory, Link, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
+import { LoadingInline, CustomAlert, FieldError, Select } from '../../components/common'
 import { ERROR_MESSAGES } from '../../common/constants'
 import { required } from '../../common/validators'
 import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
-import { CREATE_COURSE, UPDATE_COURSE, GET_COURSE } from './requests'
+import { CREATE_UNIT, UPDATE_UNIT, GET_UNIT } from './requests'
+import { LIST_COURSES } from '../Course/requests'
 import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
 
-const CourseEditor = (props) => {
+const UnitsEditor = (props) => {
   // Props and params
   const { isCreating, intl } = props
   const { formatMessage } = intl
@@ -19,31 +20,43 @@ const CourseEditor = (props) => {
   const history = useHistory()
 
   // State
-  const [courseCreated, setCourseCreated] = useState(false)
-  const [courseUpdated, setCourseUpdated] = useState(false)
+  const [unitCreated, setUnitCreated] = useState(false)
+  const [unitUpdated, setUnitUpdated] = useState(false)
+  const [courses, setCourses] = useState([])
   const [initialValues, setInitialValues] = useState({})
   const [errors, setErrors] = useState()
 
   // Handlers
   const onSuccess = (result) => {
-    const { id } = isCreating ? result.createCourse : result.updateCourse
+    const { id } = isCreating ? result.createUnit : result.updateUnit
     if (isCreating) {
-      setCourseCreated(true)
-      setCourseUpdated(false)
+      setUnitCreated(true)
+      setUnitUpdated(false)
       history.push({
-        pathname: `/courses/${id}`,
+        pathname: `/units/${id}`,
         state: { isCreating: false }
       })
     } else {
-      setCourseCreated(false)
-      setCourseUpdated(true)
+      setUnitCreated(false)
+      setUnitUpdated(true)
     }
     setErrors()
   }
 
+  const onFetchUnitSuccess = (result) => {
+    if (!result) return
+    const unit = { ...result.getUnit }
+    setInitialValues(unit)
+  }
+
+  const onFetchCoursesSuccess = (result) => {
+    if (!result) return
+    setCourses(result.listCourses.data)
+  }
+
   const onError = (err) => {
-    setCourseCreated(false)
-    setCourseUpdated(false)
+    setUnitCreated(false)
+    setUnitUpdated(false)
 
     const { graphQLErrors } = err
     const translatedErrors = graphQLErrors.map(error => {
@@ -62,19 +75,19 @@ const CourseEditor = (props) => {
   }
 
   const onSubmit = (values) => {
-    const { name } = values
+    const { name, courseId } = values
 
     isCreating
-      ? createCourse({
-        variables: { name: name },
+      ? createUnit({
+        variables: { name: name, courseId: courseId },
         update: (cache, result) => {
-          syncCacheOnCreate(cache, result.data.createCourse)
+          syncCacheOnCreate(cache, result.data.createUnit)
         }
       })
-      : updateCourse({
+      : updateUnit({
         variables: { id: params.id, name: name },
         update: (cache, result) => {
-          syncCacheOnUpdate(cache, result.data.updateCourse)
+          syncCacheOnUpdate(cache, result.data.updateUnit)
         }
       })
   }
@@ -82,36 +95,41 @@ const CourseEditor = (props) => {
   const validateBeforeSubmit = (values) => {
     const errors = {}
     if (!values.name) { errors.name = formatMessage({ id: 'common_field_error.required' }) }
+    if (!values.courseId) { errors.courseId = formatMessage({ id: 'common_field_error.required' }) }
     return errors
   }
 
   // Queries and mutations
   const { loading: fetching } = useQuery(
-    GET_COURSE,
+    GET_UNIT,
     {
       variables: { id: params.id },
       skip: isCreating,
-      onCompleted: (data) => {
-        if (!data) return
-        const course = { ...data.getCourse }
-        setInitialValues(course)
-      },
+      onCompleted: onFetchUnitSuccess,
       onError
     }
   )
-  const [createCourse, { loading: creating }] = useMutation(CREATE_COURSE, { onCompleted: onSuccess, onError })
-  const [updateCourse, { loading: updating }] = useMutation(UPDATE_COURSE, { onCompleted: onSuccess, onError })
+  const { loading: fetchingCourses } = useQuery(
+    LIST_COURSES,
+    {
+      variables: { q: '', offset: 0, limit: 100 },
+      onCompleted: onFetchCoursesSuccess,
+      onError
+    }
+  )
+  const [createUnit, { loading: creating }] = useMutation(CREATE_UNIT, { onCompleted: onSuccess, onError })
+  const [updateUnit, { loading: updating }] = useMutation(UPDATE_UNIT, { onCompleted: onSuccess, onError })
 
   useEffect(() => {
     // State cleanup in case user was editing and now wants to create
     if (isCreating) {
-      setCourseUpdated(false)
+      setUnitUpdated(false)
       setInitialValues({})
     }
   }, [isCreating])
 
   return (
-    <div className='course-editor'>
+    <div className='unit-editor'>
       <Form
         onSubmit={onSubmit}
         validate={validateBeforeSubmit}
@@ -125,7 +143,7 @@ const CourseEditor = (props) => {
             <p className='h4 mb-5'>
               {isCreating
                 ? `${formatMessage({ id: 'common_action.create' })}`
-                : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.course' }).toLowerCase()}
+                : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.unit' }).toLowerCase()}
             </p>
 
             <div id='fields' className='mb-5'>
@@ -135,7 +153,7 @@ const CourseEditor = (props) => {
                     <input
                       {...input}
                       className='form-control'
-                      placeholder={formatMessage({ id: 'course_name' })}
+                      placeholder={formatMessage({ id: 'unit_name' })}
                     />
                     {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                   </div>
@@ -143,32 +161,54 @@ const CourseEditor = (props) => {
               </Field>
             </div>
 
+            <div id='fields' className='mb-5'>
+              {fetchingCourses && <input type='text' className='form-control' value={formatMessage({ id: 'common_message.loading' })} disabled readOnly />}
+              {!fetchingCourses && (
+                <Field name='courseId' component='select' disabled={fetchingCourses} options={courses} validate={required}>
+                  {({ input, meta, options }) => {
+                    return (
+                      <div>
+                        <Select
+                          options={options}
+                          selectClass='form-control'
+                          selectedValue={initialValues.courseId}
+                          onChange={(value) => input.onChange(value)}
+                        />
+                        {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
+                      </div>
+                    )
+                  }}
+                </Field>
+              )}
+            </div>
+
             <div id='buttons' className='d-flex justify-content-center'>
               <Button
                 color='primary'
                 type='submit'
                 className='m-2'
-                disabled={creating || updating || fetching || pristine}
+                disabled={creating || updating || fetching || fetchingCourses || pristine}
               >
                 {formatMessage({ id: 'button.save' })}
                 {(creating || updating || fetching) && <LoadingInline className='ml-3' />}
               </Button>
-              <Link to='/courses/list'>
+              <Link to='/units/list'>
                 <Button
                   color='secondary'
                   type='submit'
                   className='m-2'
-                  disabled={creating || updating || fetching}
+                  disabled={creating || updating || fetching || fetchingCourses}
                 >
                   {formatMessage({ id: 'button.go_to_list' })}
                 </Button>
               </Link>
+
             </div>
 
             <div id='info' className='d-flex justify-content-around mt-5'>
               {errors && <CustomAlert messages={errors} className='ml-3' />}
-              {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage({ id: 'course_created' }) }} color='success' />}
-              {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage({ id: 'course_updated' }) }} color='success' />}
+              {!creating && unitCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'unit_created' }) }} color='success' />}
+              {!updating && unitUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'unit_updated' }) }} color='success' />}
             </div>
 
           </form>
@@ -178,4 +218,4 @@ const CourseEditor = (props) => {
   )
 }
 
-export default injectIntl(CourseEditor)
+export default injectIntl(UnitsEditor)

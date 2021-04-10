@@ -1,0 +1,21 @@
+type Unit {
+  id: ID!
+  name: String,
+  courseId: ID!
+}
+
+type Units {
+  data: [Unit]
+  count: Int!
+}
+
+extend type Query {
+  getUnit(id: ID!): Unit
+  listUnits(q: String, offset: Int, limit: Int): Units
+}
+
+extend type Mutation {
+  createUnit(name: String!, courseId: ID!): Unit
+  updateUnit(id: ID!, name: String!): Unit
+  deleteUnit(id: ID!): Response
+}

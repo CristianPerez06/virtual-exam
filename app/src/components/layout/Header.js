@@ -54,10 +54,23 @@ const Header = () => {
               <FormattedMessage id='button.courses' />
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem tag={Link} to='/course/new'>
+              <DropdownItem tag={Link} to='/courses/new'>
                 <FormattedMessage id='button.create' />
               </DropdownItem>
-              <DropdownItem tag={Link} to='/course/list'>
+              <DropdownItem tag={Link} to='/courses/list'>
+                <FormattedMessage id='button.list' />
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret>
+              <FormattedMessage id='button.units' />
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem tag={Link} to='/units/new'>
+                <FormattedMessage id='button.create' />
+              </DropdownItem>
+              <DropdownItem tag={Link} to='/units/list'>
                 <FormattedMessage id='button.list' />
               </DropdownItem>
             </DropdownMenu>

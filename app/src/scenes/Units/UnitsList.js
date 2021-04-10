@@ -1,29 +1,29 @@
 import React, { useState } from 'react'
 import { Card, CardBody, CardHeader, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { LIST_COURSES, DELETE_COURSE } from './requests'
+import { LIST_UNITS, DELETE_UNIT } from './requests'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { ERROR_MESSAGES } from '../../common/constants'
 import { Loading, LoadingInline, CustomAlert, Table } from '../../components/common'
 import { Link } from 'react-router-dom'
 import { syncCacheOnDelete } from './cacheHelpers'
 
-const CoursesList = (props) => {
+const UnitsList = (props) => {
   // Props and params
   const { intl } = props
   const { formatMessage } = intl
 
   // State
-  const [courses, setCourses] = useState([])
+  const [units, setUnits] = useState([])
   const [errors, setErrors] = useState(null)
-  const [courseToDelete, setCourseToDelete] = useState(null)
-  const [courseDeleted, setCourseDeleted] = useState(false)
+  const [unitToDelete, setUnitToDelete] = useState(null)
+  const [unitDeleted, setUnitDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 
   // handlers
   const onCompleted = (res) => {
     if (!res) return
-    setCourses(res.listCourses.data)
+    setUnits(res.listUnits.data)
   }
 
   const onError = (err) => {
@@ -37,22 +37,22 @@ const CoursesList = (props) => {
     })
 
     setErrors(translatedErrors)
-    setCourseDeleted(false)
+    setUnitDeleted(false)
     setDeleteModalIsOpen(false)
   }
 
   // Button handlers
-  const onDeleteClicked = (course) => {
-    setCourseToDelete(course)
+  const onDeleteClicked = (unit) => {
+    setUnitToDelete(unit)
     setDeleteModalIsOpen(true)
   }
 
   const onDeleteConfirmClicked = () => {
-    deleteCourse({
-      variables: { id: courseToDelete.id },
+    deleteUnit({
+      variables: { id: unitToDelete.id },
       update: (cache, result) => {
-        const updatedCoursesList = syncCacheOnDelete(cache, courseToDelete)
-        setCourses(updatedCoursesList.data)
+        const updatedUnitList = syncCacheOnDelete(cache, unitToDelete)
+        setUnits(updatedUnitList.data)
       }
     })
   }
@@ -66,15 +66,15 @@ const CoursesList = (props) => {
   const stateCleanupOnDelete = () => {
     setErrors()
     setDeleteModalIsOpen(false)
-    setCourseDeleted(true)
+    setUnitDeleted(true)
   }
 
   // Queries and mutations
-  const { loading: fetching } = useQuery(LIST_COURSES, { variables: { q: '', offset: 0, limit: 100 }, onCompleted, onError })
-  const [deleteCourse, { loading: deleting }] = useMutation(DELETE_COURSE, { onCompleted: stateCleanupOnDelete, onError })
+  const { loading: fetching } = useQuery(LIST_UNITS, { variables: { q: '', offset: 0, limit: 100 }, onCompleted, onError })
+  const [deleteUnit, { loading: deleting }] = useMutation(DELETE_UNIT, { onCompleted: stateCleanupOnDelete, onError })
 
   const columnTranslations = {
-    courseName: formatMessage({ id: 'course_name' }),
+    unitName: formatMessage({ id: 'unit_name' }),
     action: formatMessage({ id: 'action' }),
     edit: formatMessage({ id: 'button.edit' }),
     delete: formatMessage({ id: 'button.delete' })
@@ -83,7 +83,7 @@ const CoursesList = (props) => {
   const columns = React.useMemo(
     () => {
       return [{
-        Header: columnTranslations.courseName,
+        Header: columnTranslations.unitName,
         accessor: 'name',
         Cell: ({ row }) => row.values.name
       },
@@ -91,7 +91,7 @@ const CoursesList = (props) => {
         Header: columnTranslations.action,
         Cell: ({ row }) => (
           <div className='d-flex justify-content-center'>
-            <Link to={`/courses/${row.original.id}`}>
+            <Link to={`/units/${row.original.id}`}>
               <Button color='info'>{columnTranslations.edit}</Button>
             </Link>
             <Button
@@ -109,19 +109,19 @@ const CoursesList = (props) => {
   )
 
   return (
-    <div className='course-list'>
+    <div className='unit-list'>
       {fetching && <Loading />}
       {!fetching &&
         <Card className='mx-auto'>
           <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
             <p className='h4'>
-              <FormattedMessage id='common_entity.courses' />
+              <FormattedMessage id='common_entity.units' />
             </p>
           </CardHeader>
           <CardBody className='d-flex flex-column text-center'>
-            {courses.length === 0
+            {units.length === 0
               ? formatMessage({ id: 'common_message.no_results' })
-              : <Table columns={columns} data={courses} />}
+              : <Table columns={columns} data={units} />}
 
             {/* Modal */}
             <div id='modal'>
@@ -153,7 +153,7 @@ const CoursesList = (props) => {
             </div>
 
             {/* Alerts */}
-            {!deleting && courseDeleted && <CustomAlert messages={{ id: 'course_deleted', message: `${formatMessage({ id: 'course_deleted' })}: ${courseToDelete.name}` }} color='success' />}
+            {!deleting && unitDeleted && <CustomAlert messages={{ id: 'unit_deleted', message: `${formatMessage({ id: 'unit_deleted' })}: ${unitToDelete.name}` }} color='success' />}
           </CardBody>
         </Card>}
       {errors && <CustomAlert messages={errors} />}
@@ -161,4 +161,4 @@ const CoursesList = (props) => {
   )
 }
 
-export default injectIntl(CoursesList)
+export default injectIntl(UnitsList)
