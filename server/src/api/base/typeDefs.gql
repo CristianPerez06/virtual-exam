@@ -1,11 +1,11 @@
-type BaseResponse {
+type Response {
   done: Boolean
 }
 
 type Query {
-  baseQuery: BaseResponse
+  baseQuery: Response
 }
 
 type Mutation {
-  baseMutation: BaseResponse
+  baseMutation: Response
 }

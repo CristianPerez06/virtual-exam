@@ -1,7 +1,7 @@
 import { ERROR_FIELDS } from '../common/constants'
 
 export const required = (value) => {
-  if (!value) return
+  if (!value) return ERROR_FIELDS.REQUIRED
   const allWhiteSpaces = value.match(/^ *$/)
   if (allWhiteSpaces) return ERROR_FIELDS.REQUIRED
   return (value ? undefined : ERROR_FIELDS.REQUIRED)

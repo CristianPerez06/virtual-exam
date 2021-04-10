@@ -8,10 +8,6 @@ type Courses {
   count: Int!
 }
 
-type Response {
-  done: Boolean
-}
-
 extend type Query {
   getCourse(id: ID!): Course
   listCourses(q: String, offset: Int, limit: Int): Courses

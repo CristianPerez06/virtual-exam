@@ -9,17 +9,17 @@ const Index = () => {
     <Switch>
       <Route
         name='List courses'
-        path='/course/list'
+        path='/courses/list'
         render={(props) => <CoursesList {...props} />}
       />
       <Route
         name='Course editor'
-        path='/course/new'
+        path='/courses/new'
         render={(props) => <CourseEditor {...props} isCreating />}
       />
       <Route
         name='Edit course'
-        path='/course/:id'
+        path='/courses/:id'
         render={(props) => <CourseEditor {...props} isCreating={false} />}
       />
       <Route name='Page Not Found' component={PageNotFound} />
