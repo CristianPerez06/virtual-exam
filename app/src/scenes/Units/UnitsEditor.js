@@ -24,6 +24,7 @@ const UnitsEditor = (props) => {
   const [unitUpdated, setUnitUpdated] = useState(false)
   const [courses, setCourses] = useState([])
   const [initialValues, setInitialValues] = useState({})
+  const [selectedCourse, setSelectedCourse] = useState({})
   const [errors, setErrors] = useState()
 
   // Handlers
@@ -47,6 +48,7 @@ const UnitsEditor = (props) => {
     if (!result) return
     const unit = { ...result.getUnit }
     setInitialValues(unit)
+    setSelectedCourse(unit.courseId)
   }
 
   const onFetchCoursesSuccess = (result) => {
@@ -66,7 +68,6 @@ const UnitsEditor = (props) => {
 
   const onSubmit = (values) => {
     const { name, courseId } = values
-
     isCreating
       ? createUnit({
         variables: { name: name, courseId: courseId },
@@ -75,7 +76,7 @@ const UnitsEditor = (props) => {
         }
       })
       : updateUnit({
-        variables: { id: params.id, name: name },
+        variables: { id: params.id, name: name, courseId: courseId },
         update: (cache, result) => {
           syncCacheOnUpdate(cache, result.data.updateUnit)
         }
@@ -115,6 +116,7 @@ const UnitsEditor = (props) => {
     if (isCreating) {
       setUnitUpdated(false)
       setInitialValues({})
+      setSelectedCourse('')
     }
   }, [isCreating])
 
@@ -161,8 +163,11 @@ const UnitsEditor = (props) => {
                         <Select
                           options={options}
                           selectClass='form-control'
-                          selectedValue={initialValues.courseId}
-                          onChange={(value) => input.onChange(value)}
+                          selectedValue={selectedCourse}
+                          onChange={(value) => {
+                            setSelectedCourse(value)
+                            input.onChange(value)
+                          }}
                         />
                         {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
                       </div>

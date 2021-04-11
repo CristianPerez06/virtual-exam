@@ -35,10 +35,11 @@ export const CREATE_UNIT = gql`
 `
 
 export const UPDATE_UNIT = gql`
-  mutation updateUnit($id: ID!, $name: String!) {
-    updateUnit(id: $id, name: $name){
+  mutation updateUnit($id: ID!, $name: String!, $courseId: ID!) {
+    updateUnit(id: $id, name: $name, courseId: $courseId){
       id
-      name
+      name,
+      courseId
     }
   }
 `

@@ -126,6 +126,7 @@ const resolver = {
       const update = {
         $set: {
           name,
+          courseId,
           updated: moment().toISOString()
         }
       }
