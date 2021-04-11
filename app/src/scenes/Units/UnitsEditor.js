@@ -9,7 +9,7 @@ import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
 import { CREATE_UNIT, UPDATE_UNIT, GET_UNIT } from './requests'
-import { LIST_COURSES } from '../Course/requests'
+import { LIST_COURSES } from '../Courses/requests'
 import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
 
 const UnitsEditor = (props) => {
