@@ -8,8 +8,8 @@ import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
-import { CREATE_UNIT, UPDATE_UNIT, GET_UNIT } from './requests'
-import { LIST_COURSES } from '../Courses/requests'
+import { CREATE_UNIT, UPDATE_UNIT, GET_UNIT } from '../../common/requests/units'
+import { LIST_COURSES } from '../../common/requests/courses'
 import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
 
 const UnitsEditor = (props) => {

@@ -9,7 +9,6 @@ export const GET_COURSE = gql`
     }
   }
 `
-
 export const LIST_COURSES = gql`
   query listCourses($q: String, $offset: Int, $limit: Int) {
     listCourses(q: $q, offset: $offset, limit: $limit) {
@@ -21,7 +20,6 @@ export const LIST_COURSES = gql`
     }
   }
 `
-
 export const CREATE_COURSE = gql`
   mutation createCourse($name: String!) {
     createCourse(name: $name){
@@ -30,7 +28,6 @@ export const CREATE_COURSE = gql`
     }
   }
 `
-
 export const UPDATE_COURSE = gql`
   mutation updateCourse($id: ID!, $name: String!) {
     updateCourse(id: $id, name: $name){
@@ -39,7 +36,6 @@ export const UPDATE_COURSE = gql`
     }
   }
 `
-
 export const DELETE_COURSE = gql`
   mutation deleteCourse($id: ID!) {
     deleteCourse(id: $id){
