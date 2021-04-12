@@ -8,7 +8,7 @@ import { ERROR_MESSAGES } from '../../common/constants'
 import { required } from '../../common/validators'
 import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
-import { CREATE_COURSE, UPDATE_COURSE, GET_COURSE } from './requests'
+import { CREATE_COURSE, UPDATE_COURSE, GET_COURSE } from '../../common/requests/courses'
 import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
 
 const CourseEditor = (props) => {

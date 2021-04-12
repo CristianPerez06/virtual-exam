@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Card, CardBody, CardHeader, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { LIST_COURSES, DELETE_COURSE } from './requests'
+import { LIST_COURSES, DELETE_COURSE } from '../../common/requests/courses'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Loading, LoadingInline, CustomAlert, TranslatableErrors, Table } from '../../components/common'
 import { Link } from 'react-router-dom'

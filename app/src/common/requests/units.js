@@ -10,7 +10,6 @@ export const GET_UNIT = gql`
     }
   }
 `
-
 export const LIST_UNITS = gql`
   query listUnits($q: String, $offset: Int, $limit: Int) {
     listUnits(q: $q, offset: $offset, limit: $limit) {
@@ -23,7 +22,6 @@ export const LIST_UNITS = gql`
     }
   }
 `
-
 export const CREATE_UNIT = gql`
   mutation createUnit($name: String!, $courseId: ID!) {
     createUnit(name: $name, courseId: $courseId){
@@ -33,7 +31,6 @@ export const CREATE_UNIT = gql`
     }
   }
 `
-
 export const UPDATE_UNIT = gql`
   mutation updateUnit($id: ID!, $name: String!, $courseId: ID!) {
     updateUnit(id: $id, name: $name, courseId: $courseId){
@@ -43,7 +40,6 @@ export const UPDATE_UNIT = gql`
     }
   }
 `
-
 export const DELETE_UNIT = gql`
   mutation deleteUnit($id: ID!) {
     deleteUnit(id: $id){

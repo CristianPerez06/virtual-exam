@@ -1,6 +1,6 @@
 import { readCacheList, writeCacheList } from '../../common/apolloCacheHelpers'
 import { addItemToList, updateItemInList, removeItemFromList } from '../../common/arrayHelpers'
-import { LIST_UNITS } from './requests'
+import { LIST_UNITS } from '../../common/requests/units'
 
 export const syncCacheOnCreate = (cache, item, query) => {
   // Read Cache Query
