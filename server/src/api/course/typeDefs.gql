@@ -10,7 +10,7 @@ type Courses {
 
 extend type Query {
   getCourse(id: ID!): Course
-  listCourses(q: String, offset: Int, limit: Int): Courses
+  listCourses(name: String): Courses
 }
 
 extend type Mutation {

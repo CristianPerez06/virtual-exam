@@ -10,8 +10,8 @@ export const GET_COURSE = gql`
   }
 `
 export const LIST_COURSES = gql`
-  query listCourses($q: String, $offset: Int, $limit: Int) {
-    listCourses(q: $q, offset: $offset, limit: $limit) {
+  query listCourses($name: String) {
+    listCourses(name: $name) {
       data {
         id
         name

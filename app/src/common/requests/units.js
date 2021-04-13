@@ -11,8 +11,8 @@ export const GET_UNIT = gql`
   }
 `
 export const LIST_UNITS = gql`
-  query listUnits($q: String, $offset: Int, $limit: Int) {
-    listUnits(q: $q, offset: $offset, limit: $limit) {
+  query listUnits($courseId: ID) {
+    listUnits(courseId: $courseId) {
       data {
         id
         name,

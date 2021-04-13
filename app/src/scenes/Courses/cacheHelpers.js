@@ -4,7 +4,7 @@ import { LIST_COURSES } from '../../common/requests/courses'
 
 export const syncCacheOnCreate = (cache, item, query) => {
   // Read Cache Query
-  const { listCourses } = readCacheList(cache, LIST_COURSES, { q: '', offset: 0, limit: 100 })
+  const { listCourses } = readCacheList(cache, LIST_COURSES)
   // If list is not in cache yet then we don't do anything
   if (!listCourses) return
   // Add new item to list
@@ -19,7 +19,7 @@ export const syncCacheOnCreate = (cache, item, query) => {
 
 export const syncCacheOnUpdate = (cache, item, query) => {
   // Read Cache
-  const { listCourses } = readCacheList(cache, LIST_COURSES, { q: '', offset: 0, limit: 100 })
+  const { listCourses } = readCacheList(cache, LIST_COURSES)
   // If list is not in cache yet then we don't do anything
   if (!listCourses) return
   // Update item in list
@@ -34,7 +34,7 @@ export const syncCacheOnUpdate = (cache, item, query) => {
 
 export const syncCacheOnDelete = (cache, item, query) => {
   // Read Cache
-  const { listCourses } = readCacheList(cache, LIST_COURSES, { q: '', offset: 0, limit: 100 })
+  const { listCourses } = readCacheList(cache, LIST_COURSES)
   // If list is not in cache yet then we don't do anything
   if (!listCourses) return
   // Remove item from list
