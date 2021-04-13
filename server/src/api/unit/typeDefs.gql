@@ -11,7 +11,7 @@ type Units {
 
 extend type Query {
   getUnit(id: ID!): Unit
-  listUnits(q: String, offset: Int, limit: Int): Units
+  listUnits(courseId: ID): Units
 }
 
 extend type Mutation {

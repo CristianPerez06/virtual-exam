@@ -4,7 +4,7 @@ import { LIST_UNITS } from '../../common/requests/units'
 
 export const syncCacheOnCreate = (cache, item, query) => {
   // Read Cache Query
-  const { listUnits } = readCacheList(cache, LIST_UNITS, { q: '', offset: 0, limit: 100 })
+  const { listUnits } = readCacheList(cache, LIST_UNITS)
   // If list is not in cache yet then we don't do anything
   if (!listUnits) return
   // Add new item to list
@@ -19,7 +19,7 @@ export const syncCacheOnCreate = (cache, item, query) => {
 
 export const syncCacheOnUpdate = (cache, item, query) => {
   // Read Cache
-  const { listUnits } = readCacheList(cache, LIST_UNITS, { q: '', offset: 0, limit: 100 })
+  const { listUnits } = readCacheList(cache, LIST_UNITS)
   // If list is not in cache yet then we don't do anything
   if (!listUnits) return
   // Update item in list
@@ -34,7 +34,7 @@ export const syncCacheOnUpdate = (cache, item, query) => {
 
 export const syncCacheOnDelete = (cache, item, query) => {
   // Read Cache
-  const { listUnits } = readCacheList(cache, LIST_UNITS, { q: '', offset: 0, limit: 100 })
+  const { listUnits } = readCacheList(cache, LIST_UNITS)
   // If list is not in cache yet then we don't do anything
   if (!listUnits) return
   // Remove item from list

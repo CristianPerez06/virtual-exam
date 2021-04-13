@@ -50,24 +50,27 @@ const resolver = {
       debug('Running listUnits query with params:', args)
 
       // Params
-      const { q, offset = 0, limit = 100 } = args
+      const { courseId } = args
 
       // Collection
       const collection = context.db.collection('units')
 
-      // Query
-      const searchByValue = q && q.length > 2
-      const query = {
-        ...(searchByValue && { $text: { $search: 'Uni' } })
+      // Aggregate
+      let aggregate = []
+      if (courseId) {
+        aggregate = [
+          ...aggregate,
+          {
+            $match: {
+              courseId: new ObjectId(courseId)
+            }
+          }
+        ]
       }
+      debug('Aggregate: ', aggregate)
 
       // Exec
-      const cursor = collection.find(query)
-      const docs = await cursor
-        // .sort(sort)
-        .skip(offset)
-        .limit(limit)
-        .toArray()
+      const docs = await collection.aggregate(aggregate).toArray()
 
       // Results
       return prepMultipleResultsForUser(docs)
@@ -85,7 +88,7 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      if (docWithSameName && docWithSameName.courseId === courseId) {
+      if (docWithSameName && docWithSameName.courseId.toString() === courseId) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
 
@@ -93,7 +96,7 @@ const resolver = {
       const newUnit = {
         _id: new ObjectId(),
         name: name,
-        courseId: courseId,
+        courseId: new ObjectId(courseId),
         created: moment().toISOString()
       }
 
@@ -118,7 +121,7 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      if (docWithSameName && docWithSameName.courseId === courseId) {
+      if (docWithSameName && docWithSameName.courseId.toString() === courseId) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
 
@@ -126,7 +129,7 @@ const resolver = {
       const update = {
         $set: {
           name,
-          courseId,
+          courseId: new ObjectId(courseId),
           updated: moment().toISOString()
         }
       }

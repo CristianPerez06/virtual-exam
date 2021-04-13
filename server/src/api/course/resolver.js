@@ -50,24 +50,27 @@ const resolver = {
       debug('Running listCourses query with params:', args)
 
       // Params
-      const { q, offset = 0, limit = 100 } = args
+      const { name } = args
 
       // Collection
       const collection = context.db.collection('courses')
 
-      // Query
-      const searchByValue = q && q.length > 2
-      const query = {
-        ...(searchByValue && { $text: { $search: 'Cour' } })
+      // Aggregate
+      let aggregate = []
+      if (name) {
+        aggregate = [
+          ...aggregate,
+          {
+            $match: {
+              name: name
+            }
+          }
+        ]
       }
+      debug('Aggregate: ', aggregate)
 
       // Exec
-      const cursor = collection.find(query)
-      const docs = await cursor
-        // .sort(sort)
-        .skip(offset)
-        .limit(limit)
-        .toArray()
+      const docs = await collection.aggregate(aggregate).toArray()
 
       // Results
       return prepMultipleResultsForUser(docs)
