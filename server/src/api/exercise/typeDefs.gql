@@ -1,0 +1,22 @@
+type Exercise {
+  id: ID!
+  name: String,
+  courseId: ID!,
+  unitId: ID!
+}
+
+type Exercises {
+  data: [Exercise]
+  count: Int!
+}
+
+extend type Query {
+  getExercise(id: ID!): Exercise
+  listExercises(courseId: ID, unitId: ID): Exercises
+}
+
+extend type Mutation {
+  createExercise(name: String!, courseId: ID!, unitId: ID!): Exercise
+  updateExercise(id: ID!, name: String!, courseId: ID!, unitId: ID!): Exercise
+  deleteExercise(id: ID!): Response
+}

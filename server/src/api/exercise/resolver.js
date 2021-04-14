@@ -5,12 +5,12 @@ const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
 
-const debug = require('debug')('virtual-exam:unit-resolver')
+const debug = require('debug')('virtual-exam:exercise-resolver')
 
 const init = () => {
   maintainIndex({
     shared: true,
-    collectionName: 'units',
+    collectionName: 'exercises',
     indexVersion: 1,
     spec: { 'name.text': 'text' },
     options: {
@@ -24,14 +24,14 @@ init()
 
 const resolver = {
   Query: {
-    getUnit: async (parent, args, context) => {
-      debug('Running getUnit query with params:', args)
+    getExercise: async (parent, args, context) => {
+      debug('Running getExercise query with params:', args)
 
       // Params
       const { id } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('exercises')
 
       // Query
       const query = {
@@ -46,14 +46,14 @@ const resolver = {
       // Results
       return prepSingleResultForUser(docs[0])
     },
-    listUnits: async (parent, args, context) => {
-      debug('Running listUnits query with params:', args)
+    listExercises: async (parent, args, context) => {
+      debug('Running listExercises query with params:', args)
 
       // Params
-      const { courseId } = args
+      const { courseId, unitId } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('exercises')
 
       // Aggregate
       let aggregate = []
@@ -63,6 +63,16 @@ const resolver = {
           {
             $match: {
               courseId: new ObjectId(courseId)
+            }
+          }
+        ]
+      }
+      if (unitId) {
+        aggregate = [
+          ...aggregate,
+          {
+            $match: {
+              unitId: new ObjectId(unitId)
             }
           }
         ]
@@ -77,18 +87,18 @@ const resolver = {
     }
   },
   Mutation: {
-    createUnit: async (parent, args, context) => {
-      debug('Running createUnit mutation with params:', args)
+    createExercise: async (parent, args, context) => {
+      debug('Running createExercise mutation with params:', args)
 
       // Args
-      const { name, courseId } = args
+      const { name, courseId, unitId } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('exercises')
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      if (docWithSameName && docWithSameName.courseId.toString() === courseId) {
+      if (docWithSameName && docWithSameName.courseId.toString() === courseId && docWithSameName.unitId.toString() === unitId) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
 
@@ -97,6 +107,7 @@ const resolver = {
         _id: new ObjectId(),
         name: name,
         courseId: new ObjectId(courseId),
+        unitId: new ObjectId(unitId),
         created: moment().toISOString()
       }
 
@@ -105,23 +116,23 @@ const resolver = {
 
       // Results
       if (response.result.ok !== 1) {
-        debug('createUnit error:', response.error.message)
+        debug('createExercise error:', response.error.message)
         throw new Error(response.error.message)
       }
       return prepSingleResultForUser(response.ops[0])
     },
-    updateUnit: async (parent, args, context) => {
-      debug('Running updateUnit mutation with params:', args)
+    updateExercise: async (parent, args, context) => {
+      debug('Running updateExercise mutation with params:', args)
 
       // Args
-      const { id, name, courseId } = args
+      const { id, name, courseId, unitId } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('exercises')
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      if (docWithSameName && docWithSameName.courseId.toString() === courseId) {
+      if (docWithSameName && docWithSameName.courseId.toString() === courseId && docWithSameName.unitId.toString() === unitId) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
 
@@ -130,6 +141,7 @@ const resolver = {
         $set: {
           name,
           courseId: new ObjectId(courseId),
+          unitId: new ObjectId(unitId),
           updated: moment().toISOString()
         }
       }
@@ -139,19 +151,19 @@ const resolver = {
 
       // Results
       if (response.ok !== 1) {
-        debug('updateUnit error:', response.lastErrorObject)
+        debug('updateExercise error:', response.lastErrorObject)
         throw new Error(response.lastErrorObject)
       }
       return prepSingleResultForUser(response.value)
     },
-    deleteUnit: async (parent, args, context) => {
-      debug('Running deleteUnit mutation with params:', args)
+    deleteExercise: async (parent, args, context) => {
+      debug('Running deleteExercise mutation with params:', args)
 
       // Args
       const { id } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('exercises')
 
       // Query
       const query = { _id: new ObjectId(id) }
@@ -163,7 +175,7 @@ const resolver = {
       if (result && result.n === 1 && result.ok === 1) {
         return { done: true }
       } else {
-        debug('deleteUnit error:', BACKEND_ERRORS.DELETE_FAILED.Code)
+        debug('deleteExercise error:', BACKEND_ERRORS.DELETE_FAILED.Code)
         throw new Error(BACKEND_ERRORS.DELETE_FAILED.Code)
       }
     }

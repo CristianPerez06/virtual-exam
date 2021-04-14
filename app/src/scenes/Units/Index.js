@@ -8,17 +8,17 @@ const Index = () => {
   return (
     <Switch>
       <Route
-        name='List units'
+        name='Units List'
         path='/units/list'
         render={(props) => <UnitsList {...props} />}
       />
       <Route
-        name='Unit editor'
+        name='Units editor'
         path='/units/new'
         render={(props) => <UnitsEditor {...props} isCreating />}
       />
       <Route
-        name='Edit course'
+        name='Units editor'
         path='/units/:id'
         render={(props) => <UnitsEditor {...props} isCreating={false} />}
       />

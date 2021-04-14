@@ -91,10 +91,10 @@ const resolver = {
       if (docWithSameName) { throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code) }
 
       // Query
-      const newCourse = { _id: new ObjectId(), name: name, created: moment().toISOString() }
+      const newItem = { _id: new ObjectId(), name: name, created: moment().toISOString() }
 
       // Exec
-      const response = await collection.insertOne(newCourse, { writeConcern: { w: 'majority' } })
+      const response = await collection.insertOne(newItem, { writeConcern: { w: 'majority' } })
 
       // Results
       if (response.result.ok !== 1) {

@@ -2,6 +2,7 @@
   "common_message.loading": "Loading...",
   "common_message.no_results": "There are no results to show",
   "common_message.select_value": "Select a value",
+  "common_message.no_items_available": "No items available",
 
   "common_action.create": "Create",
   "common_action.edit": "Edit",
@@ -27,6 +28,8 @@
   "common_entity.courses": "Courses",
   "common_entity.unit": "Unit",
   "common_entity.units": "Units",
+  "common_entity.exercise": "Exercise",
+  "common_entity.exercises": "Exercises",
 
   "common_title.register_user": "Register user",
   "common_title.sign_in": "Sign in",
@@ -52,6 +55,7 @@
   "button.delete": "Delete",
   "button.cancel": "Cancel",
   "button.go_to_list": "Go to list",
+  "button.exercises": "Exercises",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
@@ -62,6 +66,11 @@
   "unit_created": "Unit created succesfully",
   "unit_updated": "Unit updated succesfully",
   "unit_deleted": "Unit deleted successfully",
+
+  "exercise_name": "Exercise description",
+  "exercise_created": "Exercise created succesfully",
+  "exercise_updated": "Exercise updated succesfully",
+  "exercise_deleted": "Exercise updated succesfully",
 
   "registration_completed": "Registration succesful",
   "first_name": "Name",
