@@ -3,7 +3,7 @@ import { injectIntl } from 'react-intl'
 
 const Select = (props) => {
   // Props and params
-  const { options, selectClass, selectedValue, onChange, intl } = props
+  const { options, selectClass, selectedValue, onChange, intl, isDisabled } = props
   const { formatMessage } = intl
 
   const handleChange = (value) => {
@@ -13,11 +13,20 @@ const Select = (props) => {
     onChange(newValue)
   }
 
+  if (options.length === 0) {
+    return (
+      <select className={selectClass} disabled>
+        <option>{formatMessage({ id: 'common_message.no_items_available' })}</option>
+      </select>
+    )
+  }
+
   return (
     <select
       className={selectClass}
       onChange={(x) => handleChange(x)}
       value={selectedValue}
+      disabled={isDisabled}
     >
       <option value='DEFAULT_VALUE'>{formatMessage({ id: 'common_message.select_value' })}</option>
       {options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}

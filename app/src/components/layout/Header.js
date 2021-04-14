@@ -75,6 +75,19 @@ const Header = () => {
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret>
+              <FormattedMessage id='button.exercises' />
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem tag={Link} to='/exercises/new'>
+                <FormattedMessage id='button.create' />
+              </DropdownItem>
+              <DropdownItem tag={Link} to='/exercises/list'>
+                <FormattedMessage id='button.list' />
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
         </Nav>
         <Nav className='ml-auto' navbar>
           <UncontrolledDropdown nav inNavbar>

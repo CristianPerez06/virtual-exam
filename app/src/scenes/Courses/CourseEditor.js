@@ -4,12 +4,12 @@ import { Button } from 'reactstrap'
 import { useHistory, Link, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
-import { ERROR_MESSAGES } from '../../common/constants'
 import { required } from '../../common/validators'
 import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
 import { CREATE_COURSE, UPDATE_COURSE, GET_COURSE } from '../../common/requests/courses'
 import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
+import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
 const CourseEditor = (props) => {
   // Props and params
@@ -46,19 +46,8 @@ const CourseEditor = (props) => {
     setCourseUpdated(false)
 
     const { graphQLErrors } = err
-    const translatedErrors = graphQLErrors.map(error => {
-      const errorCode = ((error || {}).extensions || {}).code || ''
-      switch (errorCode) {
-        case ERROR_MESSAGES.DUPLICATED_ENTITY:
-          return { id: errorCode, message: formatMessage({ id: 'common_error.duplicated_entity' }) }
-        default:
-          return { id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) }
-      }
-    })
-    if (translatedErrors.length === 0) {
-      translatedErrors.push({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) })
-    }
-    setErrors(translatedErrors)
+    const translatableErrors = getTranslatableErrors(graphQLErrors)
+    setErrors(translatableErrors)
   }
 
   const onSubmit = (values) => {

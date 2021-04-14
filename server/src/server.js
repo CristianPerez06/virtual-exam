@@ -40,10 +40,11 @@ const JWT_PUBLIC_KEY = jtp(jsonWebKeys[1])
 const { baseDefs, baseResolvers } = require('./api/base/index')
 const { courseDefs, courseResolvers } = require('./api/course/index')
 const { unitDefs, unitResolvers } = require('./api/unit/index')
+const { exerciseDefs, exerciseResolvers } = require('./api/exercise/index')
 
 // typeDefs & resolvers
-const typeDefs = [baseDefs, courseDefs, unitDefs]
-const resolvers = [baseResolvers, courseResolvers, unitResolvers]
+const typeDefs = [baseDefs, courseDefs, unitDefs, exerciseDefs]
+const resolvers = [baseResolvers, courseResolvers, unitResolvers, exerciseResolvers]
 
 const server = new ApolloServer({
   typeDefs: typeDefs,

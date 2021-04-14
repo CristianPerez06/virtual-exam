@@ -24,7 +24,7 @@ const UnitsEditor = (props) => {
   const [unitUpdated, setUnitUpdated] = useState(false)
   const [courses, setCourses] = useState([])
   const [initialValues, setInitialValues] = useState({})
-  const [selectedCourse, setSelectedCourse] = useState({})
+  const [filters, setFilters] = useState({})
   const [errors, setErrors] = useState()
 
   // Handlers
@@ -48,7 +48,7 @@ const UnitsEditor = (props) => {
     if (!result) return
     const unit = { ...result.getUnit }
     setInitialValues(unit)
-    setSelectedCourse(unit.courseId)
+    setFilters({ selectedCourse: unit.courseId })
   }
 
   const onFetchCoursesSuccess = (result) => {
@@ -116,7 +116,7 @@ const UnitsEditor = (props) => {
     if (isCreating) {
       setUnitUpdated(false)
       setInitialValues({})
-      setSelectedCourse('')
+      setFilters({})
     }
   }, [isCreating])
 
@@ -154,27 +154,23 @@ const UnitsEditor = (props) => {
             </div>
 
             <div id='fields' className='mb-5'>
-              {fetchingCourses && <input type='text' className='form-control' value={formatMessage({ id: 'common_message.loading' })} disabled readOnly />}
-              {!fetchingCourses && (
-                <Field name='courseId' component='select' disabled={fetchingCourses} options={courses} validate={required}>
-                  {({ input, meta, options }) => {
-                    return (
-                      <div>
-                        <Select
-                          options={options}
-                          selectClass='form-control'
-                          selectedValue={selectedCourse}
-                          onChange={(value) => {
-                            setSelectedCourse(value)
-                            input.onChange(value)
-                          }}
-                        />
-                        {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                      </div>
-                    )
-                  }}
-                </Field>
-              )}
+              <Field name='courseId' component='select' disabled={fetchingCourses} options={courses} validate={required}>
+                {({ input, meta, options }) => (
+                  <div>
+                    <Select
+                      options={options}
+                      selectClass='form-control'
+                      selectedValue={filters.selectedCourse}
+                      onChange={(value) => {
+                        setFilters({ ...filters, selectedCourse: value })
+                        input.onChange(value)
+                      }}
+                      disabled={fetchingCourses}
+                    />
+                    {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
+                  </div>
+                )}
+              </Field>
             </div>
 
             <div id='buttons' className='d-flex justify-content-center'>
