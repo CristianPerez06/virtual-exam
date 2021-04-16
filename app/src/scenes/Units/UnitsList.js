@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { Card, CardBody, CardHeader, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Card, CardBody, CardHeader, Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_UNITS, DELETE_UNIT } from '../../common/requests/units'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Loading, LoadingInline, CustomAlert, TranslatableErrors, Table } from '../../components/common'
+import { Loading, CustomAlert, TranslatableErrors, Table, DeleteModal } from '../../components/common'
 import { Link } from 'react-router-dom'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
@@ -64,7 +64,7 @@ const UnitsList = (props) => {
   }
 
   // Queries and mutations
-  const { loading: fetching } = useQuery(LIST_UNITS, { variables: { q: '', offset: 0, limit: 100 }, onCompleted, onError })
+  const { loading: fetching } = useQuery(LIST_UNITS, { variables: {}, onCompleted, onError })
   const [deleteUnit, { loading: deleting }] = useMutation(DELETE_UNIT, { onCompleted: stateCleanupOnDelete, onError })
 
   const columnTranslations = {
@@ -114,36 +114,17 @@ const UnitsList = (props) => {
           </CardHeader>
           <CardBody className='d-flex flex-column text-center'>
             {units.length === 0
-              ? formatMessage({ id: 'common_message.no_results' })
+              ? <FormattedMessage id='common_message.no_results' />
               : <Table columns={columns} data={units} />}
 
-            {/* Modal */}
-            <div id='modal'>
-              <Modal isOpen={deleteModalIsOpen} toggle={onCancelClicked} disabled>
-                <ModalHeader toggle={onCancelClicked} disabled>
-                  {formatMessage({ id: 'common_title.delete_confirmation' })}
-                </ModalHeader>
-                <ModalBody>
-                  {formatMessage({ id: 'delete_this_record' })}
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    color='danger'
-                    onClick={onDeleteConfirmClicked}
-                    disabled={deleting}
-                  >
-                    {formatMessage({ id: 'button.delete' })}
-                    {deleting && <LoadingInline className='ml-3' />}
-                  </Button>
-                  <Button
-                    color='secondary'
-                    onClick={onCancelClicked}
-                    disabled={deleting}
-                  >
-                    {formatMessage({ id: 'button.cancel' })}
-                  </Button>
-                </ModalFooter>
-              </Modal>
+            {/* Delete dodal */}
+            <div id='delete-modal'>
+              <DeleteModal
+                modalIsOpen={deleteModalIsOpen}
+                isBussy={deleting}
+                onCloseClick={() => onCancelClicked()}
+                onDeleteClick={() => onDeleteConfirmClicked()}
+              />
             </div>
 
             {/* Alerts */}

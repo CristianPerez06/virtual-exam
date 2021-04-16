@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Field } from 'react-final-form'
-import { Button } from 'reactstrap'
-import { useHistory, Link, useRouteMatch } from 'react-router-dom'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { LoadingInline, CustomAlert, TranslatableErrors, FieldError, Select } from '../../components/common'
+import { CustomAlert, TranslatableErrors, FieldError, Select, ButtonSubmit, ButtonGoToList } from '../../components/common'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl } from 'react-intl'
@@ -100,14 +99,7 @@ const UnitsEditor = (props) => {
       onError
     }
   )
-  const { loading: fetchingCourses } = useQuery(
-    LIST_COURSES,
-    {
-      variables: { q: '', offset: 0, limit: 100 },
-      onCompleted: onFetchCoursesSuccess,
-      onError
-    }
-  )
+  const { loading: fetchingCourses } = useQuery(LIST_COURSES, { variables: {}, onCompleted: onFetchCoursesSuccess, onError })
   const [createUnit, { loading: creating }] = useMutation(CREATE_UNIT, { onCompleted: onSuccess, onError })
   const [updateUnit, { loading: updating }] = useMutation(UPDATE_UNIT, { onCompleted: onSuccess, onError })
 
@@ -174,26 +166,14 @@ const UnitsEditor = (props) => {
             </div>
 
             <div id='buttons' className='d-flex justify-content-center'>
-              <Button
-                color='primary'
-                type='submit'
-                className='m-2'
-                disabled={creating || updating || fetching || fetchingCourses || pristine}
-              >
-                {formatMessage({ id: 'button.save' })}
-                {(creating || updating || fetching) && <LoadingInline className='ml-3' />}
-              </Button>
-              <Link to='/units/list'>
-                <Button
-                  color='secondary'
-                  type='submit'
-                  className='m-2'
-                  disabled={creating || updating || fetching || fetchingCourses}
-                >
-                  {formatMessage({ id: 'button.go_to_list' })}
-                </Button>
-              </Link>
-
+              <ButtonSubmit
+                isDisabled={creating || updating || fetching || fetchingCourses || pristine}
+                isLoading={creating || updating || fetching}
+              />
+              <ButtonGoToList
+                entity='units'
+                isDisabled={creating || updating || fetching || fetchingCourses}
+              />
             </div>
 
             <div id='info' className='d-flex justify-content-around mt-5'>
