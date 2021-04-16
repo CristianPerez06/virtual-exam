@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Field } from 'react-final-form'
-import { Button } from 'reactstrap'
-import { useHistory, Link, useRouteMatch } from 'react-router-dom'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
+import { CustomAlert, FieldError, ButtonSubmit, ButtonGoToList } from '../../components/common'
 import { required } from '../../common/validators'
 import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
@@ -133,25 +132,14 @@ const CourseEditor = (props) => {
             </div>
 
             <div id='buttons' className='d-flex justify-content-center'>
-              <Button
-                color='primary'
-                type='submit'
-                className='m-2'
-                disabled={creating || updating || fetching || pristine}
-              >
-                {formatMessage({ id: 'button.save' })}
-                {(creating || updating || fetching) && <LoadingInline className='ml-3' />}
-              </Button>
-              <Link to='/courses/list'>
-                <Button
-                  color='secondary'
-                  type='submit'
-                  className='m-2'
-                  disabled={creating || updating || fetching}
-                >
-                  {formatMessage({ id: 'button.go_to_list' })}
-                </Button>
-              </Link>
+              <ButtonSubmit
+                isDisabled={creating || updating || fetching || pristine}
+                isLoading={creating || updating || fetching}
+              />
+              <ButtonGoToList
+                entity='courses'
+                isDisabled={creating || updating || fetching}
+              />
             </div>
 
             <div id='info' className='d-flex justify-content-around mt-5'>
