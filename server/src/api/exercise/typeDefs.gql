@@ -18,5 +18,6 @@ extend type Query {
 extend type Mutation {
   createExercise(name: String!, courseId: ID!, unitId: ID!): Exercise
   updateExercise(id: ID!, name: String!, courseId: ID!, unitId: ID!): Exercise
+  disableExercise(id: ID!): Exercise
   deleteExercise(id: ID!): Response
 }

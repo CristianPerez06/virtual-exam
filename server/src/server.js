@@ -41,10 +41,11 @@ const { baseDefs, baseResolvers } = require('./api/base/index')
 const { courseDefs, courseResolvers } = require('./api/course/index')
 const { unitDefs, unitResolvers } = require('./api/unit/index')
 const { exerciseDefs, exerciseResolvers } = require('./api/exercise/index')
+const { answerDefs, answerResolvers } = require('./api/answer/index')
 
 // typeDefs & resolvers
-const typeDefs = [baseDefs, courseDefs, unitDefs, exerciseDefs]
-const resolvers = [baseResolvers, courseResolvers, unitResolvers, exerciseResolvers]
+const typeDefs = [baseDefs, courseDefs, unitDefs, exerciseDefs, answerDefs]
+const resolvers = [baseResolvers, courseResolvers, unitResolvers, exerciseResolvers, answerResolvers]
 
 const server = new ApolloServer({
   typeDefs: typeDefs,

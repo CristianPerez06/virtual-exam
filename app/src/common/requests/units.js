@@ -40,6 +40,15 @@ export const UPDATE_UNIT = gql`
     }
   }
 `
+export const DISABLE_UNIT = gql`
+  mutation disableUnit($id: ID!) {
+    disableUnit(id: $id){
+      id
+      name,
+      courseId
+    }
+  }
+`
 export const DELETE_UNIT = gql`
   mutation deleteUnit($id: ID!) {
     deleteUnit(id: $id){

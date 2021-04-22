@@ -56,7 +56,12 @@ const resolver = {
       const collection = context.db.collection('exercises')
 
       // Aggregate
-      let aggregate = []
+      let aggregate = [{
+        $match: {
+          disabled: { $not: { $eq: true } }
+        }
+      }]
+
       if (courseId) {
         aggregate = [
           ...aggregate,
@@ -98,7 +103,12 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      if (docWithSameName && docWithSameName.courseId.toString() === courseId && docWithSameName.unitId.toString() === unitId) {
+      const isDuplicated = docWithSameName
+        && docWithSameName.disabled !== true
+        && docWithSameName.courseId.toString() === courseId
+        && docWithSameName.unitId.toString() === unitId
+        && docWithSameName.disabled !== true
+      if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
 
@@ -132,7 +142,11 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      if (docWithSameName && docWithSameName.courseId.toString() === courseId && docWithSameName.unitId.toString() === unitId) {
+      const isDuplicated = docWithSameName
+        && docWithSameName.courseId.toString() === courseId
+        && docWithSameName.unitId.toString() === unitId
+        && docWithSameName.disabled !== true
+      if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
 
@@ -152,6 +166,33 @@ const resolver = {
       // Results
       if (response.ok !== 1) {
         debug('updateExercise error:', response.lastErrorObject)
+        throw new Error(response.lastErrorObject)
+      }
+      return prepSingleResultForUser(response.value)
+    },
+    disableExercise: async (parent, args, context) => {
+      debug('Running disableExercise mutation with params:', args)
+
+      // Args
+      const { id, name, courseId, unitId } = args
+
+      // Collection
+      const collection = context.db.collection('exercises')
+
+      // Query
+      const update = {
+        $set: {
+          disabled: true,
+          updated: moment().toISOString()
+        }
+      }
+
+      // Exec
+      const response = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, update, { returnOriginal: false, w: 'majority' })
+
+      // Results
+      if (response.ok !== 1) {
+        debug('disableExercise error:', response.lastErrorObject)
         throw new Error(response.lastErrorObject)
       }
       return prepSingleResultForUser(response.value)

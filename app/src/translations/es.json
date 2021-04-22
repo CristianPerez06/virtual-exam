@@ -18,6 +18,8 @@
   "common_error.internal_server_error": "Ocurrio un error en el servidor",
   "common_error.duplicated_entity": "Ya existe una entidad con el mismo nombre",
 
+  "entity_error.correct_answer_already_selected": "Ya existe una respuesta correcta.",
+
   "common_field_error.required": "Campo requerido",
   "common_field_error.must_be_a_number": "El campo debe contener solo números",
   "common_field_error.incorrect_email_format": "El formato de la dirección de correo es incorrecto",
@@ -30,12 +32,15 @@
   "common_entity.units": "Unidades",
   "common_entity.exercise": "Ejercicio",
   "common_entity.exercises": "Ejercicios",
+  "common_entity.answer": "Respuesta",
+  "common_entity.answers": "Respuestas",
 
   "common_title.register_user": "Registrar usuario",
   "common_title.sign_in": "Iniciar sesión",
   "common_title.forgot_password": "Resetear contraseña",
   "common_title.change_password": "Cambiar contraseña",
   "common_title.delete_confirmation": "Confirmar borrado",
+  "common_title.edit": "Editar",
 
   "button.register": "Registrar",
   "button.signin": "Iniciar",
@@ -56,6 +61,8 @@
   "button.cancel": "Cancelar",
   "button.go_to_list": "Ir al listado",
   "button.exercises": "Ejercicios",
+  "button.add_answer": "Agregar respuesta",
+  "button.go_to_exercise": "Ir al ejercicio",
 
   "course_name": "Nombre del curso",
   "course_created": "Curso creado exitosamente",
@@ -67,10 +74,18 @@
   "unit_updated": "Unidad actualizada exitosamente",
   "unit_deleted": "Unidad eliminada exitosamente",
 
-  "exercise_name": "Descripción del ejercicio",
+  "exercise_name": "Titulo del ejercicio",
   "exercise_created": "Ejercicio creado exitosamente",
   "exercise_updated": "Ejercicio actualizado exitosamente",
   "exercise_deleted": "Ejercicio eliminado exitosamente",
+  "exercise_answer_correct_needed": "Para usar este ejercicio necesita una respuesta correcta",
+
+  "answer_name": "Titulo de la respuesta",
+  "answer_description": "Descripción de la respuesta",
+  "answer_created": "Respuesta creada exitosamente",
+  "answer_updated": "Respuesta actualizada exitosamente",
+  "answer_deleted": "Respuesta eliminada exitosamente",
+  "answer_correct": "Respuesta correcta",
 
   "registration_completed": "Registracion exitosa",
   "first_name": "Nombre",
@@ -85,6 +100,8 @@
   "settings": "Configuración",
   "action": "Acción",
   "delete_this_record": "¿Esta seguro de querer eliminar el registro?",
+  "edit_item": "Editar item",
+  "description": "Descripción",
 
   "language.spanish": "Español",
   "language.english": "Ingles"

@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Field } from 'react-final-form'
-import { Button } from 'reactstrap'
-import { useHistory, Link, useRouteMatch } from 'react-router-dom'
+import { Button, Input } from 'reactstrap'
+import { Link, useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { LoadingInline, CustomAlert, TranslatableErrors, FieldError, Select } from '../../components/common'
+import { CustomAlert, TranslatableErrors, FieldError, Select, Table, DeleteModal, FieldWrapper } from '../../components/common'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
-import { injectIntl } from 'react-intl'
+import { injectIntl, FormattedMessage } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
 import { CREATE_EXERCISE, UPDATE_EXERCISE, GET_EXERCISE } from '../../common/requests/exercises'
 import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS } from '../../common/requests/units'
-import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
+import { DISABLE_ANSWER, LIST_ANSWERS } from '../../common/requests/answers'
+import { syncExercisesCacheOnCreate, syncExercisesCacheOnUpdate, syncAnswersCacheOnDelete } from './cacheHelpers'
+import ButtonSubmit from '../../components/common/ButtonSubmit'
+import ButtonGoToList from '../../components/common/ButtonGoToList'
 
 const ExercisesEditor = (props) => {
   // Props and params
@@ -28,6 +31,11 @@ const ExercisesEditor = (props) => {
   const [initialValues, setInitialValues] = useState({})
   const [filters, setFilters] = useState({})
   const [errors, setErrors] = useState()
+  const [answers, setAnswers] = useState([])
+  const [answerToDelete, setAnswerToDelete] = useState(null)
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
+  const [answerDeleted, setAnswerDeleted] = useState(false)
+
 
   // Handlers
   const onSuccess = (result) => {
@@ -82,13 +90,13 @@ const ExercisesEditor = (props) => {
       ? createExercise({
         variables: { name: name, courseId: courseId, unitId: unitId },
         update: (cache, result) => {
-          syncCacheOnCreate(cache, result.data.createExercise)
+          syncExercisesCacheOnCreate(cache, result.data.createExercise)
         }
       })
       : updateExercise({
         variables: { id: params.id, name: name, courseId: courseId, unitId: unitId },
         update: (cache, result) => {
-          syncCacheOnUpdate(cache, result.data.updateExercise)
+          syncExercisesCacheOnUpdate(cache, result.data.updateExercise)
         }
       })
   }
@@ -99,6 +107,34 @@ const ExercisesEditor = (props) => {
     if (!values.courseId) { errors.courseId = formatMessage({ id: 'common_field_error.required' }) }
     if (!values.unitId) { errors.unitId = formatMessage({ id: 'common_field_error.required' }) }
     return errors
+  }
+
+  // Button handlers
+  const onDeleteClicked = (course) => {
+    setAnswerToDelete(course)
+    setDeleteModalIsOpen(true)
+  }
+
+  const onCancelClicked = () => {
+    if (deletingAnswer) return
+    setDeleteModalIsOpen(!deleteModalIsOpen)
+  }
+
+  const onDeleteConfirmClicked = () => {
+    disableAnswer({
+      variables: { id: answerToDelete.id },
+      update: (cache, result) => {
+        const updatedAnswersList = syncAnswersCacheOnDelete(cache, answerToDelete, { exerciseId: params.id })
+        setAnswers(updatedAnswersList.data)
+      }
+    })
+  }
+
+  // Other
+  const stateCleanupOnDelete = () => {
+    setErrors()
+    setDeleteModalIsOpen(false)
+    setAnswerDeleted(true)
   }
 
   // Queries and mutations
@@ -128,121 +164,211 @@ const ExercisesEditor = (props) => {
       onError
     }
   )
+  const { loading: fetchingAnswers } = useQuery(
+    LIST_ANSWERS,
+    {
+      variables: { exerciseId: params.id },
+      skip: isCreating,
+      onCompleted: (data) => {
+        if (!data) return
+        const answers = { ...data.listAnswers }
+        setAnswers(answers.data)
+      },
+      onError
+    }
+  )
   const [createExercise, { loading: creating }] = useMutation(CREATE_EXERCISE, { onCompleted: onSuccess, onError })
   const [updateExercise, { loading: updating }] = useMutation(UPDATE_EXERCISE, { onCompleted: onSuccess, onError })
+  const [disableAnswer, { loading: deletingAnswer }] = useMutation(DISABLE_ANSWER, { onCompleted: stateCleanupOnDelete, onError })
+
+  const columnTranslations = {
+    answerName: formatMessage({ id: 'answer_name' }),
+    answerCorrect: formatMessage({ id: 'answer_correct' }),
+    action: formatMessage({ id: 'action' }),
+    edit: formatMessage({ id: 'button.edit' }),
+    delete: formatMessage({ id: 'button.delete' })
+  }
+
+  const columns = React.useMemo(
+    () => {
+      return [{
+        Header: columnTranslations.answerName,
+        accessor: 'name',
+        Cell: ({ row }) => row.values.name
+      },
+      {
+        Header: columnTranslations.answerCorrect,
+        accessor: 'correct',
+        Cell: ({ row }) => {
+          return <Input type='checkbox' className='position-relative m-0 p-0' checked={row.values.correct} readOnly disabled/>
+        }
+      },
+      {
+        Header: columnTranslations.action,
+        Cell: ({ row }) => (
+          <div className='d-flex justify-content-center'>
+            <Link to={`/exercises/${row.original.exerciseId}/answers/${row.original.id}`}>
+              <Button color='info'>{columnTranslations.edit}</Button>
+            </Link>
+            <Button
+              className='ml-1'
+              color='danger'
+              onClick={() => onDeleteClicked({ ...row.original })}
+            >
+              {columnTranslations.delete}
+            </Button>
+          </div>
+        )
+      }]
+    },
+    [columnTranslations]
+  )
 
   useEffect(() => {
     // State cleanup in case user was editing and now wants to create
     if (isCreating) {
       setExerciseUpdated(false)
       setInitialValues({})
-      setFilters({})
+      setFilters({ selectedCourse: '', selectedUnit: '' })
     }
   }, [isCreating])
 
   return (
-    <div className='exercise-editor'>
+    <div className='exercise-editor bg-light p-5' style={{ width: 850 + 'px' }}>
       <Form
         onSubmit={onSubmit}
         validate={validateBeforeSubmit}
         initialValues={initialValues}
         render={({ handleSubmit, pristine }) => (
-          <form
-            onSubmit={handleSubmit}
-            className='text-center bg-light p-5'
-            style={{ maxWidth: 600 + 'px' }}
-          >
-            <p className='h4 mb-5'>
+          <form onSubmit={handleSubmit}>
+            <p className='text-center h4 mb-5'>
               {isCreating
-                ? `${formatMessage({ id: 'common_action.create' })}`
+                ? <FormattedMessage id='common_action.create' />
                 : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.exercise' }).toLowerCase()}
             </p>
 
-            <div id='fields' className='mb-5'>
-              <Field name='name' validate={required}>
-                {({ input, meta }) => (
-                  <div className='mb-4'>
-                    <input
-                      {...input}
-                      className='form-control'
-                      placeholder={formatMessage({ id: 'exercise_name' })}
-                    />
-                    {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                  </div>
+            {/* Name */}
+            <div className='row'>
+              <div className='col-md-12 col-xs-12 mb-4'>
+                <span className='text-left pl-1 pb-1'>
+                  <FormattedMessage id='exercise_name' />
+                </span>
+                <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'exercise_name' })} />
+              </div>
+            </div>
+
+            {/* Course - Unit */}
+            <div className='row'>
+              <div className='col-md-6 col-xs-12 mb-4'>
+                <span className='text-left pl-1 pb-1'>
+                  <FormattedMessage id='common_entity.course' />
+                </span>
+                <Field name='courseId' component='select' options={courses} validate={required}>
+                  {({ input, meta, options }) => {
+                    return (
+                      <div>
+                        <Select
+                          options={options}
+                          selectClass='form-control'
+                          selectedValue={filters.selectedCourse}
+                          onChange={(value) => {
+                            setFilters({ ...filters, selectedCourse: value })
+                            input.onChange(value)
+                          }}
+                          isDisabled={fetchingCourses}
+                        />
+                        {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
+                      </div>
+                    )
+                  }}
+                </Field>
+              </div>
+              <div className='col-md-6 col-xs-12 mb-4'>
+                <span className='text-left pl-1 pb-1'>
+                  <FormattedMessage id='common_entity.unit' />
+                </span>
+                <Field name='unitId' component='select' options={units} validate={required}>
+                  {({ input, meta, options }) => {
+                    return (
+                      <div>
+                        <Select
+                          options={options}
+                          selectClass='form-control'
+                          selectedValue={filters.selectedUnit}
+                          onChange={(value) => {
+                            setFilters({ ...filters, selectedUnit: value })
+                            input.onChange(value)
+                          }}
+                          isDisabled={!filters.selectedCourse || fetchingCourses}
+                        />
+                        {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
+                      </div>
+                    )
+                  }}
+                </Field>
+              </div>
+            </div>
+
+            <hr />
+
+            {/* Delete answer modal */}
+            <div id='delete-modal'>
+              <DeleteModal
+                modalIsOpen={deleteModalIsOpen}
+                isBussy={deletingAnswer}
+                onCloseClick={() => onCancelClicked()}
+                onDeleteClick={() => onDeleteConfirmClicked()}
+              />
+            </div>
+
+            {/* Answers */}
+            {!fetchingAnswers && (
+              <div id='answers-list' className='mt-4'>
+                <p className='text-center h5 mb-0'>
+                  <FormattedMessage id='common_entity.answers' />
+                </p>
+                {answers.length === 0
+                  ? <div id='no-results' className='text-center mt-2 mb-3'><FormattedMessage id='common_message.no_results' /></div>
+                  : <Table columns={columns} data={answers} paginationEnabled={false} />}
+                {(answers.length === 0 || answers.every(answer => answer.correct === false)) && (
+                  <CustomAlert messages={{ id: 'exercise_answer_correct_needed', message: formatMessage({ id: 'exercise_answer_correct_needed' }) }} color='warning' />
                 )}
-              </Field>
+              </div>
+            )}
+
+            <hr />
+
+            {/* Buttons */}
+            <div id='buttons' className='d-flex justify-content-center mt-4'>
+              <ButtonSubmit
+                isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits || pristine}
+                isLoading={creating || updating || fetching}
+              />
+
+              {!isCreating && (
+                <Link to={`/exercises/${params.id}/answers/new`}>
+                  <Button
+                    className='m-2'
+                    color='info'
+                    disabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
+                  >
+                    <FormattedMessage id='button.add_answer' />
+                  </Button>
+                </Link>
+              )}
+
+              <ButtonGoToList
+                entity='exercises'
+                isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
+              />
             </div>
 
-            <div id='fields' className='mb-5'>
-              <Field name='courseId' component='select' options={courses} validate={required}>
-                {({ input, meta, options }) => {
-                  return (
-                    <div>
-                      <Select
-                        options={options}
-                        selectClass='form-control'
-                        selectedValue={filters.selectedCourse}
-                        onChange={(value) => {
-                          setFilters({ ...filters, selectedCourse: value })
-                          input.onChange(value)
-                        }}
-                        isDisabled={fetchingCourses}
-                      />
-                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                    </div>
-                  )
-                }}
-              </Field>
-            </div>
-
-            <div id='fields' className='mb-5'>
-              <Field name='unitId' component='select' options={units} validate={required}>
-                {({ input, meta, options }) => {
-                  return (
-                    <div>
-                      <Select
-                        options={options}
-                        selectClass='form-control'
-                        selectedValue={filters.selectedUnit}
-                        onChange={(value) => {
-                          setFilters({ ...filters, selectedUnit: value })
-                          input.onChange(value)
-                        }}
-                        isDisabled={!filters.selectedCourse || fetchingCourses}
-                      />
-                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                    </div>
-                  )
-                }}
-              </Field>
-            </div>
-
-            <div id='buttons' className='d-flex justify-content-center'>
-              <Button
-                color='primary'
-                type='submit'
-                className='m-2'
-                disabled={creating || updating || fetching || fetchingCourses || fetchingUnits || pristine}
-              >
-                {formatMessage({ id: 'button.save' })}
-                {(creating || updating || fetching) && <LoadingInline className='ml-3' />}
-              </Button>
-              <Link to='/exercises/list'>
-                <Button
-                  color='secondary'
-                  type='submit'
-                  className='m-2'
-                  disabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
-                >
-                  {formatMessage({ id: 'button.go_to_list' })}
-                </Button>
-              </Link>
-            </div>
-
-            <div id='info' className='d-flex justify-content-around mt-5'>
+            {/* Info */}
+            <div id='info' className='d-flex justify-content-around mt-4'>
               {errors && <TranslatableErrors errors={errors} className='ml-3' />}
               {!creating && exerciseCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'exercise_created' }) }} color='success' />}
               {!updating && exerciseUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'exercise_updated' }) }} color='success' />}
+              {!deletingAnswer && answerDeleted && <CustomAlert messages={{ id: 'answer_deleted', message: `${formatMessage({ id: 'answer_deleted' })}: ${answerToDelete.name}` }} color='success' />}
             </div>
 
           </form>

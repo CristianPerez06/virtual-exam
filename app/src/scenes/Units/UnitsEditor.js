@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Form, Field } from 'react-final-form'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, TranslatableErrors, FieldError, Select, ButtonSubmit, ButtonGoToList } from '../../components/common'
+import { CustomAlert, TranslatableErrors, FieldError, Select, ButtonSubmit, ButtonGoToList, FieldWrapper } from '../../components/common'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
-import { injectIntl } from 'react-intl'
+import { injectIntl, FormattedMessage } from 'react-intl'
 import { translateFieldError } from '../../common/translations'
 import { CREATE_UNIT, UPDATE_UNIT, GET_UNIT } from '../../common/requests/units'
 import { LIST_COURSES } from '../../common/requests/courses'
@@ -113,57 +113,54 @@ const UnitsEditor = (props) => {
   }, [isCreating])
 
   return (
-    <div className='unit-editor'>
+    <div className='unit-editor bg-light p-5' style={{ width: 850 + 'px' }}>
       <Form
         onSubmit={onSubmit}
         validate={validateBeforeSubmit}
         initialValues={initialValues}
         render={({ handleSubmit, pristine }) => (
-          <form
-            onSubmit={handleSubmit}
-            className='text-center bg-light p-5'
-            style={{ maxWidth: 600 + 'px' }}
-          >
-            <p className='h4 mb-5'>
+          <form onSubmit={handleSubmit}>
+            <p className='text-center h4 mb-5'>
               {isCreating
-                ? `${formatMessage({ id: 'common_action.create' })}`
+                ? <FormattedMessage id='common_action.create' />
                 : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.unit' }).toLowerCase()}
             </p>
 
-            <div id='fields' className='mb-5'>
-              <Field name='name' validate={required}>
-                {({ input, meta }) => (
-                  <div className='mb-4'>
-                    <input
-                      {...input}
-                      className='form-control'
-                      placeholder={formatMessage({ id: 'unit_name' })}
-                    />
-                    {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                  </div>
-                )}
-              </Field>
+            <div className='row'>
+              <div className='col-md-12 col-xs-12 mb-4'>
+                <span className='text-left pl-1 pb-1'>
+                  <FormattedMessage id='unit_name' />
+                </span>
+                <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'unit_name' })} />
+              </div>
             </div>
 
-            <div id='fields' className='mb-5'>
-              <Field name='courseId' component='select' disabled={fetchingCourses} options={courses} validate={required}>
-                {({ input, meta, options }) => (
-                  <div>
-                    <Select
-                      options={options}
-                      selectClass='form-control'
-                      selectedValue={filters.selectedCourse}
-                      onChange={(value) => {
-                        setFilters({ ...filters, selectedCourse: value })
-                        input.onChange(value)
-                      }}
-                      disabled={fetchingCourses}
-                    />
-                    {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                  </div>
-                )}
-              </Field>
+            <div className='row'>
+              <div className='col-md-12 col-xs-12 mb-4'>
+                <span className='text-left pl-1 pb-1'>
+                  <FormattedMessage id='common_entity.course' />
+                </span>
+                <Field name='courseId' component='select' disabled={fetchingCourses} options={courses} validate={required}>
+                  {({ input, meta, options }) => (
+                    <div>
+                      <Select
+                        options={options}
+                        selectClass='form-control'
+                        selectedValue={filters.selectedCourse}
+                        onChange={(value) => {
+                          setFilters({ ...filters, selectedCourse: value })
+                          input.onChange(value)
+                        }}
+                        disabled={fetchingCourses}
+                      />
+                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
+                    </div>
+                  )}
+                </Field>
+              </div>
             </div>
+
+            <hr />
 
             <div id='buttons' className='d-flex justify-content-center'>
               <ButtonSubmit

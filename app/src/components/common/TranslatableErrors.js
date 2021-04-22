@@ -13,7 +13,7 @@ const TranslatableErrors = (props) => {
       <Alert color='danger' style={{ maxWidth: 500 + 'px' }}>
         <ul className='text-left mb-0'>
           {errorsList.map((error) => {
-            return <li key={error.id}>{formatMessage({ id: error.translatableMessageId })}</li>
+            return <li key={error.message}>{formatMessage({ id: error.id })}</li>
           })}
         </ul>
       </Alert>
