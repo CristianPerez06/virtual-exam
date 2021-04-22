@@ -18,6 +18,8 @@
   "common_error.internal_server_error": "Internal server error",
   "common_error.duplicated_entity": "An entity with the same name already exist",
 
+  "entity_error.correct_answer_already_selected": "A correct answer was already selected",
+
   "common_field_error.required": "Required field",
   "common_field_error.must_be_a_number": "Field can only accept numbers",
   "common_field_error.incorrect_email_format": "Incorrect email address format",
@@ -30,12 +32,15 @@
   "common_entity.units": "Units",
   "common_entity.exercise": "Exercise",
   "common_entity.exercises": "Exercises",
+  "common_entity.answer": "Answer",
+  "common_entity.answers": "Answers",
 
   "common_title.register_user": "Register user",
   "common_title.sign_in": "Sign in",
   "common_title.forgot_password": "Forgot password",
   "common_title.change_password": "Change password",
   "common_title.delete_confirmation": "Delete confirmation",
+  "common_title.edit": "Edit",
 
   "button.register": "Register",
   "button.signin": "Sign in",
@@ -56,6 +61,8 @@
   "button.cancel": "Cancel",
   "button.go_to_list": "Go to list",
   "button.exercises": "Exercises",
+  "button.add_answer": "Add answers",
+  "button.go_to_exercise": "Go to exercise",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
@@ -67,10 +74,18 @@
   "unit_updated": "Unit updated succesfully",
   "unit_deleted": "Unit deleted successfully",
 
-  "exercise_name": "Exercise description",
+  "exercise_name": "Exercise name",
   "exercise_created": "Exercise created succesfully",
   "exercise_updated": "Exercise updated succesfully",
-  "exercise_deleted": "Exercise updated succesfully",
+  "exercise_deleted": "Exercise deleted succesfully",
+  "exercise_answer_correct_needed": "In order to use this exercise you need to add a correct answer",
+
+  "answer_name": "Answer name",
+  "answer_description": "Answer description",
+  "answer_created": "Answer created succesfully",
+  "answer_updated": "Answer updated succesfully",
+  "answer_deleted": "Answer deleted succesfully",
+  "answer_correct": "Correct answer",
 
   "registration_completed": "Registration succesful",
   "first_name": "Name",
@@ -85,6 +100,8 @@
   "settings": "Settings",
   "action": "Action",
   "delete_this_record": "Are you sure you want to delete this record?",
+  "edit_item": "Edit item",
+  "description": "Description",
   
   "language.spanish": "Spanish",
   "language.english": "English"

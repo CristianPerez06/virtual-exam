@@ -17,5 +17,6 @@ extend type Query {
 extend type Mutation {
   createUnit(name: String!, courseId: ID!): Unit
   updateUnit(id: ID!, name: String!, courseId: ID!): Unit
+  disableUnit(id: ID!): Unit
   deleteUnit(id: ID!): Response
 }

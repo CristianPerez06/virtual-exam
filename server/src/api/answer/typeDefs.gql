@@ -1,0 +1,24 @@
+type Answer {
+  id: ID!
+  name: String,
+  description: String,
+  correct: Boolean,
+  exerciseId: ID!
+}
+
+type Answers {
+  data: [Answer]
+  count: Int!
+}
+
+extend type Query {
+  getAnswer(id: ID!): Answer
+  listAnswers(exerciseId: ID): Answers
+}
+
+extend type Mutation {
+  createAnswer(name: String!, description: String!, correct: Boolean, exerciseId: ID!): Answer
+  updateAnswer(id: ID!, name: String!, description: String!, correct: Boolean, exerciseId: ID!): Answer
+  disableAnswer(id: ID!): Answer
+  deleteAnswer(id: ID!): Response
+}

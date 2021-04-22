@@ -36,7 +36,8 @@ export const ERROR_FIELDS = {
 
 export const ERROR_MESSAGES = {
   DUPLICATED_ENTITY: 'duplicated_entity',
-  INTERNAL_SERVER_ERROR: 'internal_server_error'
+  INTERNAL_SERVER_ERROR: 'internal_server_error',
+  CORRECT_ANSWER_ALREADY_SELECTED: 'correct_answer_already_selected'
 }
 
 export const LOCALE = {

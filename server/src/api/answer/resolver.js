@@ -5,12 +5,12 @@ const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
 
-const debug = require('debug')('virtual-exam:unit-resolver')
+const debug = require('debug')('virtual-exam:answer-resolver')
 
 const init = () => {
   maintainIndex({
     shared: true,
-    collectionName: 'units',
+    collectionName: 'answers',
     indexVersion: 1,
     spec: { 'name.text': 'text' },
     options: {
@@ -24,14 +24,14 @@ init()
 
 const resolver = {
   Query: {
-    getUnit: async (parent, args, context) => {
-      debug('Running getUnit query with params:', args)
+    getAnswer: async (parent, args, context) => {
+      debug('Running getAnswer query with params:', args)
 
       // Params
       const { id } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('answers')
 
       // Query
       const query = {
@@ -46,32 +46,26 @@ const resolver = {
       // Results
       return prepSingleResultForUser(docs[0])
     },
-    listUnits: async (parent, args, context) => {
-      debug('Running listUnits query with params:', args)
+    listAnswers: async (parent, args, context) => {
+      debug('Running listAnswers query with params:', args)
 
       // Params
-      const { courseId } = args
+      const { exerciseId } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('answers')
+
+      if (!exerciseId) {
+        throw new ApolloError(BACKEND_ERRORS.PARAMETER_NOT_PROVIDED.Message, BACKEND_ERRORS.PARAMETER_NOT_PROVIDED.Code)
+      }
 
       // Aggregate
-      let aggregate = [{
+      const aggregate = [{
         $match: {
+          exerciseId: new ObjectId(exerciseId),
           disabled: { $not: { $eq: true } }
         }
       }]
-
-      if (courseId) {
-        aggregate = [
-          ...aggregate,
-          {
-            $match: {
-              courseId: new ObjectId(courseId)
-            }
-          }
-        ]
-      }
       debug('Aggregate: ', aggregate)
 
       // Exec
@@ -82,27 +76,42 @@ const resolver = {
     }
   },
   Mutation: {
-    createUnit: async (parent, args, context) => {
-      debug('Running createUnit mutation with params:', args)
+    createAnswer: async (parent, args, context) => {
+      debug('Running createAnswer mutation with params:', args)
 
       // Args
-      const { name, courseId } = args
+      const { name, description, correct, exerciseId } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('answers')
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      const isDuplicated = docWithSameName && docWithSameName.courseId.toString() === courseId
+      const isDuplicated = docWithSameName
+        && docWithSameName.exerciseId.toString() === exerciseId
+        && docWithSameName.disabled !== true
       if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+      }
+
+      // Lookup for duplicate Correct answers
+      const answers = await collection.find({ exerciseId: new ObjectId(exerciseId)}).toArray()
+      const correctAnwer = answers
+        .filter(answer => !answer.disabled)
+        .find(el => el.correct === true)
+      const correctAlreadyExists = correctAnwer
+        && correct === true
+      if (correctAlreadyExists) {
+        throw new ApolloError(BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Message, BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Code)
       }
 
       // Query
       const newItem = {
         _id: new ObjectId(),
         name: name,
-        courseId: new ObjectId(courseId),
+        description: description,
+        correct: correct,
+        exerciseId: new ObjectId(exerciseId),
         created: moment().toISOString()
       }
 
@@ -111,34 +120,49 @@ const resolver = {
 
       // Results
       if (response.result.ok !== 1) {
-        debug('createUnit error:', response.error.message)
+        debug('createAnswer error:', response.error.message)
         throw new Error(response.error.message)
       }
       return prepSingleResultForUser(response.ops[0])
     },
-    updateUnit: async (parent, args, context) => {
-      debug('Running updateUnit mutation with params:', args)
+    updateAnswer: async (parent, args, context) => {
+      debug('Running updateAnswer mutation with params:', args)
 
       // Args
-      const { id, name, courseId } = args
+      const { id, name, description, correct, exerciseId } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('answers')
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
       const isDuplicated = docWithSameName
+        && docWithSameName.exerciseId.toString() === exerciseId
+        && docWithSameName._id.toString() !== id
         && docWithSameName.disabled !== true
-        && docWithSameName.courseId.toString() === courseId
       if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+      }
+
+      // Lookup for duplicate Correct answers
+      const answers = await collection.find({ exerciseId: new ObjectId(exerciseId)}).toArray()
+      const correctAnwer = answers
+        .filter(answer => !answer.disabled)
+        .find(el => el.correct === true)
+      const correctAlreadyExists = correctAnwer
+        && correctAnwer._id.toString() !== id
+        && correct === true
+      if (correctAlreadyExists) {
+        throw new ApolloError(BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Message, BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Code)
       }
 
       // Query
       const update = {
         $set: {
           name,
-          courseId: new ObjectId(courseId),
+          description,
+          correct,
+          exerciseId: new ObjectId(exerciseId),
           updated: moment().toISOString()
         }
       }
@@ -148,19 +172,19 @@ const resolver = {
 
       // Results
       if (response.ok !== 1) {
-        debug('updateUnit error:', response.lastErrorObject)
+        debug('updateAnswer error:', response.lastErrorObject)
         throw new Error(response.lastErrorObject)
       }
       return prepSingleResultForUser(response.value)
     },
-    disableUnit: async (parent, args, context) => {
-      debug('Running disableUnit mutation with params:', args)
+    disableAnswer: async (parent, args, context) => {
+      debug('Running disableAnswer mutation with params:', args)
 
       // Args
-      const { id } = args
+      const { id, name, description, correct, exerciseId } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('answers')
 
       // Query
       const update = {
@@ -175,19 +199,19 @@ const resolver = {
 
       // Results
       if (response.ok !== 1) {
-        debug('disableUnit error:', response.lastErrorObject)
+        debug('disableAnswer error:', response.lastErrorObject)
         throw new Error(response.lastErrorObject)
       }
       return prepSingleResultForUser(response.value)
     },
-    deleteUnit: async (parent, args, context) => {
-      debug('Running deleteUnit mutation with params:', args)
+    deleteAnswer: async (parent, args, context) => {
+      debug('Running deleteAnswer mutation with params:', args)
 
       // Args
       const { id } = args
 
       // Collection
-      const collection = context.db.collection('units')
+      const collection = context.db.collection('answers')
 
       // Query
       const query = { _id: new ObjectId(id) }
@@ -199,7 +223,7 @@ const resolver = {
       if (result && result.n === 1 && result.ok === 1) {
         return { done: true }
       } else {
-        debug('deleteUnit error:', BACKEND_ERRORS.DELETE_FAILED.Code)
+        debug('deleteAnswer error:', BACKEND_ERRORS.DELETE_FAILED.Code)
         throw new Error(BACKEND_ERRORS.DELETE_FAILED.Code)
       }
     }

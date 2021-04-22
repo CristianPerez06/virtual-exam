@@ -36,7 +36,17 @@ export const CREATE_EXERCISE = gql`
 `
 export const UPDATE_EXERCISE = gql`
   mutation updateExercise($id: ID!, $name: String!, $courseId: ID!, $unitId: ID!) {
-    updateUnit(id: $id, name: $name, courseId: $courseId, unitId: $unitId){
+    updateExercise(id: $id, name: $name, courseId: $courseId, unitId: $unitId){
+      id
+      name,
+      courseId,
+      unitId
+    }
+  }
+`
+export const DISABLE_EXERCISE = gql`
+  mutation disableExercise($id: ID!) {
+    disableExercise(id: $id){
       id
       name,
       courseId,

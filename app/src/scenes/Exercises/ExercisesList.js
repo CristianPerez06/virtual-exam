@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { Card, CardBody, CardHeader, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Card, CardBody, CardHeader, Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { LIST_EXERCISES, DELETE_EXERCISE } from '../../common/requests/exercises'
+import { LIST_EXERCISES, DISABLE_EXERCISE } from '../../common/requests/exercises'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Loading, LoadingInline, CustomAlert, TranslatableErrors, Table } from '../../components/common'
+import { Loading, CustomAlert, TranslatableErrors, Table, DeleteModal } from '../../components/common'
 import { Link } from 'react-router-dom'
-import { syncCacheOnDelete } from './cacheHelpers'
+import { syncExercisesCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
 const ExercisesList = (props) => {
@@ -42,10 +42,10 @@ const ExercisesList = (props) => {
   }
 
   const onDeleteConfirmClicked = () => {
-    deleteExercise({
+    disableExercise({
       variables: { id: exerciseToDelete.id },
       update: (cache, result) => {
-        const updatedExercisesList = syncCacheOnDelete(cache, exerciseToDelete)
+        const updatedExercisesList = syncExercisesCacheOnDelete(cache, exerciseToDelete)
         setExercise(updatedExercisesList.data)
       }
     })
@@ -64,8 +64,8 @@ const ExercisesList = (props) => {
   }
 
   // Queries and mutations
-  const { loading: fetching } = useQuery(LIST_EXERCISES, { variables: { q: '', offset: 0, limit: 100 }, onCompleted, onError })
-  const [deleteExercise, { loading: deleting }] = useMutation(DELETE_EXERCISE, { onCompleted: stateCleanupOnDelete, onError })
+  const { loading: fetching } = useQuery(LIST_EXERCISES, { variables: {}, onCompleted, onError })
+  const [disableExercise, { loading: deleting }] = useMutation(DISABLE_EXERCISE, { onCompleted: stateCleanupOnDelete, onError })
 
   const columnTranslations = {
     exerciseName: formatMessage({ id: 'exercise_name' }),
@@ -103,47 +103,28 @@ const ExercisesList = (props) => {
   )
 
   return (
-    <div className='exercises-list'>
+    <div className='exercises-list' style={{ width: 850 + 'px' }}>
       {fetching && <Loading />}
       {!fetching &&
         <Card className='mx-auto'>
           <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
             <p className='h4'>
-              <FormattedMessage id='common_entity.exercise' />
+              <FormattedMessage id='common_entity.exercises' />
             </p>
           </CardHeader>
           <CardBody className='d-flex flex-column text-center'>
             {exercise.length === 0
-              ? formatMessage({ id: 'common_message.no_results' })
+              ? <div id='no-results' className='mb-3'><FormattedMessage id='common_message.no_results' /></div>
               : <Table columns={columns} data={exercise} />}
 
-            {/* Modal */}
-            <div id='modal'>
-              <Modal isOpen={deleteModalIsOpen} toggle={onCancelClicked} disabled>
-                <ModalHeader toggle={onCancelClicked} disabled>
-                  {formatMessage({ id: 'common_title.delete_confirmation' })}
-                </ModalHeader>
-                <ModalBody>
-                  {formatMessage({ id: 'delete_this_record' })}
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    color='danger'
-                    onClick={onDeleteConfirmClicked}
-                    disabled={deleting}
-                  >
-                    {formatMessage({ id: 'button.delete' })}
-                    {deleting && <LoadingInline className='ml-3' />}
-                  </Button>
-                  <Button
-                    color='secondary'
-                    onClick={onCancelClicked}
-                    disabled={deleting}
-                  >
-                    {formatMessage({ id: 'button.cancel' })}
-                  </Button>
-                </ModalFooter>
-              </Modal>
+            {/* Delete modal */}
+            <div id='delete-modal'>
+              <DeleteModal
+                modalIsOpen={deleteModalIsOpen}
+                isBussy={deleting}
+                onCloseClick={() => onCancelClicked()}
+                onDeleteClick={() => onDeleteConfirmClicked()}
+              />
             </div>
 
             {/* Alerts */}

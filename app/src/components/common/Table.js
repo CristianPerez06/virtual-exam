@@ -38,7 +38,8 @@ const Styles = styled.div`
 const Table = (props) => {
   const {
     columns = [],
-    data = []
+    data = [],
+    paginationEnabled = true
   } = props
 
   // Use the state and functions returned from useTable to build your UI
@@ -72,7 +73,7 @@ const Table = (props) => {
   return (
     <div id='table' className='d-flex justify-content-center'>
       <Styles>
-        <table {...getTableProps()}>
+        <table {...getTableProps()} className='text-center'>
           <thead>
             {headerGroups.map((headerGroup, headerIndex) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={headerIndex}>
@@ -97,59 +98,62 @@ const Table = (props) => {
             })}
           </tbody>
         </table>
-        <div className='pagination d-flex justify-content-center'>
-          <button
-            onClick={() => gotoPage(0)} disabled={!canPreviousPage}
-          >
-            {'<<'}
-          </button>
-          &nbsp;
-          <button
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          >
-            {'<'}
-          </button>
-          &nbsp;
-          <button
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-          >
-            {'>'}
-          </button>
-          &nbsp;
-          <button
-            onClick={() => gotoPage(pageCount - 1)}
-            disabled={!canNextPage}
-          >
-            {'>>'}
-          </button>
-          &nbsp;
-          <span>
+        {paginationEnabled && (
+          <div className='pagination d-flex justify-content-center'>
+            <button
+              onClick={() => gotoPage(0)} disabled={!canPreviousPage}
+            >
+              {'<<'}
+            </button>
             &nbsp;
-            Page
+            <button
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+            >
+              {'<'}
+            </button>
             &nbsp;
-            <strong>
-              {pageIndex + 1} of {pageOptions.length}
-            </strong>
+            <button
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+            >
+              {'>'}
+            </button>
             &nbsp;
-          </span>
-          {/*
-          <span>
-            | Go to page:
+            <button
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+            >
+              {'>>'}
+            </button>
             &nbsp;
-            <input
-              type='number'
-              defaultValue={pageIndex + 1}
-              onChange={e => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0
-                gotoPage(page)
-              }}
-              style={{ width: '100px' }}
-            />
-          </span>
-          */}
-        </div>
+            <span>
+              &nbsp;
+              Page
+              &nbsp;
+              <strong>
+                {pageIndex + 1} of {pageOptions.length}
+              </strong>
+              &nbsp;
+            </span>
+            {/*
+            <span>
+              | Go to page:
+              &nbsp;
+              <input
+                type='number'
+                defaultValue={pageIndex + 1}
+                onChange={e => {
+                  const page = e.target.value ? Number(e.target.value) - 1 : 0
+                  gotoPage(page)
+                }}
+                style={{ width: '100px' }}
+              />
+            </span>
+            */}
+          </div>
+        )}
+
       </Styles>
     </div>
   )

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Card, CardBody, CardHeader, Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { LIST_UNITS, DELETE_UNIT } from '../../common/requests/units'
+import { LIST_UNITS, DISABLE_UNIT } from '../../common/requests/units'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Loading, CustomAlert, TranslatableErrors, Table, DeleteModal } from '../../components/common'
 import { Link } from 'react-router-dom'
@@ -42,7 +42,7 @@ const UnitsList = (props) => {
   }
 
   const onDeleteConfirmClicked = () => {
-    deleteUnit({
+    disableUnit({
       variables: { id: unitToDelete.id },
       update: (cache, result) => {
         const updatedUnitList = syncCacheOnDelete(cache, unitToDelete)
@@ -65,7 +65,7 @@ const UnitsList = (props) => {
 
   // Queries and mutations
   const { loading: fetching } = useQuery(LIST_UNITS, { variables: {}, onCompleted, onError })
-  const [deleteUnit, { loading: deleting }] = useMutation(DELETE_UNIT, { onCompleted: stateCleanupOnDelete, onError })
+  const [disableUnit, { loading: deleting }] = useMutation(DISABLE_UNIT, { onCompleted: stateCleanupOnDelete, onError })
 
   const columnTranslations = {
     unitName: formatMessage({ id: 'unit_name' }),
@@ -103,7 +103,7 @@ const UnitsList = (props) => {
   )
 
   return (
-    <div className='units-list'>
+    <div className='units-list' style={{ width: 850 + 'px' }}>
       {fetching && <Loading />}
       {!fetching &&
         <Card className='mx-auto'>
@@ -114,7 +114,7 @@ const UnitsList = (props) => {
           </CardHeader>
           <CardBody className='d-flex flex-column text-center'>
             {units.length === 0
-              ? <FormattedMessage id='common_message.no_results' />
+              ? <div id='no-results' className='text-center mb-3'><FormattedMessage id='common_message.no_results' /></div>
               : <Table columns={columns} data={units} />}
 
             {/* Delete dodal */}

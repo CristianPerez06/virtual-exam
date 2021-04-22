@@ -36,6 +36,14 @@ export const UPDATE_COURSE = gql`
     }
   }
 `
+export const DISABLE_COURSE = gql`
+  mutation disableCourse($id: ID!) {
+    disableCourse(id: $id){
+      id
+      name
+    }
+  }
+`
 export const DELETE_COURSE = gql`
   mutation deleteCourse($id: ID!) {
     deleteCourse(id: $id){

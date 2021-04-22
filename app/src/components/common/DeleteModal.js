@@ -3,7 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LoadingInline } from '../../components/common'
 
-const EditModal = (props) => {
+const DeleteModal = (props) => {
   const {
     modalIsOpen,
     isBussy,
@@ -40,4 +40,4 @@ const EditModal = (props) => {
   )
 }
 
-export default injectIntl(EditModal)
+export default injectIntl(DeleteModal)

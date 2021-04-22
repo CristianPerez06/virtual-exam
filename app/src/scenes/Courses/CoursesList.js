@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Card, CardBody, CardHeader, Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { LIST_COURSES, DELETE_COURSE } from '../../common/requests/courses'
+import { LIST_COURSES, DISABLE_COURSE } from '../../common/requests/courses'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Loading, CustomAlert, TranslatableErrors, Table, DeleteModal } from '../../components/common'
 import { Link } from 'react-router-dom'
@@ -42,7 +42,7 @@ const CoursesList = (props) => {
   }
 
   const onDeleteConfirmClicked = () => {
-    deleteCourse({
+    disableCourse({
       variables: { id: courseToDelete.id },
       update: (cache, result) => {
         const updatedCoursesList = syncCacheOnDelete(cache, courseToDelete)
@@ -65,7 +65,7 @@ const CoursesList = (props) => {
 
   // Queries and mutations
   const { loading: fetching } = useQuery(LIST_COURSES, { variables: {}, onCompleted, onError })
-  const [deleteCourse, { loading: deleting }] = useMutation(DELETE_COURSE, { onCompleted: stateCleanupOnDelete, onError })
+  const [disableCourse, { loading: deleting }] = useMutation(DISABLE_COURSE, { onCompleted: stateCleanupOnDelete, onError })
 
   const columnTranslations = {
     courseName: formatMessage({ id: 'course_name' }),
@@ -103,7 +103,7 @@ const CoursesList = (props) => {
   )
 
   return (
-    <div className='course-list'>
+    <div className='course-list' style={{ width: 850 + 'px' }}>
       {fetching && <Loading />}
       {!fetching &&
         <Card className='mx-auto'>
@@ -112,9 +112,9 @@ const CoursesList = (props) => {
               <FormattedMessage id='common_entity.courses' />
             </p>
           </CardHeader>
-          <CardBody className='d-flex flex-column text-center'>
+          <CardBody className='d-flex flex-column'>
             {courses.length === 0
-              ? <FormattedMessage id='common_message.no_results' />
+              ? <div id='no-results' className='text-center mb-3'><FormattedMessage id='common_message.no_results' /></div>
               : <Table columns={columns} data={courses} />}
 
             {/* Delete modal */}

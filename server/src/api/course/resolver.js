@@ -56,7 +56,12 @@ const resolver = {
       const collection = context.db.collection('courses')
 
       // Aggregate
-      let aggregate = []
+      let aggregate = [{
+        $match: {
+          disabled: { $not: { $eq: true } }
+        }
+      }]
+
       if (name) {
         aggregate = [
           ...aggregate,
@@ -88,7 +93,9 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      if (docWithSameName) { throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code) }
+      if (docWithSameName && docWithSameName.disabled !== true) {
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+      }
 
       // Query
       const newItem = { _id: new ObjectId(), name: name, created: moment().toISOString() }
@@ -114,7 +121,9 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      if (docWithSameName) { throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code) }
+      if (docWithSameName && docWithSameName.disabled !== true) {
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+      }
 
       // Query
       const update = {
@@ -130,6 +139,33 @@ const resolver = {
       // Results
       if (response.ok !== 1) {
         debug('updateCourse error:', response.lastErrorObject)
+        throw new Error(response.lastErrorObject)
+      }
+      return prepSingleResultForUser(response.value)
+    },
+    disableCourse: async (parent, args, context) => {
+      debug('Running disableCourse mutation with params:', args)
+
+      // Args
+      const { id, name } = args
+
+      // Collection
+      const collection = context.db.collection('courses')
+
+      // Query
+      const update = {
+        $set: {
+          disabled: true,
+          updated: moment().toISOString()
+        }
+      }
+
+      // Exec
+      const response = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, update, { returnOriginal: false, w: 'majority' })
+
+      // Results
+      if (response.ok !== 1) {
+        debug('disableCourse error:', response.lastErrorObject)
         throw new Error(response.lastErrorObject)
       }
       return prepSingleResultForUser(response.value)
