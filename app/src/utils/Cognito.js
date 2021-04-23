@@ -112,7 +112,7 @@ class Cognito {
     })
   }
 
-  getSession () {
+  async getSession () {
     return new Promise((resolve, reject) => {
       const user = this.pool.getCurrentUser()
       if (user) {
@@ -144,8 +144,24 @@ class Cognito {
           }
         })
       } else {
-        const err = 'no user logged in'
-        reject(err)
+        reject(new Error('no user logged in'))
+      }
+    })
+  }
+
+  async refreshSession (session) {
+    return new Promise((resolve, reject) => {
+      const user = this.pool.getCurrentUser()
+      if (user) {
+        user.refreshSession(
+          session.refreshToken,
+          (err, session) => {
+            if (err) return reject(err)
+            return resolve(session)
+          }
+        )
+      } else {
+        return reject()
       }
     })
   }

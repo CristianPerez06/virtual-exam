@@ -13,25 +13,28 @@ const Main = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    cognito.getSession()
-      .then(data => {
-        const { user, accessToken } = data
+    const getAndRefreshSession = async () => {
+      try {
+        const session = await cognito.getSession()
+        const refresh = await cognito.refreshSession(session)
+        const { user } = session
+        const { accessToken } = refresh
         dispatch({
           type: ACCOUNT_ACTION_TYPES.REFRESH,
           payload: { user: user.username, token: accessToken.jwtToken }
         })
         setUser(user.username)
-        setIsLoading(false)
-      })
-      .catch(err => {
-        console.log(err)
+      } catch {
         dispatch({
           type: ACCOUNT_ACTION_TYPES.LOGOUT,
           payload: {}
         })
         setUser(null)
-        setIsLoading(false)
-      })
+      }
+      setIsLoading(false)
+    }
+
+    getAndRefreshSession()
   }, [dispatch, cognito])
 
   if (isLoading) { return <Loading /> }
