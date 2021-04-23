@@ -1,4 +1,4 @@
-export const readCacheList = (cache, query, variables) => {
+export const readCache = (cache, query, variables) => {
   const fromQuery = { query, variables }
   try {
     const result = cache.readQuery(fromQuery)
@@ -8,7 +8,7 @@ export const readCacheList = (cache, query, variables) => {
   }
 }
 
-export const writeCacheList = (cache, query, data, variables) => {
+export const writeCache = (cache, query, data, variables) => {
   const toQuery = { query, data, variables }
   cache.writeQuery(toQuery)
 }

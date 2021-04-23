@@ -1,0 +1,36 @@
+type ExamTemplate {
+  id: ID!
+  name: String!
+  courseId: ID
+}
+
+type ExamTemplates {
+  data: [ExamTemplate]
+  count: Int!
+}
+
+type ExamTemplateExercise {
+  id: ID!
+  name: String!
+}
+
+type ExamTemplateExercises {
+  data: [ExamTemplateExercise]
+  count: Int!
+}
+
+extend type Query {
+  getExamTemplate(id: ID!): ExamTemplate
+  listExamTemplates(name: String): ExamTemplates
+  listExamTemplateExercises(id: ID!): ExamTemplateExercises
+}
+
+extend type Mutation {
+  createExamTemplate(name: String!, courseId: ID!): ExamTemplate
+  updateExamTemplate(id: ID!, name: String!, courseId: ID!): ExamTemplate
+  disableExamTemplate(id: ID!): ExamTemplate
+  deleteExamTemplate(id: ID!): Response
+  resetExamTemplate(id: ID!): Response
+  addExerciseToExamTemplate(templateId: ID!, exerciseId: ID!): ExamTemplateExercise
+  removeExerciseFromExamTemplate(templateId: ID!, exerciseId: ID!): ExamTemplateExercise
+}

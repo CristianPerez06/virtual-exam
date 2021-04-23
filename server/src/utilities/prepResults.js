@@ -3,7 +3,7 @@ const debug = require('debug')('virtual-exam:prepResults')
 const prepSingleResultForUser = (item) => {
   const { _id, ...rest } = item
   const singleResult = {
-    id: _id,
+    id: _id.toString(),
     ...rest
   }
 

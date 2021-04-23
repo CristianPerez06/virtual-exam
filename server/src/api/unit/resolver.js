@@ -5,7 +5,7 @@ const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
 
-const debug = require('debug')('virtual-exam:unit-resolver')
+const debug = require('debug')('virtual-exam:units-resolver')
 
 const init = () => {
   maintainIndex({
@@ -127,9 +127,9 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      const isDuplicated = docWithSameName
-        && docWithSameName.disabled !== true
-        && docWithSameName.courseId.toString() === courseId
+      const isDuplicated = docWithSameName &&
+        docWithSameName.disabled !== true &&
+        docWithSameName.courseId.toString() === courseId
       if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }

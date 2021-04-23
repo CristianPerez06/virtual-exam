@@ -122,7 +122,7 @@ const UnitsEditor = (props) => {
             <TranslatableTitle isCreating={isCreating} entityName='unit' />
 
             <div className='row'>
-              <div className='col-md-12 col-xs-12 mb-4'>
+              <div className='col-md-12 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='unit_name' />
                 </span>
@@ -130,8 +130,8 @@ const UnitsEditor = (props) => {
               </div>
             </div>
 
-            <div className='row'>
-              <div className='col-md-12 col-xs-12 mb-4'>
+            <div className='row d-flex justify-content-center'>
+              <div className='col-md-10 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='common_entity.course' />
                 </span>
@@ -141,8 +141,8 @@ const UnitsEditor = (props) => {
                   options={courses}
                   validations={required}
                   selectedValue={filters.selectedCourse}
-                  handleOnChange={(value) => {
-                    setFilters({ ...filters, selectedCourse: value })
+                  handleOnChange={(option) => {
+                    setFilters({ ...filters, selectedCourse: option.value })
                   }}
                 />
               </div>

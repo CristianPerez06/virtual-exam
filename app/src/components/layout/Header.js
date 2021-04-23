@@ -88,6 +88,19 @@ const Header = () => {
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret>
+              <FormattedMessage id='button.exam_templates' />
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem tag={Link} to='/exam-templates/new'>
+                <FormattedMessage id='button.create' />
+              </DropdownItem>
+              <DropdownItem tag={Link} to='/exam-templates/list'>
+                <FormattedMessage id='button.list' />
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
         </Nav>
         <Nav className='ml-auto' navbar>
           <UncontrolledDropdown nav inNavbar>

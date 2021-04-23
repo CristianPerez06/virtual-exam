@@ -5,7 +5,7 @@ const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
 
-const debug = require('debug')('virtual-exam:exercise-resolver')
+const debug = require('debug')('virtual-exam:exercises-resolver')
 
 const init = () => {
   maintainIndex({
@@ -103,11 +103,11 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      const isDuplicated = docWithSameName
-        && docWithSameName.disabled !== true
-        && docWithSameName.courseId.toString() === courseId
-        && docWithSameName.unitId.toString() === unitId
-        && docWithSameName.disabled !== true
+      const isDuplicated = docWithSameName &&
+        docWithSameName.disabled !== true &&
+        docWithSameName.courseId.toString() === courseId &&
+        docWithSameName.unitId.toString() === unitId &&
+        docWithSameName.disabled !== true
       if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
@@ -142,10 +142,10 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      const isDuplicated = docWithSameName
-        && docWithSameName.courseId.toString() === courseId
-        && docWithSameName.unitId.toString() === unitId
-        && docWithSameName.disabled !== true
+      const isDuplicated = docWithSameName &&
+        docWithSameName.courseId.toString() === courseId &&
+        docWithSameName.unitId.toString() === unitId &&
+        docWithSameName.disabled !== true
       if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
@@ -174,7 +174,7 @@ const resolver = {
       debug('Running disableExercise mutation with params:', args)
 
       // Args
-      const { id, name, courseId, unitId } = args
+      const { id } = args
 
       // Collection
       const collection = context.db.collection('exercises')

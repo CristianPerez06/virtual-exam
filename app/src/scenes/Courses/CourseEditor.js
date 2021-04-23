@@ -108,7 +108,7 @@ const CourseEditor = (props) => {
             <TranslatableTitle isCreating={isCreating} entityName='course' />
 
             <div className='row'>
-              <div className='col-md-12 col-xs-12 mb-4'>
+              <div className='col-md-12 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='course_name' />
                 </span>

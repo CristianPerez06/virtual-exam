@@ -3,7 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import { Layout } from '../components/layout'
 import { PageNotFound, Error } from '../components/common'
 import { Home } from '../components'
-import { AsyncCourses, AsyncUnits, AsyncSettings, AsyncExercises } from './Lazyimports'
+import { AsyncCourses, AsyncUnits, AsyncSettings, AsyncExercises, AsyncExamTemplates } from './Lazyimports'
 
 const AuthRouter = () => {
   return (
@@ -16,6 +16,7 @@ const AuthRouter = () => {
         <Route path='/courses' name='Course' component={AsyncCourses} />
         <Route path='/units' name='Unit' component={AsyncUnits} />
         <Route path='/exercises' name='Exercises' component={AsyncExercises} />
+        <Route path='/exam-templates' name='Exam templates' component={AsyncExamTemplates} />
         <Route path='/settings' name='Settings' component={AsyncSettings} />
         <Route name='/error' component={Error} />
         <Route name='Page Not Found' component={PageNotFound} />

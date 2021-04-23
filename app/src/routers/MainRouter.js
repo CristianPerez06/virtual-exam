@@ -5,7 +5,7 @@ import { Loading } from '../components/common'
 import { ACCOUNT_ACTION_TYPES } from '../common/constants'
 import { useAuthContext } from '../hooks'
 
-const Main = () => {
+const MainRouter = () => {
   const { dispatch, cognito } = useAuthContext()
 
   // hooks
@@ -46,4 +46,4 @@ const Main = () => {
   )
 }
 
-export default Main
+export default MainRouter

@@ -34,12 +34,15 @@
   "common_entity.exercises": "Exercises",
   "common_entity.answer": "Answer",
   "common_entity.answers": "Answers",
+  "common_entity.exam_template": "Exam template",
+  "common_entity.exam_templates": "Exam templates",
 
   "common_title.register_user": "Register user",
   "common_title.sign_in": "Sign in",
   "common_title.forgot_password": "Forgot password",
   "common_title.change_password": "Change password",
   "common_title.delete_confirmation": "Delete confirmation",
+  "common_title.edit_confirmation": "Edit confirmation",
   "common_title.edit": "Edit",
 
   "button.register": "Register",
@@ -63,6 +66,9 @@
   "button.exercises": "Exercises",
   "button.add_answer": "Add answers",
   "button.go_to_exercise": "Go to exercise",
+  "button.exam_templates": "Exam templates",
+  "button.add_exercise": "Add exercise",
+  "button.confirm": "Confirm",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
@@ -79,6 +85,7 @@
   "exercise_updated": "Exercise updated succesfully",
   "exercise_deleted": "Exercise deleted succesfully",
   "exercise_answer_correct_needed": "In order to use this exercise you need to add a correct answer",
+  "exercises_edit_course": "Exercises related to current template will be deleted if change the Course.",
 
   "answer_name": "Answer name",
   "answer_description": "Answer description",
@@ -86,6 +93,13 @@
   "answer_updated": "Answer updated succesfully",
   "answer_deleted": "Answer deleted succesfully",
   "answer_correct": "Correct answer",
+
+  "exam_template_name": "Exam template name",
+  "exam_template_created": "Exam template created succesfully",
+  "exam_template_updated": "Exam template updated succesfully",
+  "exam_template_deleted": "Exam template deleted successfully",
+  "exam_template_exercise_added": "Exercise successfully added to the Exam template",
+  "exam_template_exercise_removed": "Exercise successfully remoed from the Exam template",
 
   "registration_completed": "Registration succesful",
   "first_name": "Name",

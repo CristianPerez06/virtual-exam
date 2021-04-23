@@ -1,10 +1,10 @@
-import { readCacheList, writeCacheList } from '../../common/apolloCacheHelpers'
+import { readCache, writeCache } from '../../common/apolloCacheHelpers'
 import { addItemToList, updateItemInList, removeItemFromList } from '../../common/arrayHelpers'
 import { LIST_COURSES } from '../../common/requests/courses'
 
 export const syncCacheOnCreate = (cache, item, query) => {
   // Read Cache Query
-  const { listCourses } = readCacheList(cache, LIST_COURSES)
+  const { listCourses } = readCache(cache, LIST_COURSES)
   // If list is not in cache yet then we don't do anything
   if (!listCourses) return
   // Add new item to list
@@ -13,13 +13,13 @@ export const syncCacheOnCreate = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCacheList(cache, LIST_COURSES, { listCourses: { ...listToCache } })
+  writeCache(cache, LIST_COURSES, { listCourses: { ...listToCache } })
   return listToCache
 }
 
 export const syncCacheOnUpdate = (cache, item, query) => {
   // Read Cache
-  const { listCourses } = readCacheList(cache, LIST_COURSES)
+  const { listCourses } = readCache(cache, LIST_COURSES)
   // If list is not in cache yet then we don't do anything
   if (!listCourses) return
   // Update item in list
@@ -28,13 +28,13 @@ export const syncCacheOnUpdate = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCacheList(cache, LIST_COURSES, { listCourses: { ...listToCache } })
+  writeCache(cache, LIST_COURSES, { listCourses: { ...listToCache } })
   return listToCache
 }
 
 export const syncCacheOnDelete = (cache, item, query) => {
   // Read Cache
-  const { listCourses } = readCacheList(cache, LIST_COURSES)
+  const { listCourses } = readCache(cache, LIST_COURSES)
   // If list is not in cache yet then we don't do anything
   if (!listCourses) return
   // Remove item from list
@@ -43,6 +43,6 @@ export const syncCacheOnDelete = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCacheList(cache, LIST_COURSES, { listCourses: { ...listToCache } })
+  writeCache(cache, LIST_COURSES, { listCourses: { ...listToCache } })
   return listToCache
 }

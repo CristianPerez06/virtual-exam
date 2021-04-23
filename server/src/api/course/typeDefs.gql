@@ -1,6 +1,6 @@
 type Course {
   id: ID!
-  name: String
+  name: String!
 }
 
 type Courses {
