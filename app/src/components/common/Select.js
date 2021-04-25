@@ -16,7 +16,7 @@ const Select = (props) => {
   if (options.length === 0) {
     return (
       <select className={selectClass} disabled>
-        <option>
+        <option value='DEFAULT_VALUE'>
           {formatMessage({ id: 'common_message.no_items_available' })}
         </option>
       </select>

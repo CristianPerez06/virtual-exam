@@ -3,7 +3,7 @@ import { Button } from 'reactstrap'
 import { LoadingInline } from '../../components/common'
 import { injectIntl, FormattedMessage } from 'react-intl'
 
-const CustomAlert = (props) => {
+const ButtonSubmit = (props) => {
   const { isDisabled, isLoading } = props
 
   return (
@@ -14,4 +14,4 @@ const CustomAlert = (props) => {
   )
 }
 
-export default injectIntl(CustomAlert)
+export default injectIntl(ButtonSubmit)

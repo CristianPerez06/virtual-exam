@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Field } from 'react-final-form'
-import { Button } from 'reactstrap'
-import { useRouteMatch, Link } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, ButtonSubmit, FieldWrapper } from '../../components/common'
+import { CustomAlert, ButtonSubmit, ButtonGoTo, FieldWrapper, TranslatableTitle } from '../../components/common'
 import { required } from '../../common/validators'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { CREATE_ANSWER, UPDATE_ANSWER, GET_ANSWER } from '../../common/requests/answers'
@@ -101,11 +100,7 @@ const AnswersEditor = (props) => {
         initialValues={initialValues}
         render={({ handleSubmit, pristine }) => (
           <form onSubmit={handleSubmit}>
-            <p className='text-center h4 mb-5'>
-              {isCreating
-                ? <FormattedMessage id='common_action.create' />
-                : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.answer' }).toLowerCase()}
-            </p>
+            <TranslatableTitle isCreating={isCreating} entityName='answer' />
 
             <div className='row'>
               <div className='col-md-12 col-xs-12 mb-4'>
@@ -130,12 +125,7 @@ const AnswersEditor = (props) => {
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='answer_correct' />
                 </span>
-                <Field
-                  className='ml-2'
-                  name='correct'
-                  component='input'
-                  type='checkbox'
-                />
+                <Field className='ml-2' name='correct' component='input' type='checkbox' />
               </div>
             </div>
 
@@ -146,15 +136,12 @@ const AnswersEditor = (props) => {
                 isDisabled={creating || updating || fetching || pristine}
                 isLoading={creating || updating || fetching}
               />
-              <Link to={`/exercises/${params.exerciseId}`}>
-                <Button
-                  className='m-2'
-                  color='secondary'
-                  disabled={creating || updating || fetching}
-                >
-                  <FormattedMessage id='button.go_to_exercise' />
-                </Button>
-              </Link>
+              <ButtonGoTo
+                path={`/exercises/${params.exerciseId}`}
+                color='secondary'
+                translatableTextId='button.go_to_exercise'
+                isDisabled={creating || updating || fetching}
+              />
             </div>
 
             <div id='info' className='d-flex justify-content-around mt-5'>

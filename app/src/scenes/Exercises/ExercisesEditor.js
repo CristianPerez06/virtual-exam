@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Field } from 'react-final-form'
+import { Form } from 'react-final-form'
 import { Button, Input } from 'reactstrap'
 import { Link, useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, TranslatableErrors, FieldError, Select, Table, DeleteModal, FieldWrapper } from '../../components/common'
+import { CustomAlert, TranslatableErrors, Table, DeleteModal, FieldWrapper, SelectWrapper, TranslatableTitle, ButtonSubmit, ButtonGoTo } from '../../components/common'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { translateFieldError } from '../../common/translations'
 import { CREATE_EXERCISE, UPDATE_EXERCISE, GET_EXERCISE } from '../../common/requests/exercises'
 import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS } from '../../common/requests/units'
 import { DISABLE_ANSWER, LIST_ANSWERS } from '../../common/requests/answers'
 import { syncExercisesCacheOnCreate, syncExercisesCacheOnUpdate, syncAnswersCacheOnDelete } from './cacheHelpers'
-import ButtonSubmit from '../../components/common/ButtonSubmit'
-import ButtonGoToList from '../../components/common/ButtonGoToList'
 
 const ExercisesEditor = (props) => {
   // Props and params
@@ -35,7 +32,6 @@ const ExercisesEditor = (props) => {
   const [answerToDelete, setAnswerToDelete] = useState(null)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
   const [answerDeleted, setAnswerDeleted] = useState(false)
-
 
   // Handlers
   const onSuccess = (result) => {
@@ -200,7 +196,7 @@ const ExercisesEditor = (props) => {
         Header: columnTranslations.answerCorrect,
         accessor: 'correct',
         Cell: ({ row }) => {
-          return <Input type='checkbox' className='position-relative m-0 p-0' checked={row.values.correct} readOnly disabled/>
+          return <Input type='checkbox' className='position-relative m-0 p-0' checked={row.values.correct} readOnly disabled />
         }
       },
       {
@@ -241,11 +237,7 @@ const ExercisesEditor = (props) => {
         initialValues={initialValues}
         render={({ handleSubmit, pristine }) => (
           <form onSubmit={handleSubmit}>
-            <p className='text-center h4 mb-5'>
-              {isCreating
-                ? <FormattedMessage id='common_action.create' />
-                : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.exercise' }).toLowerCase()}
-            </p>
+            <TranslatableTitle isCreating={isCreating} entityName='exercise' />
 
             {/* Name */}
             <div className='row'>
@@ -263,49 +255,31 @@ const ExercisesEditor = (props) => {
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='common_entity.course' />
                 </span>
-                <Field name='courseId' component='select' options={courses} validate={required}>
-                  {({ input, meta, options }) => {
-                    return (
-                      <div>
-                        <Select
-                          options={options}
-                          selectClass='form-control'
-                          selectedValue={filters.selectedCourse}
-                          onChange={(value) => {
-                            setFilters({ ...filters, selectedCourse: value })
-                            input.onChange(value)
-                          }}
-                          isDisabled={fetchingCourses}
-                        />
-                        {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                      </div>
-                    )
+                <SelectWrapper
+                  fieldName='courseId'
+                  isDisabled={fetchingCourses}
+                  options={courses}
+                  validations={required}
+                  selectedValue={filters.selectedCourse}
+                  handleOnChange={(value) => {
+                    setFilters({ ...filters, selectedCourse: value })
                   }}
-                </Field>
+                />
               </div>
               <div className='col-md-6 col-xs-12 mb-4'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='common_entity.unit' />
                 </span>
-                <Field name='unitId' component='select' options={units} validate={required}>
-                  {({ input, meta, options }) => {
-                    return (
-                      <div>
-                        <Select
-                          options={options}
-                          selectClass='form-control'
-                          selectedValue={filters.selectedUnit}
-                          onChange={(value) => {
-                            setFilters({ ...filters, selectedUnit: value })
-                            input.onChange(value)
-                          }}
-                          isDisabled={!filters.selectedCourse || fetchingCourses}
-                        />
-                        {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                      </div>
-                    )
+                <SelectWrapper
+                  fieldName='unitId'
+                  isDisabled={!filters.selectedCourse || fetchingCourses}
+                  options={units}
+                  validations={required}
+                  selectedValue={filters.selectedUnit}
+                  handleOnChange={(value) => {
+                    setFilters({ ...filters, selectedUnit: value })
                   }}
-                </Field>
+                />
               </div>
             </div>
 
@@ -346,19 +320,18 @@ const ExercisesEditor = (props) => {
               />
 
               {!isCreating && (
-                <Link to={`/exercises/${params.id}/answers/new`}>
-                  <Button
-                    className='m-2'
-                    color='info'
-                    disabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
-                  >
-                    <FormattedMessage id='button.add_answer' />
-                  </Button>
-                </Link>
+                <ButtonGoTo
+                  path={`/exercises/${params.id}/answers/new`}
+                  color='info'
+                  translatableTextId='button.add_answer'
+                  isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
+                />
               )}
 
-              <ButtonGoToList
-                entity='exercises'
+              <ButtonGoTo
+                path='/exercises/list'
+                color='secondary'
+                translatableTextId='button.go_to_list'
                 isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
               />
             </div>
