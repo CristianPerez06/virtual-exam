@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Field } from 'react-final-form'
+import { Form } from 'react-final-form'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, TranslatableErrors, FieldError, Select, ButtonSubmit, ButtonGoToList, FieldWrapper } from '../../components/common'
+import { CustomAlert, TranslatableErrors, ButtonSubmit, ButtonGoTo, FieldWrapper, SelectWrapper, TranslatableTitle } from '../../components/common'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { translateFieldError } from '../../common/translations'
 import { CREATE_UNIT, UPDATE_UNIT, GET_UNIT } from '../../common/requests/units'
 import { LIST_COURSES } from '../../common/requests/courses'
 import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
@@ -120,11 +119,7 @@ const UnitsEditor = (props) => {
         initialValues={initialValues}
         render={({ handleSubmit, pristine }) => (
           <form onSubmit={handleSubmit}>
-            <p className='text-center h4 mb-5'>
-              {isCreating
-                ? <FormattedMessage id='common_action.create' />
-                : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.unit' }).toLowerCase()}
-            </p>
+            <TranslatableTitle isCreating={isCreating} entityName='unit' />
 
             <div className='row'>
               <div className='col-md-12 col-xs-12 mb-4'>
@@ -140,23 +135,16 @@ const UnitsEditor = (props) => {
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='common_entity.course' />
                 </span>
-                <Field name='courseId' component='select' disabled={fetchingCourses} options={courses} validate={required}>
-                  {({ input, meta, options }) => (
-                    <div>
-                      <Select
-                        options={options}
-                        selectClass='form-control'
-                        selectedValue={filters.selectedCourse}
-                        onChange={(value) => {
-                          setFilters({ ...filters, selectedCourse: value })
-                          input.onChange(value)
-                        }}
-                        disabled={fetchingCourses}
-                      />
-                      {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                    </div>
-                  )}
-                </Field>
+                <SelectWrapper
+                  fieldName='courseId'
+                  isDisabled={fetchingCourses}
+                  options={courses}
+                  validations={required}
+                  selectedValue={filters.selectedCourse}
+                  handleOnChange={(value) => {
+                    setFilters({ ...filters, selectedCourse: value })
+                  }}
+                />
               </div>
             </div>
 
@@ -167,8 +155,10 @@ const UnitsEditor = (props) => {
                 isDisabled={creating || updating || fetching || fetchingCourses || pristine}
                 isLoading={creating || updating || fetching}
               />
-              <ButtonGoToList
-                entity='units'
+              <ButtonGoTo
+                path='/units/list'
+                color='secondary'
+                translatableTextId='button.go_to_list'
                 isDisabled={creating || updating || fetching || fetchingCourses}
               />
             </div>

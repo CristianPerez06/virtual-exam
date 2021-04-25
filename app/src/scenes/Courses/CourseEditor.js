@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Form } from 'react-final-form'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, ButtonSubmit, ButtonGoToList, FieldWrapper } from '../../components/common'
+import { CustomAlert, ButtonSubmit, ButtonGoTo, FieldWrapper, TranslatableTitle } from '../../components/common'
 import { required } from '../../common/validators'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { CREATE_COURSE, UPDATE_COURSE, GET_COURSE } from '../../common/requests/courses'
@@ -105,11 +105,7 @@ const CourseEditor = (props) => {
         initialValues={initialValues}
         render={({ handleSubmit, pristine }) => (
           <form onSubmit={handleSubmit}>
-            <p className='text-center h4 mb-5'>
-              {isCreating
-                ? <FormattedMessage id='common_action.create' />
-                : `${formatMessage({ id: 'common_action.edit' })}`} {formatMessage({ id: 'common_entity.course' }).toLowerCase()}
-            </p>
+            <TranslatableTitle isCreating={isCreating} entityName='course' />
 
             <div className='row'>
               <div className='col-md-12 col-xs-12 mb-4'>
@@ -127,8 +123,10 @@ const CourseEditor = (props) => {
                 isDisabled={creating || updating || fetching || pristine}
                 isLoading={creating || updating || fetching}
               />
-              <ButtonGoToList
-                entity='courses'
+              <ButtonGoTo
+                path='/courses/list'
+                color='secondary'
+                translatableTextId='button.go_to_list'
                 isDisabled={creating || updating || fetching}
               />
             </div>

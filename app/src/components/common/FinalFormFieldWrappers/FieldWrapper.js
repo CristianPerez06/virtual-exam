@@ -1,8 +1,8 @@
 import React from 'react'
 import { Field } from 'react-final-form'
 import { injectIntl } from 'react-intl'
-import { translateFieldError } from '../../common/translations'
-import { FieldError } from '../common'
+import { translateFieldError } from '../../../common/translations'
+import { FieldError } from '../../common'
 
 const FieldWrapper = (props) => {
   const {
