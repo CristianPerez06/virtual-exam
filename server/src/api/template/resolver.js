@@ -1,6 +1,5 @@
 const { ApolloError } = require('apollo-server-express')
 const { ObjectId } = require('bson')
-const moment = require('moment')
 const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { addItemToList, removeItemFromList } = require('../../utilities/arrayHelpers')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
@@ -165,7 +164,7 @@ const resolver = {
         _id: new ObjectId(),
         name: name,
         courseId: new ObjectId(courseId),
-        created: moment().toISOString()
+        created: new Date().toISOString()
       }
 
       // Exec
@@ -201,7 +200,7 @@ const resolver = {
         $set: {
           name,
           courseId: new ObjectId(courseId),
-          updated: moment().toISOString()
+          updated: new Date().toISOString()
         }
       }
 
@@ -228,7 +227,7 @@ const resolver = {
       const update = {
         $set: {
           disabled: true,
-          updated: moment().toISOString()
+          updated: new Date().toISOString()
         }
       }
 
@@ -280,7 +279,7 @@ const resolver = {
         $set: {
           courseId: null,
           exercises: [],
-          updated: moment().toISOString()
+          updated: new Date().toISOString()
         }
       }
 
@@ -323,7 +322,7 @@ const resolver = {
       const update = {
         $set: {
           exercises: newExercises,
-          updated: moment().toISOString()
+          updated: new Date().toISOString()
         }
       }
 
@@ -359,7 +358,7 @@ const resolver = {
       const update = {
         $set: {
           exercises: updatedExercisesList,
-          updated: moment().toISOString()
+          updated: new Date().toISOString()
         }
       }
 

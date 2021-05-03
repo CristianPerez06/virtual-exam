@@ -1,6 +1,5 @@
 const { ApolloError } = require('apollo-server-express')
 const { ObjectId } = require('bson')
-const moment = require('moment')
 const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
@@ -98,7 +97,7 @@ const resolver = {
       }
 
       // Query
-      const newItem = { _id: new ObjectId(), name: name, created: moment().toISOString() }
+      const newItem = { _id: new ObjectId(), name: name, created: new Date().toISOString() }
 
       // Exec
       const response = await collection.insertOne(newItem, { writeConcern: { w: 'majority' } })
@@ -129,7 +128,7 @@ const resolver = {
       const update = {
         $set: {
           name,
-          updated: moment().toISOString()
+          updated: new Date().toISOString()
         }
       }
 
@@ -156,7 +155,7 @@ const resolver = {
       const update = {
         $set: {
           disabled: true,
-          updated: moment().toISOString()
+          updated: new Date().toISOString()
         }
       }
 
