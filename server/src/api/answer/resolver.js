@@ -1,6 +1,5 @@
 const { ApolloError } = require('apollo-server-express')
 const { ObjectId } = require('bson')
-const moment = require('moment')
 const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
@@ -111,7 +110,7 @@ const resolver = {
         description: description,
         correct: correct,
         exerciseId: new ObjectId(exerciseId),
-        created: moment().toISOString()
+        created: new Date().toISOString()
       }
 
       // Exec
@@ -162,7 +161,7 @@ const resolver = {
           description,
           correct,
           exerciseId: new ObjectId(exerciseId),
-          updated: moment().toISOString()
+          updated: new Date().toISOString()
         }
       }
 
@@ -189,7 +188,7 @@ const resolver = {
       const update = {
         $set: {
           disabled: true,
-          updated: moment().toISOString()
+          updated: new Date().toISOString()
         }
       }
 
