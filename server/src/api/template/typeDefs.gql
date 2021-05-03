@@ -21,7 +21,7 @@ type ExamTemplateExercises {
 
 extend type Query {
   getExamTemplate(id: ID!): ExamTemplate
-  listExamTemplates(name: String): ExamTemplates
+  listExamTemplates(name: String, courseId: ID): ExamTemplates
   listExamTemplateExercises(id: ID!): ExamTemplateExercises
 }
 

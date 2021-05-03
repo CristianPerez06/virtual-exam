@@ -29,7 +29,7 @@ const SelectWrapper = (props) => {
       {({ input, meta, options }) => (
         <div>
           <Select
-            value={mappedSelectedValue}
+            value={mappedSelectedValue || ''}
             options={mappedOptions}
             isDisabled={isDisabled}
             onChange={(x) => {

@@ -1,0 +1,20 @@
+type AssignedExam {
+  id: ID!
+  idNumber: ID!
+  examTemplateId: ID!
+  examTemplateName: String!
+}
+
+type AssignedExams {
+  data: [AssignedExam]
+  count: Int!
+}
+
+extend type Query {
+  listAssignedExams(idNumber: ID): AssignedExams
+}
+
+extend type Mutation {
+  createAssignedExam(examTemplateId: ID!, idNumber: ID!): AssignedExam
+  deleteAssignedExam(id: ID!): Response
+}

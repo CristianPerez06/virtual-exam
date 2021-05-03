@@ -61,11 +61,9 @@ class Cognito {
           reject(err)
         },
         newPasswordRequired: userAttr => {
-          debugger
           const challengeCallbacks = {
             onSuccess: data => resolve(data),
             onFailure: err => {
-              debugger
               return reject(err)
             }
           }

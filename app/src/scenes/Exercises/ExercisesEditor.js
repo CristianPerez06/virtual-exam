@@ -29,7 +29,7 @@ const ExercisesEditor = (props) => {
   const [filters, setFilters] = useState({})
   const [errors, setErrors] = useState()
   const [answers, setAnswers] = useState([])
-  const [answerToDelete, setAnswerToDelete] = useState(null)
+  const [answerToDelete, setAnswerToDelete] = useState()
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
   const [answerDeleted, setAnswerDeleted] = useState(false)
 

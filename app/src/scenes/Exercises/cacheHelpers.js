@@ -48,9 +48,9 @@ export const syncExercisesCacheOnDelete = (cache, item) => {
   return listToCache
 }
 
-export const syncAnswersCacheOnCreate = (cache, item, query) => {
+export const syncAnswersCacheOnCreate = (cache, item, variables) => {
   // Read Cache Query
-  const { listAnswers } = readCache(cache, LIST_ANSWERS, query)
+  const { listAnswers } = readCache(cache, LIST_ANSWERS, variables)
   // If list is not in cache yet then we don't do anything
   if (!listAnswers) return
   // Add new item to list
@@ -59,13 +59,13 @@ export const syncAnswersCacheOnCreate = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCache(cache, LIST_ANSWERS, { listAnswers: { ...listToCache } }, query)
+  writeCache(cache, LIST_ANSWERS, { listAnswers: { ...listToCache } }, variables)
   return listToCache
 }
 
-export const syncAnswersCacheOnUpdate = (cache, item, query) => {
+export const syncAnswersCacheOnUpdate = (cache, item, variables) => {
   // Read Cache
-  const { listAnswers } = readCache(cache, LIST_ANSWERS, query)
+  const { listAnswers } = readCache(cache, LIST_ANSWERS, variables)
   // If list is not in cache yet then we don't do anything
   if (!listAnswers) return
   // Update item in list
@@ -74,13 +74,13 @@ export const syncAnswersCacheOnUpdate = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCache(cache, LIST_ANSWERS, { listAnswers: { ...listToCache } }, query)
+  writeCache(cache, LIST_ANSWERS, { listAnswers: { ...listToCache } }, variables)
   return listToCache
 }
 
-export const syncAnswersCacheOnDelete = (cache, item, query) => {
+export const syncAnswersCacheOnDelete = (cache, item, variables) => {
   // Read Cache
-  const { listAnswers } = readCache(cache, LIST_ANSWERS, query)
+  const { listAnswers } = readCache(cache, LIST_ANSWERS, variables)
   // If list is not in cache yet then we don't do anything
   if (!listAnswers) return
   // Remove item from list
@@ -89,6 +89,6 @@ export const syncAnswersCacheOnDelete = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCache(cache, LIST_ANSWERS, { listAnswers: { ...listToCache } }, query)
-  return listToCache
+  writeCache(cache, LIST_ANSWERS, { listAnswers: { ...listToCache } }, variables)
+  return variables
 }

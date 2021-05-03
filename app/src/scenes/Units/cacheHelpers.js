@@ -2,7 +2,7 @@ import { readCache, writeCache } from '../../common/apolloCacheHelpers'
 import { addItemToList, updateItemInList, removeItemFromList } from '../../common/arrayHelpers'
 import { LIST_UNITS } from '../../common/requests/units'
 
-export const syncCacheOnCreate = (cache, item, query) => {
+export const syncCacheOnCreate = (cache, item) => {
   // Read Cache Query
   const { listUnits } = readCache(cache, LIST_UNITS)
   // If list is not in cache yet then we don't do anything
@@ -17,7 +17,7 @@ export const syncCacheOnCreate = (cache, item, query) => {
   return listToCache
 }
 
-export const syncCacheOnUpdate = (cache, item, query) => {
+export const syncCacheOnUpdate = (cache, item) => {
   // Read Cache
   const { listUnits } = readCache(cache, LIST_UNITS)
   // If list is not in cache yet then we don't do anything
@@ -32,7 +32,7 @@ export const syncCacheOnUpdate = (cache, item, query) => {
   return listToCache
 }
 
-export const syncCacheOnDelete = (cache, item, query) => {
+export const syncCacheOnDelete = (cache, item) => {
   // Read Cache
   const { listUnits } = readCache(cache, LIST_UNITS)
   // If list is not in cache yet then we don't do anything

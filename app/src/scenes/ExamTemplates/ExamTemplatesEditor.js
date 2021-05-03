@@ -8,7 +8,7 @@ import { required } from '../../common/validators'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { CREATE_EXAM_TEMPLATE, GET_EXAM_TEMPLATE, UPDATE_EXAM_TEMPLATE, RESET_EXAM_TEMPLATE } from '../../common/requests/templates'
 import { LIST_COURSES } from '../../common/requests/courses'
-import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
+import { syncCacheOnCreate, syncCacheOnUpdate, syncCacheOnResetTemplateExercises } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import ExamTemplateExercises from './ExamTemplateExercises'
 import EditCourseConfirmModal from './EditCourseConfirmModal'
@@ -110,7 +110,11 @@ const ExamTemplatesEditor = (props) => {
 
   const onConfirmEditClicked = () => {
     resetExamTemplate({
-      variables: { id: params.id }
+      variables: { id: params.id },
+      update: (cache, result) => {
+        const variables = { id: params.id }
+        syncCacheOnResetTemplateExercises(cache, result.data.resetExamTemplate, variables)
+      }
     })
 
     // Reset States to tnitial values
@@ -251,7 +255,6 @@ const ExamTemplatesEditor = (props) => {
           </form>
         )}
       />
-
     </div>
   )
 }

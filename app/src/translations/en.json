@@ -36,6 +36,8 @@
   "common_entity.answers": "Answers",
   "common_entity.exam_template": "Exam template",
   "common_entity.exam_templates": "Exam templates",
+  "common_entity.student": "Student",
+  "common_entity.students": "Students",
 
   "common_title.register_user": "Register user",
   "common_title.sign_in": "Sign in",
@@ -69,6 +71,9 @@
   "button.exam_templates": "Exam templates",
   "button.add_exercise": "Add exercise",
   "button.confirm": "Confirm",
+  "button.students": "Students",
+  "button.assign_exam": "Assign exam",
+  "button.admin_exams": "Admin exams",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
@@ -101,13 +106,19 @@
   "exam_template_exercise_added": "Exercise successfully added to the Exam template",
   "exam_template_exercise_removed": "Exercise successfully remoed from the Exam template",
 
+  "student_id_number": "ID Number",
+
+  "assign_exam": "Assign Exam to Student",
+  "assigned_exam_created": "Exam successfully assigned",
+  "assigned_exams": "Assigned exams",
+
   "registration_completed": "Registration succesful",
   "first_name": "Name",
   "last_name": "Last name",
   "nick_name": "Username",
   "password": "Password",
   "new_password": "New password",
-  "confirm_password": "Confirm password",
+  "confirm_new_password": "Confirm new password",
   "recovery_code_sent": "Recovery code sent",
   "recovery_code": "Recovery code",
   "change_language": "Change language",

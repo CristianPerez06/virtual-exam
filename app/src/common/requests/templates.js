@@ -11,8 +11,8 @@ export const GET_EXAM_TEMPLATE = gql`
   }
 `
 export const LIST_EXAM_TEMPLATES = gql`
-  query listExamTemplates($name: String) {
-    listExamTemplates(name: $name) {
+  query listExamTemplates($name: String, $courseId: ID) {
+    listExamTemplates(name: $name, courseId: $courseId) {
       data {
         id
         name
