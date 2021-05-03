@@ -6,21 +6,18 @@ import { ACCOUNT_ACTION_TYPES } from '../common/constants'
 import { useAuthContext } from '../hooks'
 
 const MainRouter = () => {
-  const { dispatch, cognito } = useAuthContext()
-
-  // hooks
+  // Hooks
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState(null)
+  const { dispatch, cognito } = useAuthContext()
 
   useEffect(() => {
-    const getAndRefreshSession = async () => {
+    const getCurrentSession = async () => {
       try {
         const session = await cognito.getSession()
-        const refresh = await cognito.refreshSession(session)
-        const { user } = session
-        const { accessToken } = refresh
+        const { user, accessToken } = session
         dispatch({
-          type: ACCOUNT_ACTION_TYPES.REFRESH,
+          type: ACCOUNT_ACTION_TYPES.LOGIN,
           payload: { user: user.username, token: accessToken.jwtToken }
         })
         setUser(user.username)
@@ -34,7 +31,7 @@ const MainRouter = () => {
       setIsLoading(false)
     }
 
-    getAndRefreshSession()
+    getCurrentSession()
   }, [dispatch, cognito])
 
   if (isLoading) { return <Loading /> }
