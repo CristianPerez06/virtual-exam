@@ -1,6 +1,6 @@
 type Exercise {
   id: ID!
-  name: String,
+  name: String!,
   courseId: ID!,
   unitId: ID!
 }

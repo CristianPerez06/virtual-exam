@@ -241,7 +241,7 @@ const ExercisesEditor = (props) => {
 
             {/* Name */}
             <div className='row'>
-              <div className='col-md-12 col-xs-12 mb-4'>
+              <div className='col-md-12 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='exercise_name' />
                 </span>
@@ -251,7 +251,7 @@ const ExercisesEditor = (props) => {
 
             {/* Course - Unit */}
             <div className='row'>
-              <div className='col-md-6 col-xs-12 mb-4'>
+              <div className='col-md-6 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='common_entity.course' />
                 </span>
@@ -261,12 +261,12 @@ const ExercisesEditor = (props) => {
                   options={courses}
                   validations={required}
                   selectedValue={filters.selectedCourse}
-                  handleOnChange={(value) => {
-                    setFilters({ ...filters, selectedCourse: value })
+                  handleOnChange={(option) => {
+                    setFilters({ ...filters, selectedCourse: option.value })
                   }}
                 />
               </div>
-              <div className='col-md-6 col-xs-12 mb-4'>
+              <div className='col-md-6 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='common_entity.unit' />
                 </span>
@@ -276,8 +276,8 @@ const ExercisesEditor = (props) => {
                   options={units}
                   validations={required}
                   selectedValue={filters.selectedUnit}
-                  handleOnChange={(value) => {
-                    setFilters({ ...filters, selectedUnit: value })
+                  handleOnChange={(option) => {
+                    setFilters({ ...filters, selectedUnit: option.value })
                   }}
                 />
               </div>

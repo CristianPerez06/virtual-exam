@@ -1,8 +1,9 @@
 import React from 'react'
-import { FieldError, Select } from '../../common'
+import { FieldError } from '../../common'
 import { Field } from 'react-final-form'
 import { injectIntl } from 'react-intl'
 import { translateFieldError } from '../../../common/translations'
+import Select from 'react-select'
 
 const SelectWrapper = (props) => {
   const {
@@ -15,19 +16,26 @@ const SelectWrapper = (props) => {
     intl
   } = props
 
+  const mappedOptions = options.map((option) => {
+    return {
+      value: option.id,
+      label: option.name
+    }
+  })
+  const mappedSelectedValue = mappedOptions.find(option => option.value === selectedValue)
+
   return (
-    <Field name={fieldName} component='select' options={options} validate={validations}>
+    <Field name={fieldName} component='select' validate={validations}>
       {({ input, meta, options }) => (
         <div>
           <Select
-            options={options}
-            selectClass='form-control'
-            selectedValue={selectedValue}
-            onChange={(value) => {
-              handleOnChange(value)
-              input.onChange(value)
+            value={mappedSelectedValue}
+            options={mappedOptions}
+            isDisabled={isDisabled}
+            onChange={(x) => {
+              handleOnChange(x)
+              input.onChange(x.value)
             }}
-            disabled={isDisabled}
           />
           {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
         </div>

@@ -34,12 +34,15 @@
   "common_entity.exercises": "Ejercicios",
   "common_entity.answer": "Respuesta",
   "common_entity.answers": "Respuestas",
+  "common_entity.exam_template": "Plantilla de Examen",
+  "common_entity.exam_templates": "Plantillas de Examen",
 
   "common_title.register_user": "Registrar usuario",
   "common_title.sign_in": "Iniciar sesión",
   "common_title.forgot_password": "Resetear contraseña",
   "common_title.change_password": "Cambiar contraseña",
   "common_title.delete_confirmation": "Confirmar borrado",
+  "common_title.edit_confirmation": "Confirmar edición",
   "common_title.edit": "Editar",
 
   "button.register": "Registrar",
@@ -63,6 +66,9 @@
   "button.exercises": "Ejercicios",
   "button.add_answer": "Agregar respuesta",
   "button.go_to_exercise": "Ir al ejercicio",
+  "button.exam_templates": "Plantillas de Examen",
+  "button.add_exercise": "Agregar ejercicio",
+  "button.confirm": "Confirmar",
 
   "course_name": "Nombre del curso",
   "course_created": "Curso creado exitosamente",
@@ -79,6 +85,7 @@
   "exercise_updated": "Ejercicio actualizado exitosamente",
   "exercise_deleted": "Ejercicio eliminado exitosamente",
   "exercise_answer_correct_needed": "Para usar este ejercicio necesita una respuesta correcta",
+  "exercises_edit_course": "Los ejercicios asociados a la Plantilla seran eliminados si cambia el Curso seleccionado.",
 
   "answer_name": "Titulo de la respuesta",
   "answer_description": "Descripción de la respuesta",
@@ -86,6 +93,13 @@
   "answer_updated": "Respuesta actualizada exitosamente",
   "answer_deleted": "Respuesta eliminada exitosamente",
   "answer_correct": "Respuesta correcta",
+
+  "exam_template_name": "Nombre de la Plantilla de Examen",
+  "exam_template_created": "Plantilla de Examen creada exitosamente",
+  "exam_template_updated": "Plantilla de Examen actualizada exitosamente",
+  "exam_template_deleted": "Plantilla de Examen eliminada exitosamente",
+  "exam_template_exercise_added": "Ejercicio agregado exitosamente a la Plantilla de Examen",
+  "exam_template_exercise_removed": "Ejercicio quitado exitosamente de la Plantilla de Examen",
 
   "registration_completed": "Registracion exitosa",
   "first_name": "Nombre",

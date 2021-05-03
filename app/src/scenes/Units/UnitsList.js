@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { Card, CardBody, CardHeader, Button } from 'reactstrap'
+import { Card, CardBody, CardHeader } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_UNITS, DISABLE_UNIT } from '../../common/requests/units'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Loading, CustomAlert, TranslatableErrors, Table, DeleteModal } from '../../components/common'
-import { Link } from 'react-router-dom'
+import { Loading, CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable } from '../../components/common'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
@@ -20,7 +19,7 @@ const UnitsList = (props) => {
   const [unitDeleted, setUnitDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 
-  // handlers
+  // Handlers
   const onCompleted = (res) => {
     if (!res) return
     setUnits(res.listUnits.data)
@@ -67,41 +66,6 @@ const UnitsList = (props) => {
   const { loading: fetching } = useQuery(LIST_UNITS, { variables: {}, onCompleted, onError })
   const [disableUnit, { loading: deleting }] = useMutation(DISABLE_UNIT, { onCompleted: stateCleanupOnDelete, onError })
 
-  const columnTranslations = {
-    unitName: formatMessage({ id: 'unit_name' }),
-    action: formatMessage({ id: 'action' }),
-    edit: formatMessage({ id: 'button.edit' }),
-    delete: formatMessage({ id: 'button.delete' })
-  }
-
-  const columns = React.useMemo(
-    () => {
-      return [{
-        Header: columnTranslations.unitName,
-        accessor: 'name',
-        Cell: ({ row }) => row.values.name
-      },
-      {
-        Header: columnTranslations.action,
-        Cell: ({ row }) => (
-          <div className='d-flex justify-content-center'>
-            <Link to={`/units/${row.original.id}`}>
-              <Button color='info'>{columnTranslations.edit}</Button>
-            </Link>
-            <Button
-              className='ml-1'
-              color='danger'
-              onClick={() => onDeleteClicked({ ...row.original })}
-            >
-              {columnTranslations.delete}
-            </Button>
-          </div>
-        )
-      }]
-    },
-    [columnTranslations]
-  )
-
   return (
     <div className='units-list' style={{ width: 850 + 'px' }}>
       {fetching && <Loading />}
@@ -113,9 +77,14 @@ const UnitsList = (props) => {
             </p>
           </CardHeader>
           <CardBody className='d-flex flex-column text-center'>
-            {units.length === 0
-              ? <div id='no-results' className='text-center mb-3'><FormattedMessage id='common_message.no_results' /></div>
-              : <Table columns={columns} data={units} />}
+            <TwoColumnsTable
+              entityName='unit'
+              entitiesPath='units'
+              items={units}
+              canEdit
+              canDelete
+              onDeleteClicked={onDeleteClicked}
+            />
 
             {/* Delete dodal */}
             <div id='delete-modal'>

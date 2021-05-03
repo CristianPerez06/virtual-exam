@@ -1,6 +1,6 @@
 type Answer {
   id: ID!
-  name: String,
+  name: String!,
   description: String,
   correct: Boolean,
   exerciseId: ID!

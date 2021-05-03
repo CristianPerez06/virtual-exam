@@ -24,6 +24,7 @@
     "react-intl": "^5.10.14",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "react-select": "^4.3.0",
     "react-table": "^7.6.3",
     "reactstrap": "^8.6.0",
     "styled-components": "^5.2.1"

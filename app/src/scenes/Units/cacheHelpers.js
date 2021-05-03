@@ -1,10 +1,10 @@
-import { readCacheList, writeCacheList } from '../../common/apolloCacheHelpers'
+import { readCache, writeCache } from '../../common/apolloCacheHelpers'
 import { addItemToList, updateItemInList, removeItemFromList } from '../../common/arrayHelpers'
 import { LIST_UNITS } from '../../common/requests/units'
 
 export const syncCacheOnCreate = (cache, item, query) => {
   // Read Cache Query
-  const { listUnits } = readCacheList(cache, LIST_UNITS)
+  const { listUnits } = readCache(cache, LIST_UNITS)
   // If list is not in cache yet then we don't do anything
   if (!listUnits) return
   // Add new item to list
@@ -13,13 +13,13 @@ export const syncCacheOnCreate = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCacheList(cache, LIST_UNITS, { listUnits: { ...listToCache } })
+  writeCache(cache, LIST_UNITS, { listUnits: { ...listToCache } })
   return listToCache
 }
 
 export const syncCacheOnUpdate = (cache, item, query) => {
   // Read Cache
-  const { listUnits } = readCacheList(cache, LIST_UNITS)
+  const { listUnits } = readCache(cache, LIST_UNITS)
   // If list is not in cache yet then we don't do anything
   if (!listUnits) return
   // Update item in list
@@ -28,13 +28,13 @@ export const syncCacheOnUpdate = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCacheList(cache, LIST_UNITS, { listUnits: { ...listToCache } })
+  writeCache(cache, LIST_UNITS, { listUnits: { ...listToCache } })
   return listToCache
 }
 
 export const syncCacheOnDelete = (cache, item, query) => {
   // Read Cache
-  const { listUnits } = readCacheList(cache, LIST_UNITS)
+  const { listUnits } = readCache(cache, LIST_UNITS)
   // If list is not in cache yet then we don't do anything
   if (!listUnits) return
   // Remove item from list
@@ -43,6 +43,6 @@ export const syncCacheOnDelete = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCacheList(cache, LIST_UNITS, { listUnits: { ...listToCache } })
+  writeCache(cache, LIST_UNITS, { listUnits: { ...listToCache } })
   return listToCache
 }

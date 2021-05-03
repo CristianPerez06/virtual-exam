@@ -5,7 +5,7 @@ const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
 
-const debug = require('debug')('virtual-exam:course-resolver')
+const debug = require('debug')('virtual-exam:courses-resolver')
 
 const init = () => {
   maintainIndex({
@@ -147,7 +147,7 @@ const resolver = {
       debug('Running disableCourse mutation with params:', args)
 
       // Args
-      const { id, name } = args
+      const { id } = args
 
       // Collection
       const collection = context.db.collection('courses')

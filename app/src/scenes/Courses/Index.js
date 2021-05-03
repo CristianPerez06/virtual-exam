@@ -18,7 +18,7 @@ const Index = () => {
         render={(props) => <CourseEditor {...props} isCreating />}
       />
       <Route
-        name='Edit course'
+        name='Course editor'
         path='/courses/:id'
         render={(props) => <CourseEditor {...props} isCreating={false} />}
       />

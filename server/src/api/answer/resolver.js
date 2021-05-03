@@ -5,7 +5,7 @@ const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
 
-const debug = require('debug')('virtual-exam:answer-resolver')
+const debug = require('debug')('virtual-exam:answers-resolver')
 
 const init = () => {
   maintainIndex({
@@ -87,20 +87,19 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      const isDuplicated = docWithSameName
-        && docWithSameName.exerciseId.toString() === exerciseId
-        && docWithSameName.disabled !== true
+      const isDuplicated = docWithSameName &&
+        docWithSameName.exerciseId.toString() === exerciseId &&
+        docWithSameName.disabled !== true
       if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
 
       // Lookup for duplicate Correct answers
-      const answers = await collection.find({ exerciseId: new ObjectId(exerciseId)}).toArray()
+      const answers = await collection.find({ exerciseId: new ObjectId(exerciseId) }).toArray()
       const correctAnwer = answers
         .filter(answer => !answer.disabled)
         .find(el => el.correct === true)
-      const correctAlreadyExists = correctAnwer
-        && correct === true
+      const correctAlreadyExists = correctAnwer && correct === true
       if (correctAlreadyExists) {
         throw new ApolloError(BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Message, BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Code)
       }
@@ -136,22 +135,22 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      const isDuplicated = docWithSameName
-        && docWithSameName.exerciseId.toString() === exerciseId
-        && docWithSameName._id.toString() !== id
-        && docWithSameName.disabled !== true
+      const isDuplicated = docWithSameName &&
+        docWithSameName.exerciseId.toString() === exerciseId &&
+        docWithSameName._id.toString() !== id &&
+        docWithSameName.disabled !== true
       if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
 
       // Lookup for duplicate Correct answers
-      const answers = await collection.find({ exerciseId: new ObjectId(exerciseId)}).toArray()
+      const answers = await collection.find({ exerciseId: new ObjectId(exerciseId) }).toArray()
       const correctAnwer = answers
         .filter(answer => !answer.disabled)
         .find(el => el.correct === true)
-      const correctAlreadyExists = correctAnwer
-        && correctAnwer._id.toString() !== id
-        && correct === true
+      const correctAlreadyExists = correctAnwer &&
+        correctAnwer._id.toString() !== id &&
+        correct === true
       if (correctAlreadyExists) {
         throw new ApolloError(BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Message, BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Code)
       }
@@ -181,7 +180,7 @@ const resolver = {
       debug('Running disableAnswer mutation with params:', args)
 
       // Args
-      const { id, name, description, correct, exerciseId } = args
+      const { id } = args
 
       // Collection
       const collection = context.db.collection('answers')

@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { Card, CardBody, CardHeader, Button } from 'reactstrap'
+import { Card, CardBody, CardHeader } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_EXERCISES, DISABLE_EXERCISE } from '../../common/requests/exercises'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Loading, CustomAlert, TranslatableErrors, Table, DeleteModal } from '../../components/common'
-import { Link } from 'react-router-dom'
+import { Loading, CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable } from '../../components/common'
 import { syncExercisesCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
@@ -14,16 +13,16 @@ const ExercisesList = (props) => {
   const { formatMessage } = intl
 
   // State
-  const [exercise, setExercise] = useState([])
+  const [exercises, setExercises] = useState([])
   const [errors, setErrors] = useState(null)
   const [exerciseToDelete, setExerciseToDelete] = useState(null)
   const [exerciseDeleted, setExerciseDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 
-  // handlers
+  // Handlers
   const onCompleted = (res) => {
     if (!res) return
-    setExercise(res.listExercises.data)
+    setExercises(res.listExercises.data)
   }
 
   const onError = (err) => {
@@ -46,7 +45,7 @@ const ExercisesList = (props) => {
       variables: { id: exerciseToDelete.id },
       update: (cache, result) => {
         const updatedExercisesList = syncExercisesCacheOnDelete(cache, exerciseToDelete)
-        setExercise(updatedExercisesList.data)
+        setExercises(updatedExercisesList.data)
       }
     })
   }
@@ -67,41 +66,6 @@ const ExercisesList = (props) => {
   const { loading: fetching } = useQuery(LIST_EXERCISES, { variables: {}, onCompleted, onError })
   const [disableExercise, { loading: deleting }] = useMutation(DISABLE_EXERCISE, { onCompleted: stateCleanupOnDelete, onError })
 
-  const columnTranslations = {
-    exerciseName: formatMessage({ id: 'exercise_name' }),
-    action: formatMessage({ id: 'action' }),
-    edit: formatMessage({ id: 'button.edit' }),
-    delete: formatMessage({ id: 'button.delete' })
-  }
-
-  const columns = React.useMemo(
-    () => {
-      return [{
-        Header: columnTranslations.exerciseName,
-        accessor: 'name',
-        Cell: ({ row }) => row.values.name
-      },
-      {
-        Header: columnTranslations.action,
-        Cell: ({ row }) => (
-          <div className='d-flex justify-content-center'>
-            <Link to={`/exercises/${row.original.id}`}>
-              <Button color='info'>{columnTranslations.edit}</Button>
-            </Link>
-            <Button
-              className='ml-1'
-              color='danger'
-              onClick={() => onDeleteClicked({ ...row.original })}
-            >
-              {columnTranslations.delete}
-            </Button>
-          </div>
-        )
-      }]
-    },
-    [columnTranslations]
-  )
-
   return (
     <div className='exercises-list' style={{ width: 850 + 'px' }}>
       {fetching && <Loading />}
@@ -113,9 +77,14 @@ const ExercisesList = (props) => {
             </p>
           </CardHeader>
           <CardBody className='d-flex flex-column text-center'>
-            {exercise.length === 0
-              ? <div id='no-results' className='mb-3'><FormattedMessage id='common_message.no_results' /></div>
-              : <Table columns={columns} data={exercise} />}
+            <TwoColumnsTable
+              entityName='exercise'
+              entitiesPath='exercises'
+              items={exercises}
+              canEdit
+              canDelete
+              onDeleteClicked={onDeleteClicked}
+            />
 
             {/* Delete modal */}
             <div id='delete-modal'>

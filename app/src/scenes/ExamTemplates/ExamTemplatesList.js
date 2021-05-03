@@ -1,28 +1,28 @@
 import React, { useState } from 'react'
 import { Card, CardBody, CardHeader } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { LIST_COURSES, DISABLE_COURSE } from '../../common/requests/courses'
+import { LIST_EXAM_TEMPLATES, DISABLE_EXAM_TEMPLATE } from '../../common/requests/templates'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Loading, CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable } from '../../components/common'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
-const CoursesList = (props) => {
+const ExamTemplatesList = (props) => {
   // Props and params
   const { intl } = props
   const { formatMessage } = intl
 
   // State
-  const [courses, setCourses] = useState([])
+  const [templates, setTemplates] = useState([])
   const [errors, setErrors] = useState(null)
-  const [courseToDelete, setCourseToDelete] = useState(null)
-  const [courseDeleted, setCourseDeleted] = useState(false)
+  const [templateToDelete, setTemplateToDelete] = useState(null)
+  const [templateDeleted, setTemplateDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 
   // Handlers
   const onCompleted = (res) => {
     if (!res) return
-    setCourses(res.listCourses.data)
+    setTemplates(res.listExamTemplates.data)
   }
 
   const onError = (err) => {
@@ -30,22 +30,22 @@ const CoursesList = (props) => {
     const translatableErrors = getTranslatableErrors(graphQLErrors)
 
     setErrors(translatableErrors)
-    setCourseDeleted(false)
+    setTemplateDeleted(false)
     setDeleteModalIsOpen(false)
   }
 
   // Button handlers
   const onDeleteClicked = (course) => {
-    setCourseToDelete(course)
+    setTemplateToDelete(course)
     setDeleteModalIsOpen(true)
   }
 
   const onDeleteConfirmClicked = () => {
-    disableCourse({
-      variables: { id: courseToDelete.id },
+    disableExamTemplate({
+      variables: { id: templateToDelete.id },
       update: (cache, result) => {
-        const updatedCoursesList = syncCacheOnDelete(cache, courseToDelete)
-        setCourses(updatedCoursesList.data)
+        const updatedTemplatesList = syncCacheOnDelete(cache, templateToDelete)
+        setTemplates(updatedTemplatesList.data)
       }
     })
   }
@@ -59,28 +59,28 @@ const CoursesList = (props) => {
   const stateCleanupOnDelete = () => {
     setErrors()
     setDeleteModalIsOpen(false)
-    setCourseDeleted(true)
+    setTemplateDeleted(true)
   }
 
   // Queries and mutations
-  const { loading: fetching } = useQuery(LIST_COURSES, { variables: {}, onCompleted, onError })
-  const [disableCourse, { loading: deleting }] = useMutation(DISABLE_COURSE, { onCompleted: stateCleanupOnDelete, onError })
+  const { loading: fetching } = useQuery(LIST_EXAM_TEMPLATES, { variables: {}, onCompleted, onError })
+  const [disableExamTemplate, { loading: deleting }] = useMutation(DISABLE_EXAM_TEMPLATE, { onCompleted: stateCleanupOnDelete, onError })
 
   return (
-    <div className='courses-list' style={{ width: 850 + 'px' }}>
+    <div className='exam-templates-list' style={{ width: 850 + 'px' }}>
       {fetching && <Loading />}
       {!fetching &&
         <Card className='mx-auto'>
           <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
             <p className='h4'>
-              <FormattedMessage id='common_entity.courses' />
+              <FormattedMessage id='common_entity.exam_templates' />
             </p>
           </CardHeader>
-          <CardBody className='d-flex flex-column'>
+          <CardBody className='d-flex flex-column text-center'>
             <TwoColumnsTable
-              entityName='course'
-              entitiesPath='courses'
-              items={courses}
+              entityName='exam_template'
+              entitiesPath='exam-templates'
+              items={templates}
               canEdit
               canDelete
               onDeleteClicked={onDeleteClicked}
@@ -97,7 +97,7 @@ const CoursesList = (props) => {
             </div>
 
             {/* Alerts */}
-            {!deleting && courseDeleted && <CustomAlert messages={{ id: 'course_deleted', message: `${formatMessage({ id: 'course_deleted' })}: ${courseToDelete.name}` }} color='success' />}
+            {!deleting && templateDeleted && <CustomAlert messages={{ id: 'exercise_deleted', message: `${formatMessage({ id: 'exercise_deleted' })}: ${templateToDelete.name}` }} color='success' />}
           </CardBody>
         </Card>}
       {errors && <TranslatableErrors errors={errors} />}
@@ -105,4 +105,4 @@ const CoursesList = (props) => {
   )
 }
 
-export default injectIntl(CoursesList)
+export default injectIntl(ExamTemplatesList)

@@ -49,13 +49,15 @@ const AnswersEditor = (props) => {
       ? createAnswer({
         variables: { name, description, correct, exerciseId: params.exerciseId },
         update: (cache, result) => {
-          syncAnswersCacheOnCreate(cache, result.data.createAnswer, { exerciseId: params.exerciseId })
+          const query = { exerciseId: params.exerciseId }
+          syncAnswersCacheOnCreate(cache, result.data.createAnswer, query)
         }
       })
       : updateAnswer({
         variables: { id: params.answerId, name, description, correct, exerciseId: params.exerciseId },
         update: (cache, result) => {
-          syncAnswersCacheOnUpdate(cache, result.data.updateAnswer, { exerciseId: params.exerciseId })
+          const query = { exerciseId: params.exerciseId }
+          syncAnswersCacheOnUpdate(cache, result.data.updateAnswer, query)
         }
       })
   }
@@ -103,7 +105,7 @@ const AnswersEditor = (props) => {
             <TranslatableTitle isCreating={isCreating} entityName='answer' />
 
             <div className='row'>
-              <div className='col-md-12 col-xs-12 mb-4'>
+              <div className='col-md-12 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='answer_name' />
                 </span>
@@ -112,7 +114,7 @@ const AnswersEditor = (props) => {
             </div>
 
             <div className='row'>
-              <div className='col-md-12 col-xs-12 mb-4'>
+              <div className='col-md-12 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='answer_description' />
                 </span>
@@ -121,7 +123,7 @@ const AnswersEditor = (props) => {
             </div>
 
             <div className='row'>
-              <div className='col-md-12 col-xs-12 mb-4'>
+              <div className='col-md-12 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='answer_correct' />
                 </span>
