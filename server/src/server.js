@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const { ApolloServer, AuthenticationError } = require('apollo-server-express')
@@ -10,26 +11,26 @@ const debug = require('debug')('virtual-exam:server')
 
 debug('Booting up server')
 
-const POOL_REGION = 'us-east-2'
-const COGNITO_USER_POOL_ID = 'us-east-2_eUKPzGh9X'
-const COGNITO_APP_CLIENT_ID = '5fm1ctb7h941c7iei3llda67nc'
+const POOL_REGION = process.env.COGNITO_REGION
+const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID
+const COGNITO_CLIENT_ID = process.env.COGNITO_CLIENT_ID
 const JWT_ISSUER = `https://cognito-idp.${POOL_REGION}.amazonaws.com/${COGNITO_USER_POOL_ID}`
 
 const jsonWebKeys = [
   {
     alg: 'RS256',
     e: 'AQAB',
-    kid: 'v7KOmnEvgsBPkfc5HU++NwXv+772fyjM2gIzylmpX+c=',
+    kid: '5D3vccVdROEuIyT7/gGSxF//F4WWfacMoC/qIFKc+SQ=',
     kty: 'RSA',
-    n: '4UAeHc9kaV0KYuRI_MkDYimLiDCECTZsanMPEbpJxWfDFrlNgz-9xIwBbkc_-ND5Khkv_yJ7Gk5X101G784hny4jJXmRjLiFts6DmYXVtzW4crOcDPAvmbNio3wvJEQ6rQudz91pnFlK71wrxfzo_1vV1nyCXSEVPqZLHiea2CdEWpk1TNpXwayO_KugTIqRiLIj2X6a1Cslf_gD7xaOwD90yNorNkrqE8bo-CcGhVOGC469_ISjHKYOJ7RcQD3moy74a7Z0mhqsp4DfcxryTITkD85BZmgS-dxSwxSVqWFiph0B6KAf7hTLrQWG4h9io2ivbtbE__OTB9BrIE-BnQ',
+    n: '1pGG6GXTY32vWWKRxH6egrzUif-uI6saHdyKENt7hm1EJLIW2HVjbErW5107tzbB5HTPY1MtMK1JqQIygVrHTxQwsBaHpsDnfMxLiebbEgiOmFqMXvW8Crrb-qCrQ4XJRuzxRQV00Rpl40ccyvUoyYhqhPRVCL3XSK2P6vD3SlHLMRmCxJzJ4pkPmlG4qkH91wSN4jGvjcEznwV3zzmcMXTgQAnqvuB5ymCWZ8w8srCQAMOO0CM8178MBwC2MNpVU-3VH82Xar4E5IsK2XXdYcQ4s2tAbOofOZp2wxOcfaH5pvIXG5-cDXH-QW7uOB42e9fZIAse83l8U1e29PVpqw',
     use: 'sig'
   },
   {
     alg: 'RS256',
     e: 'AQAB',
-    kid: 'YeK81yY0v4ebSaVdtUCE9OqWjQq4nEknZuA+AfVfi+M=',
+    kid: 'X9/pbFRf8gz6k6Jw0w6sPMmDPlPOMKllmoY1rw9ZwxQ=',
     kty: 'RSA',
-    n: 's8dveYlkwqQamAyoK6IwvN_NKgsAfXC7pX0n7gKJbdwH-UC18ieGCKkNBpWpVIftqgdyiG7B75sj3yMItl8bf9M-enrhAISJHp0qzhuZre7jxgQrdMyhFObF8G7D2iLjjLAC8NA5SfMwBOBhFvWBI2tidliwSlZGTHSLrYjCDb5Rm8T__O-7ZE2AX5IEk4iNJXBalgnbySXVQpgKG-MPQIml-SPptD3CTMw1llliH2uo9Kgs_Vd_i4EqmFPQhTdF9hLDVc29lvTI4Utm_1C7I6ur05vuIT6EMydKUHMqNnzUtr9fVMUL6Q7Qio16c8K0x8tv74UzLdxEMaQdj9wosQ',
+    n: 'vSVPZHVJxyRnXRUvs7mwm1YFq2YjVYTvM3w5pJfdO_zVdpok5xG8p1iXrUjiDkaCcCoJ7QNlEIuH7-3QaKuJF1WOArX6W0J9P40QlUveuvV3lhQl3JmtFAYnufJ30wR0FmxFGHWAlryTux1VnykflAH7sIee_PLkWrfbYGj1gbLAnU4tOtKL1td2cl1_fLWGvUSEIcCv88OVm11_9n49usL0jOtWFgpXj-zEfmtxcd_VQO0ye4Nqv4OwlGeOXoUfN_2ZdkNOfwwGYthO-WQtNI_lsVBHIykCH__DkoquXujL5gQNnKJXls2G0dU8ckwJn_xUGnGSReD-sVEW6TWsmQ',
     use: 'sig'
   }
 ]
@@ -73,7 +74,7 @@ const server = new ApolloServer({
     if (user.iss !== JWT_ISSUER) {
       throw new AuthenticationError('issuer invalid')
     }
-    if (user.client_id !== COGNITO_APP_CLIENT_ID) {
+    if (user.client_id !== COGNITO_CLIENT_ID) {
       throw new AuthenticationError('audience invalid')
     }
 

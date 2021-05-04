@@ -3,7 +3,7 @@ import { Form, Field } from 'react-final-form'
 import { Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { ERROR_MESSAGES, COGNITO_ERROR_CODES } from '../../common/constants'
+import { COGNITO_ERROR_CODES } from '../../common/constants'
 import { translateFieldError } from '../../common/translations'
 import { required, emailFormat, composeValidators } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
@@ -39,13 +39,13 @@ const SignUp = (props) => {
     const { code } = err
     switch (code) {
       case COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION:
-        setError({ id: COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION, message: formatMessage({ id: 'cognito_error.invalid_parameter_exception' }) })
+        setError({ id: 'cognito_error.invalid_parameter_exception' })
         break
       case COGNITO_ERROR_CODES.CODE_MISMATCH_EXCEPTION:
-        setError({ id: COGNITO_ERROR_CODES.CODE_MISMATCH_EXCEPTION, message: formatMessage({ id: 'cognito_error.code_mismatch_exception' }) })
+        setError({ id: 'cognito_error.code_mismatch_exception' })
         break
       default:
-        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) })
+        setError({ id: 'common_error.internal_server_error' })
         break
     }
     setIsLoading(false)

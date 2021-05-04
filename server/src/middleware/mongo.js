@@ -1,7 +1,6 @@
 const { MongoClient } = require('mongodb')
 const debug = require('debug')('virtual-exam:mongo')
 
-// const DEFAULT_CONNECTION_URL = 'mongodb+srv://admin:admin@virtualexam.mqcgh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 const DEFAULT_CONNECTION_URL = 'mongodb://localhost:27017'
 const DEFAULT_MONGO_DB = 'virtual-exam'
 
