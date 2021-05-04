@@ -5,7 +5,7 @@ import { Button } from 'reactstrap'
 import { required, shouldMatch, composeValidators, emailFormat, mustBeNumber, rangeValues } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { ERROR_MESSAGES, COGNITO_ERROR_CODES, ID_LENGTH } from '../../common/constants'
+import { COGNITO_ERROR_CODES, ID_LENGTH } from '../../common/constants'
 import { translateFieldError } from '../../common/translations'
 import { useAuthContext } from '../../hooks'
 
@@ -33,16 +33,16 @@ const SignUp = (props) => {
     const { code } = err
     switch (code) {
       case COGNITO_ERROR_CODES.USERNAME_EXISTS:
-        setError({ id: COGNITO_ERROR_CODES.USERNAME_EXISTS, message: formatMessage({ id: 'cognito_error.username_exists' }) })
+        setError({ id: 'cognito_error.username_exists' })
         break
       case COGNITO_ERROR_CODES.INVALID_PASSWORD_EXCEPTION:
-        setError({ id: COGNITO_ERROR_CODES.INVALID_PASSWORD_EXCEPTION, message: formatMessage({ id: 'cognito_error.invalid_parameter_exception' }) })
+        setError({ id: 'cognito_error.invalid_parameter_exception' })
         break
       case COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION:
-        setError({ id: COGNITO_ERROR_CODES.INVALID_PARAMETER_EXCEPTION, message: formatMessage({ id: 'cognito_error.invalid_parameter_exception' }) })
+        setError({ id: 'cognito_error.invalid_parameter_exception' })
         break
       default:
-        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) })
+        setError({ id: 'common_error.internal_server_error' })
         break
     }
     setIsLoading(false)

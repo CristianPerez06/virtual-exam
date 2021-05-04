@@ -3,9 +3,9 @@ import { Form, Field } from 'react-final-form'
 import { useHistory } from 'react-router-dom'
 import { Input, Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { ACCOUNT_ACTION_TYPES } from '../../common/constants'
+import { COGNITO_ERROR_CODES, ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { translateFieldError } from '../../common/translations'
-import { required, shouldNotMatch, composeValidators } from '../../common/validators'
+import { required, shouldMatch, shouldNotMatch, composeValidators } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import { useQueryParams, useAuthContext } from '../../hooks'
 
@@ -40,8 +40,16 @@ const PasswordChange = (props) => {
   }
 
   const onError = (err) => {
+    const { code } = err
+    switch (code) {
+      case COGNITO_ERROR_CODES.NOT_AUTHORIZED:
+        setError({ id: 'cognito_error.not_authorized_exception' })
+        break
+      default:
+        setError({ id: 'common_error.internal_server_error' })
+        break
+    }
     setIsLoading(false)
-    setError(err.message)
   }
 
   const onSubmit = values => {
@@ -106,13 +114,26 @@ const PasswordChange = (props) => {
                 </div>
               )}
             </Field>
+            <Field name='newPasswordConfirm' validate={composeValidators(required, shouldMatch(values.newPassword))}>
+              {({ input, meta }) => (
+                <div className='mb-4'>
+                  <input
+                    {...input}
+                    type='password'
+                    className='form-control'
+                    placeholder={formatMessage({ id: 'confirm_new_password' })}
+                  />
+                  {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error, formatMessage({ id: 'new_password' }), formatMessage({ id: 'confirm_new_password' }))} />}
+                </div>
+              )}
+            </Field>
             <Button color='primary' disabled={isLoading}>
               <FormattedMessage id='button.update_password' />
               {isLoading && <LoadingInline className='ml-3' />}
             </Button>
 
             <div className='d-flex justify-content-around pt-3'>
-              {!isLoading && error && <CustomAlert message={error} />}
+              {!isLoading && error && <CustomAlert messages={error} />}
             </div>
           </form>
         )}

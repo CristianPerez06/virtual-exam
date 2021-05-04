@@ -4,7 +4,7 @@ import { useAuthContext } from '../../hooks'
 import { useHistory, Link } from 'react-router-dom'
 import { Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { ERROR_MESSAGES, COGNITO_ERROR_CODES, ACCOUNT_ACTION_TYPES } from '../../common/constants'
+import { COGNITO_ERROR_CODES, ACCOUNT_ACTION_TYPES } from '../../common/constants'
 import { translateFieldError } from '../../common/translations'
 import { required, composeValidators, mustBeNumber } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError, LocaleSelector } from '../../components/common'
@@ -15,15 +15,15 @@ const Login = (props) => {
   const { intl } = props
   const { formatMessage } = intl
 
-  // state
+  // State
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // hooks
+  // Hooks
   const { dispatch, cognito } = useAuthContext()
   const history = useHistory()
 
-  // handlers
+  // Handlers
   const onSuccess = (data) => {
     const { idToken, code, username, email } = data
     setIsLoading(false)
@@ -49,16 +49,16 @@ const Login = (props) => {
     const { code } = err
     switch (code) {
       case COGNITO_ERROR_CODES.NOT_AUTHORIZED:
-        setError({ id: COGNITO_ERROR_CODES.NOT_AUTHORIZED, message: formatMessage({ id: 'cognito_error.not_authorized_exception' }) })
+        setError({ id: 'cognito_error.not_authorized_exception' })
         break
       default:
-        setError({ id: ERROR_MESSAGES.INTERNAL_SERVER_ERROR, message: formatMessage({ id: 'common_error.internal_server_error' }) })
+        setError({ id: 'common_error.internal_server_error' })
         break
     }
     setIsLoading(false)
   }
 
-  const onSubmit = values => {
+  const onSubmit = (values) => {
     const { username, password } = values
     setIsLoading(true)
 

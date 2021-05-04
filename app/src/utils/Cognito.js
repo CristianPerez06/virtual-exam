@@ -1,12 +1,20 @@
+import AWS from 'aws-sdk'
 import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js'
 import { COGNITO_ERROR_CODES } from '../common/constants'
 
+const UserPoolId = process.env.REACT_APP_COGNITO_USER_POOL_ID
+const ClientId = process.env.REACT_APP_COGNITO_CLIENT_ID
+
+AWS.config.update({
+  region: process.env.REACT_APP_COGNITO_REGION,
+  accessKeyId: process.env.REACT_APP_COGNITO_ACCESS_KEY,
+  secretAccessKey: process.env.REACT_APP_COGNITO_SECRET_ACCESS_KEY
+})
+
 class Cognito {
   constructor () {
-    this.pool = new CognitoUserPool({
-      UserPoolId: 'us-east-2_eUKPzGh9X',
-      ClientId: '5fm1ctb7h941c7iei3llda67nc'
-    })
+    this.pool = new CognitoUserPool({ UserPoolId, ClientId })
+    this.identityProvider = new AWS.CognitoIdentityServiceProvider()
     this.user = null
     this.login = this.login.bind(this)
     this.loginAndChangePassword = this.loginAndChangePassword.bind(this)
@@ -53,9 +61,13 @@ class Cognito {
           reject(err)
         },
         newPasswordRequired: userAttr => {
+          debugger
           const challengeCallbacks = {
             onSuccess: data => resolve(data),
-            onFailure: err => reject(err)
+            onFailure: err => {
+              debugger
+              return reject(err)
+            }
           }
           this.user.completeNewPasswordChallenge(newPassword, null, challengeCallbacks)
         }
@@ -109,6 +121,20 @@ class Cognito {
         resolve(data)
       }
       this.pool.signUp(username, password, [...attrList, ...customAttrList], null, callback)
+    })
+  }
+
+  getUsersList () {
+    const params = { UserPoolId, Limit: 60 }
+
+    return new Promise((resolve, reject) => {
+      this.identityProvider.listUsers(params, (err, data) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(data)
+        }
+      })
     })
   }
 
