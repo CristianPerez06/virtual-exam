@@ -6,7 +6,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LIST_EXERCISES } from '../../common/requests/exercises'
 import { ADD_EXERCISE_TO_EXAM_TEMPLATE, LIST_EXAM_TEMPLATE_EXERCISES, REMOVE_EXERCISE_FROM_EXAM_TEMPLATE } from '../../common/requests/templates'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
-import { TranslatableErrors, DeleteModal, TwoColumnsTable } from '../../components/common'
+import { TranslatableErrors, DeleteModal, Table } from '../../components/common'
 import { syncCacheOnAddTemplateExercise, syncCacheOnRemoveTemplateExercise } from './cacheHelpers'
 
 const ExamTemplateExercises = (props) => {
@@ -14,14 +14,16 @@ const ExamTemplateExercises = (props) => {
   const {
     examTemplateId,
     courseId,
-    cleanMessages
+    cleanMessages,
+    intl
   } = props
+  const { formatMessage } = intl
 
   // State
   const [exercises, setExercises] = useState([])
   const [templateExercises, setTemplateExercises] = useState([])
-  const [selectedExercise, setSelectedExercise] = useState(null)
-  const [templateExerciseToDelete, setTemplateExerciseToDelete] = useState(null)
+  const [selectedExercise, setSelectedExercise] = useState()
+  const [templateExerciseToDelete, setTemplateExerciseToDelete] = useState()
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
   const [errors, setErrors] = useState()
   const [exerciseModifyErrors, setExerciseModifyErrors] = useState(false)
@@ -66,8 +68,8 @@ const ExamTemplateExercises = (props) => {
     removeExerciseFromExamTemplate({
       variables: { templateId: examTemplateId, exerciseId: templateExerciseToDelete.id },
       update: (cache, result) => {
-        const query = { id: examTemplateId }
-        const updatedTemplateExercisesList = syncCacheOnRemoveTemplateExercise(cache, templateExerciseToDelete, query)
+        const variables = { id: examTemplateId }
+        const updatedTemplateExercisesList = syncCacheOnRemoveTemplateExercise(cache, templateExerciseToDelete, variables)
         setTemplateExercises(updatedTemplateExercisesList.data)
       }
     })
@@ -80,12 +82,12 @@ const ExamTemplateExercises = (props) => {
   }
 
   // Button handlers
-  const onSubmit = async () => {
+  const onAddExerciseClicked = async () => {
     addExerciseToExamTemplate({
       variables: { templateId: examTemplateId, exerciseId: selectedExercise.value },
       update: (cache, result) => {
-        const query = { id: examTemplateId }
-        const updatedTemplateExercisesList = syncCacheOnAddTemplateExercise(cache, result.data.addExerciseToExamTemplate, query)
+        const variables = { id: examTemplateId }
+        const updatedTemplateExercisesList = syncCacheOnAddTemplateExercise(cache, result.data.addExerciseToExamTemplate, variables)
         setTemplateExercises(updatedTemplateExercisesList.data)
       }
     })
@@ -122,6 +124,44 @@ const ExamTemplateExercises = (props) => {
     { onCompleted: onSuccess, onError: onExerciseModifyError }
   )
 
+  const columnTranslations = {
+    unitName: formatMessage({ id: 'unit_name' }),
+    exerciseName: formatMessage({ id: 'exercise_name' }),
+    action: formatMessage({ id: 'action' }),
+    edit: formatMessage({ id: 'button.edit' }),
+    delete: formatMessage({ id: 'button.delete' })
+  }
+
+  const columns = React.useMemo(
+    () => {
+      return [{
+        Header: columnTranslations.unitName,
+        // accessor: 'unitName',
+        Cell: ({ row }) => 'TO DO - GET UNIT NAME'
+      },
+      {
+        Header: columnTranslations.exerciseName,
+        accessor: 'name',
+        Cell: ({ row }) => row.values.name
+      },
+      {
+        Header: columnTranslations.action,
+        Cell: ({ row }) => (
+          <div className='d-flex justify-content-center'>
+            <Button
+              className='ml-1'
+              color='danger'
+              onClick={() => onDeleteClicked({ ...row.original })}
+            >
+              {columnTranslations.delete}
+            </Button>
+          </div>
+        )
+      }]
+    },
+    [columnTranslations]
+  )
+
   return (
     <div id='exam-template-exercises' className='mt-5'>
       <p className='text-center h5 mb-3'>
@@ -145,7 +185,7 @@ const ExamTemplateExercises = (props) => {
             color='info'
             disabled={fetchingExercises || addingExerciseToTemplate || fetchingTemplateExercises || !selectedExercise}
             onClick={() => {
-              onSubmit()
+              onAddExerciseClicked()
             }}
           >
             <FormattedMessage id='button.add_exercise' />
@@ -158,14 +198,9 @@ const ExamTemplateExercises = (props) => {
 
       <div className='row'>
         <div className='col-md-12 col-xs-12 text-right'>
-          <TwoColumnsTable
-            entityName='exercise'
-            entitiesPath='exercises'
-            items={templateExercises}
-            canEdit={false}
-            canDelete
-            onDeleteClicked={onDeleteClicked}
-          />
+          {templateExercises.length === 0
+            ? <div id='no-results' className='text-center mt-2 mb-3'><FormattedMessage id='common_message.no_results' /></div>
+            : <Table columns={columns} data={templateExercises} />}
         </div>
         <div id='info-exercise-modify' className='d-flex justify-content-around mt-2 w-100'>
           {exerciseModifyErrors && !cleanMessages && <TranslatableErrors errors={exerciseModifyErrors} className='ml-3' />}

@@ -8,7 +8,7 @@ import { useAuthContext } from '../hooks'
 const MainRouter = () => {
   // Hooks
   const [isLoading, setIsLoading] = useState(true)
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState()
   const { dispatch, cognito } = useAuthContext()
 
   useEffect(() => {

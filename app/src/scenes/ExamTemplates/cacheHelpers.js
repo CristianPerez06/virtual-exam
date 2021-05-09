@@ -2,7 +2,7 @@ import { readCache, writeCache } from '../../common/apolloCacheHelpers'
 import { addItemToList, updateItemInList, removeItemFromList } from '../../common/arrayHelpers'
 import { LIST_EXAM_TEMPLATES, LIST_EXAM_TEMPLATE_EXERCISES } from '../../common/requests/templates'
 
-export const syncCacheOnCreate = (cache, item, query) => {
+export const syncCacheOnCreate = (cache, item) => {
   // Read Cache Query
   const { listExamTemplates } = readCache(cache, LIST_EXAM_TEMPLATES)
   // If list is not in cache yet then we don't do anything
@@ -17,7 +17,7 @@ export const syncCacheOnCreate = (cache, item, query) => {
   return listToCache
 }
 
-export const syncCacheOnUpdate = (cache, item, query) => {
+export const syncCacheOnUpdate = (cache, item) => {
   // Read Cache
   const { listExamTemplates } = readCache(cache, LIST_EXAM_TEMPLATES)
   // If list is not in cache yet then we don't do anything
@@ -32,7 +32,7 @@ export const syncCacheOnUpdate = (cache, item, query) => {
   return listToCache
 }
 
-export const syncCacheOnDelete = (cache, item, query) => {
+export const syncCacheOnDelete = (cache, item) => {
   // Read Cache
   const { listExamTemplates } = readCache(cache, LIST_EXAM_TEMPLATES)
   // If list is not in cache yet then we don't do anything
@@ -47,9 +47,9 @@ export const syncCacheOnDelete = (cache, item, query) => {
   return listToCache
 }
 
-export const syncCacheOnAddTemplateExercise = (cache, item, query) => {
+export const syncCacheOnAddTemplateExercise = (cache, item, variables) => {
   // Read Cache
-  const { listExamTemplateExercises } = readCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, query)
+  const { listExamTemplateExercises } = readCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, variables)
   // If list is not in cache yet then we don't do anything
   if (!listExamTemplateExercises) return
   // Remove item from list
@@ -58,13 +58,13 @@ export const syncCacheOnAddTemplateExercise = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, { listExamTemplateExercises: { ...listToCache } }, query)
+  writeCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, { listExamTemplateExercises: { ...listToCache } }, variables)
   return listToCache
 }
 
-export const syncCacheOnRemoveTemplateExercise = (cache, item, query) => {
+export const syncCacheOnRemoveTemplateExercise = (cache, item, variables) => {
   // Read Cache
-  const { listExamTemplateExercises } = readCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, query)
+  const { listExamTemplateExercises } = readCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, variables)
   // If list is not in cache yet then we don't do anything
   if (!listExamTemplateExercises) return
   // Update item in list
@@ -73,6 +73,17 @@ export const syncCacheOnRemoveTemplateExercise = (cache, item, query) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, { listExamTemplateExercises: { ...listToCache } }, query)
+  writeCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, { listExamTemplateExercises: { ...listToCache } }, variables)
+  return listToCache
+}
+
+export const syncCacheOnResetTemplateExercises = (cache, item, variables) => {
+  // Reset items list
+  const newList = []
+  // Update Cache
+  const listToCache = {
+    data: [...newList], count: newList.length, __typename: item.__typename
+  }
+  writeCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, { listExamTemplateExercises: { ...listToCache } }, variables)
   return listToCache
 }

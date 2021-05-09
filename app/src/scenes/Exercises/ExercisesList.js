@@ -14,8 +14,8 @@ const ExercisesList = (props) => {
 
   // State
   const [exercises, setExercises] = useState([])
-  const [errors, setErrors] = useState(null)
-  const [exerciseToDelete, setExerciseToDelete] = useState(null)
+  const [errors, setErrors] = useState()
+  const [exerciseToDelete, setExerciseToDelete] = useState()
   const [exerciseDeleted, setExerciseDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 

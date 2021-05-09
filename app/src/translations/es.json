@@ -36,6 +36,8 @@
   "common_entity.answers": "Respuestas",
   "common_entity.exam_template": "Plantilla de Examen",
   "common_entity.exam_templates": "Plantillas de Examen",
+  "common_entity.student": "Alumno",
+  "common_entity.students": "Alumnos",
 
   "common_title.register_user": "Registrar usuario",
   "common_title.sign_in": "Iniciar sesión",
@@ -69,6 +71,9 @@
   "button.exam_templates": "Plantillas de Examen",
   "button.add_exercise": "Agregar ejercicio",
   "button.confirm": "Confirmar",
+  "button.students": "Alumnos",
+  "button.assign_exam": "Asignar examen",
+  "button.admin_exams": "Administrar examenes",
 
   "course_name": "Nombre del curso",
   "course_created": "Curso creado exitosamente",
@@ -101,13 +106,19 @@
   "exam_template_exercise_added": "Ejercicio agregado exitosamente a la Plantilla de Examen",
   "exam_template_exercise_removed": "Ejercicio quitado exitosamente de la Plantilla de Examen",
 
+  "student_id_number": "Legajo",
+
+  "assign_exam": "Asignar examen a alumno",
+  "assigned_exam_created": "Examen asignado correctamente",
+  "assigned_exams": "Examenes asignados",
+
   "registration_completed": "Registracion exitosa",
   "first_name": "Nombre",
   "last_name": "Apellido",
   "nick_name": "Usuario",
   "password": "Contraseña",
   "new_password": "Nueva contraseña",
-  "confirm_password": "Confirmar contraseña",
+  "confirm_new_password": "Confirmar nueva contraseña",
   "recovery_code_sent": "Codigo de recuperación enviado",
   "recovery_code": "Codigo de recuperación",
   "change_language": "Seleccionar idioma",

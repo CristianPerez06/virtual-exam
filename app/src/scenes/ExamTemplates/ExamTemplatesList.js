@@ -14,8 +14,8 @@ const ExamTemplatesList = (props) => {
 
   // State
   const [templates, setTemplates] = useState([])
-  const [errors, setErrors] = useState(null)
-  const [templateToDelete, setTemplateToDelete] = useState(null)
+  const [errors, setErrors] = useState()
+  const [templateToDelete, setTemplateToDelete] = useState()
   const [templateDeleted, setTemplateDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 

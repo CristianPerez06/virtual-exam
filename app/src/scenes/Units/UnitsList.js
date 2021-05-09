@@ -14,8 +14,8 @@ const UnitsList = (props) => {
 
   // State
   const [units, setUnits] = useState([])
-  const [errors, setErrors] = useState(null)
-  const [unitToDelete, setUnitToDelete] = useState(null)
+  const [errors, setErrors] = useState()
+  const [unitToDelete, setUnitToDelete] = useState()
   const [unitDeleted, setUnitDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 

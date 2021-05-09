@@ -4,4 +4,4 @@ export const AsyncUnits = React.lazy(() => import('../scenes/Units/Index'))
 export const AsyncSettings = React.lazy(() => import('../scenes/Settings/Index'))
 export const AsyncExercises = React.lazy(() => import('../scenes/Exercises/Index'))
 export const AsyncExamTemplates = React.lazy(() => import('../scenes/ExamTemplates/Index'))
-
+export const AsyncStudents = React.lazy(() => import('../scenes/Students/Index'))

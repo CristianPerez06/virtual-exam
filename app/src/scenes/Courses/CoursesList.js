@@ -14,8 +14,8 @@ const CoursesList = (props) => {
 
   // State
   const [courses, setCourses] = useState([])
-  const [errors, setErrors] = useState(null)
-  const [courseToDelete, setCourseToDelete] = useState(null)
+  const [errors, setErrors] = useState()
+  const [courseToDelete, setCourseToDelete] = useState()
   const [courseDeleted, setCourseDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 

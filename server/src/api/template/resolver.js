@@ -50,7 +50,7 @@ const resolver = {
       debug('Running listExamTemplates query with params:', args)
 
       // Params
-      const { name } = args
+      const { name, courseId } = args
 
       // Collection
       const collection = context.db.collection('exam-templates')
@@ -68,6 +68,16 @@ const resolver = {
           {
             $match: {
               name: name
+            }
+          }
+        ]
+      }
+      if (courseId) {
+        aggregate = [
+          ...aggregate,
+          {
+            $match: {
+              courseId: new ObjectId(courseId)
             }
           }
         ]
