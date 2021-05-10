@@ -38,6 +38,8 @@
   "common_entity.exam_templates": "Plantillas de Examen",
   "common_entity.student": "Alumno",
   "common_entity.students": "Alumnos",
+  "common_entity.assigned_exams": "Examenes asignados",
+  "common_entity.exams": "Examenes",
 
   "common_title.register_user": "Registrar usuario",
   "common_title.sign_in": "Iniciar sesión",
@@ -46,6 +48,7 @@
   "common_title.delete_confirmation": "Confirmar borrado",
   "common_title.edit_confirmation": "Confirmar edición",
   "common_title.edit": "Editar",
+  "common_title.start_exam_confirmation": "Confirmar inicio de examen",
 
   "button.register": "Registrar",
   "button.signin": "Iniciar",
@@ -74,6 +77,10 @@
   "button.students": "Alumnos",
   "button.assign_exam": "Asignar examen",
   "button.admin_exams": "Administrar examenes",
+  "button.exams": "Examenes",
+  "button.start": "Comenzar",
+  "button.confirm_start": "Confirmar inicio",
+  "button.go_to_exam": "Ir al examen",
 
   "course_name": "Nombre del curso",
   "course_created": "Curso creado exitosamente",
@@ -111,6 +118,10 @@
   "assign_exam": "Asignar examen a alumno",
   "assigned_exam_created": "Examen asignado correctamente",
   "assigned_exams": "Examenes asignados",
+  "pending_exams": "Examenes pendientes",
+
+  "exam_name": "Nombre del examen",
+  "exams_initiated_finalized": "Examenes iniciados o finalizados",
 
   "registration_completed": "Registracion exitosa",
   "first_name": "Nombre",
@@ -127,6 +138,7 @@
   "delete_this_record": "¿Esta seguro de querer eliminar el registro?",
   "edit_item": "Editar item",
   "description": "Descripción",
+  "confirm_start_exam": "¿Esta seguro de querer comenzar el examen?",
 
   "language.spanish": "Español",
   "language.english": "Ingles"

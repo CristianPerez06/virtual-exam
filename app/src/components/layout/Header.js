@@ -106,12 +106,17 @@ const Header = () => {
               <FormattedMessage id='button.students' />
             </DropdownToggle>
             <DropdownMenu right>
-              {/*
-              <DropdownItem tag={Link} to='/exams/new'>
-                <FormattedMessage id='button.create' />
-              </DropdownItem>
-              */}
               <DropdownItem tag={Link} to='/students/list'>
+                <FormattedMessage id='button.list' />
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret>
+              <FormattedMessage id='button.exams' />
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem tag={Link} to='/exams/list'>
                 <FormattedMessage id='button.list' />
               </DropdownItem>
             </DropdownMenu>

@@ -4,6 +4,7 @@ const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { addItemToList, removeItemFromList } = require('../../utilities/arrayHelpers')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
+const { getExercises } = require('./aggregates')
 
 const debug = require('debug')('virtual-exam:exam-templates-resolver')
 
@@ -101,44 +102,8 @@ const resolver = {
 
       // Aggregate
       const aggregate = [
-        {
-          $match: {
-            _id: new ObjectId(id)
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            exerciseIdsList: '$exercises'
-          }
-        },
-        {
-          $unwind: {
-            path: '$exerciseIdsList',
-            preserveNullAndEmptyArrays: false
-          }
-        },
-        {
-          $group: {
-            _id: '$exerciseIdsList'
-          }
-        },
-        {
-          $lookup: {
-            from: 'exercises',
-            localField: '_id',
-            foreignField: '_id',
-            as: 'exercise'
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            exercise: {
-              $arrayElemAt: ['$exercise', 0]
-            }
-          }
-        }
+        { $match: { _id: new ObjectId(id) } },
+        ...getExercises
       ]
 
       // Exec

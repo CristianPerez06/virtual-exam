@@ -38,6 +38,8 @@
   "common_entity.exam_templates": "Exam templates",
   "common_entity.student": "Student",
   "common_entity.students": "Students",
+  "common_entity.assigned_exams": "Assigned Exams",
+  "common_entity.exams": "Exams",
 
   "common_title.register_user": "Register user",
   "common_title.sign_in": "Sign in",
@@ -46,6 +48,7 @@
   "common_title.delete_confirmation": "Delete confirmation",
   "common_title.edit_confirmation": "Edit confirmation",
   "common_title.edit": "Edit",
+  "common_title.start_exam_confirmation": "Confirm exam start",
 
   "button.register": "Register",
   "button.signin": "Sign in",
@@ -74,6 +77,10 @@
   "button.students": "Students",
   "button.assign_exam": "Assign exam",
   "button.admin_exams": "Admin exams",
+  "button.exams": "Exams",
+  "button.start": "Start",
+  "button.confirm_start": "Confirm start",
+  "button.go_to_exam": "Go to exam",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
@@ -111,6 +118,10 @@
   "assign_exam": "Assign Exam to Student",
   "assigned_exam_created": "Exam successfully assigned",
   "assigned_exams": "Assigned exams",
+  "pending_exams": "Pending exams",
+
+  "exam_name": "Exam name",
+  "exams_initiated_finalized": "Exam initiated or finalized",
 
   "registration_completed": "Registration succesful",
   "first_name": "Name",
@@ -127,6 +138,7 @@
   "delete_this_record": "Are you sure you want to delete this record?",
   "edit_item": "Edit item",
   "description": "Description",
+  "confirm_start_exam": "Are you sure you want to start this exam?",
   
   "language.spanish": "Spanish",
   "language.english": "English"
