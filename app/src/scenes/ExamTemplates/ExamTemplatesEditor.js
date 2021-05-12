@@ -177,16 +177,7 @@ const ExamTemplatesEditor = (props) => {
           <form onSubmit={handleSubmit}>
             <TranslatableTitle isCreating={isCreating} entityName='exam_template' />
 
-            <div className='row'>
-              <div className='col-md-12 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='exam_template_name' />
-                </span>
-                <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'exam_template_name' })} />
-              </div>
-            </div>
-
-            <div className='row'>
+            <div className='row mb-4'>
               <div className='col-md-12 col-xs-12'>
                 <div className={isCreating ? 'row d-flex justify-content-center' : 'row'}>
                   <div className='col-md-10 col-xs-12'>
@@ -226,6 +217,15 @@ const ExamTemplatesEditor = (props) => {
                       </div>
                     </div>}
                 </div>
+              </div>
+            </div>
+
+            <div className='row'>
+              <div className='col-md-12 col-xs-12'>
+                <span className='text-left pl-1 pb-1'>
+                  <FormattedMessage id='exam_template_name' />
+                </span>
+                <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'exam_template_name' })} />
               </div>
             </div>
 

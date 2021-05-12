@@ -250,18 +250,8 @@ const ExercisesEditor = (props) => {
           <form onSubmit={handleSubmit}>
             <TranslatableTitle isCreating={isCreating} entityName='exercise' />
 
-            {/* Name */}
-            <div className='row'>
-              <div className='col-md-12 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='exercise_name' />
-                </span>
-                <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'exercise_name' })} />
-              </div>
-            </div>
-
             {/* Course - Unit */}
-            <div className='row'>
+            <div className='row mb-4'>
               <div className='col-md-6 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='common_entity.course' />
@@ -291,6 +281,16 @@ const ExercisesEditor = (props) => {
                     setFilters({ ...filters, selectedUnit: option.value })
                   }}
                 />
+              </div>
+            </div>
+
+            {/* Name */}
+            <div className='row'>
+              <div className='col-md-12 col-xs-12'>
+                <span className='text-left pl-1 pb-1'>
+                  <FormattedMessage id='exercise_name' />
+                </span>
+                <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'exercise_name' })} />
               </div>
             </div>
 
