@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import { Card, CardBody, CardHeader } from 'reactstrap'
+import Select from 'react-select'
 import { injectIntl, FormattedMessage } from 'react-intl'
+import { LIST_COURSES } from '../../common/requests/courses'
+import { LIST_UNITS } from '../../common/requests/units'
 import { LIST_EXERCISES, DISABLE_EXERCISE } from '../../common/requests/exercises'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Loading, CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable } from '../../components/common'
-import { syncExercisesCacheOnDelete } from './cacheHelpers'
+import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
 const ExercisesList = (props) => {
@@ -13,13 +16,38 @@ const ExercisesList = (props) => {
   const { formatMessage } = intl
 
   // State
+  const [courses, setCourses] = useState([])
+  const [units, setUnits] = useState([])
   const [exercises, setExercises] = useState([])
   const [errors, setErrors] = useState()
+  const [filters, setFilters] = useState({ selectedCourse: null, selectedUnit: null })
   const [exerciseToDelete, setExerciseToDelete] = useState()
   const [exerciseDeleted, setExerciseDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 
   // Handlers
+  const onFetchCoursesSuccess = (result) => {
+    if (!result) return
+    const mappedCourses = result.listCourses.data.map((course) => {
+      return {
+        value: course.id,
+        label: course.name
+      }
+    })
+    setCourses(mappedCourses)
+  }
+
+  const onFetchUnitsSuccess = (result) => {
+    if (!result) return
+    const mappedUnits = result.listUnits.data.map((unit) => {
+      return {
+        value: unit.id,
+        label: unit.name
+      }
+    })
+    setUnits(mappedUnits)
+  }
+
   const onCompleted = (res) => {
     if (!res) return
     setExercises(res.listExercises.data)
@@ -44,7 +72,8 @@ const ExercisesList = (props) => {
     disableExercise({
       variables: { id: exerciseToDelete.id },
       update: (cache, result) => {
-        const updatedExercisesList = syncExercisesCacheOnDelete(cache, exerciseToDelete)
+        const variables = { courseId: exerciseToDelete.courseId, unitId: exerciseToDelete.unitId }
+        const updatedExercisesList = syncCacheOnDelete(cache, exerciseToDelete, variables)
         setExercises(updatedExercisesList.data)
       }
     })
@@ -63,20 +92,87 @@ const ExercisesList = (props) => {
   }
 
   // Queries and mutations
-  const { loading: fetching } = useQuery(LIST_EXERCISES, { variables: {}, onCompleted, onError })
+  const { loading: fetchingCourses } = useQuery(
+    LIST_COURSES,
+    {
+      variables: {},
+      onCompleted: onFetchCoursesSuccess,
+      onError
+    }
+  )
+  const { loading: fetchingUnits } = useQuery(
+    LIST_UNITS,
+    {
+      variables: { courseId: (filters.selectedCourse || {}).value },
+      skip: !filters.selectedCourse,
+      onCompleted: onFetchUnitsSuccess,
+      onError
+    }
+  )
+  const { loading: fetching } = useQuery(
+    LIST_EXERCISES,
+    {
+      variables: {
+        courseId: (filters.selectedCourse || {}).value,
+        unitId: (filters.selectedUnit || {}).value
+      },
+      skip: !filters.selectedCourse || !filters.selectedUnit,
+      onCompleted,
+      onError
+    }
+  )
   const [disableExercise, { loading: deleting }] = useMutation(DISABLE_EXERCISE, { onCompleted: stateCleanupOnDelete, onError })
 
   return (
     <div className='exercises-list' style={{ width: 850 + 'px' }}>
-      {fetching && <Loading />}
-      {!fetching &&
-        <Card className='mx-auto'>
-          <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
-            <p className='h4'>
-              <FormattedMessage id='common_entity.exercises' />
-            </p>
-          </CardHeader>
-          <CardBody className='d-flex flex-column text-center'>
+      <Card className='mx-auto'>
+        <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
+          <p className='h4'>
+            <FormattedMessage id='common_entity.exercises' />
+          </p>
+        </CardHeader>
+        <CardBody className='d-flex flex-column text-center'>
+          <div className='row d-flex justify-content-center mb-4'>
+            <div className='col-md-10 col-xs-12'>
+              <span className='text-left pl-1 pb-1'>
+                <FormattedMessage id='common_entity.course' />
+              </span>
+              <Select
+                value={filters.selectedCourse}
+                options={courses}
+                isDisabled={fetchingCourses}
+                onChange={(option) => {
+                  const selected = courses.find(x => x.value === option.value)
+                  setFilters({ selectedCourse: selected, selectedUnit: null })
+                  setExerciseDeleted()
+                  setExercises([])
+                  setErrors()
+                }}
+              />
+            </div>
+          </div>
+
+          <div className='row d-flex justify-content-center mb-4'>
+            <div className='col-md-10 col-xs-12'>
+              <span className='text-left pl-1 pb-1'>
+                <FormattedMessage id='common_entity.unit' />
+              </span>
+              <Select
+                value={filters.selectedUnit}
+                options={units}
+                isDisabled={fetchingUnits}
+                onChange={(option) => {
+                  const selected = units.find(x => x.value === option.value)
+                  setFilters({ ...filters, selectedUnit: selected })
+                  setExerciseDeleted()
+                  setErrors()
+                }}
+              />
+            </div>
+          </div>
+
+          {fetching && <Loading />}
+          {!fetching && (
             <TwoColumnsTable
               entityName='exercise'
               entitiesPath='exercises'
@@ -85,21 +181,22 @@ const ExercisesList = (props) => {
               canDelete
               onDeleteClicked={onDeleteClicked}
             />
+          )}
 
-            {/* Delete modal */}
-            <div id='delete-modal'>
-              <DeleteModal
-                modalIsOpen={deleteModalIsOpen}
-                isBussy={deleting}
-                onCloseClick={() => onCancelClicked()}
-                onDeleteClick={() => onDeleteConfirmClicked()}
-              />
-            </div>
+          {/* Delete modal */}
+          <div id='delete-modal'>
+            <DeleteModal
+              modalIsOpen={deleteModalIsOpen}
+              isBussy={deleting}
+              onCloseClick={() => onCancelClicked()}
+              onDeleteClick={() => onDeleteConfirmClicked()}
+            />
+          </div>
 
-            {/* Alerts */}
-            {!deleting && exerciseDeleted && <CustomAlert messages={{ id: 'exercise_deleted', message: `${formatMessage({ id: 'exercise_deleted' })}: ${exerciseToDelete.name}` }} color='success' />}
-          </CardBody>
-        </Card>}
+          {/* Alerts */}
+          {!deleting && exerciseDeleted && <CustomAlert messages={{ id: 'exercise_deleted', message: `${formatMessage({ id: 'exercise_deleted' })}: ${exerciseToDelete.name}` }} color='success' />}
+        </CardBody>
+      </Card>
       {errors && <TranslatableErrors errors={errors} />}
     </div>
   )

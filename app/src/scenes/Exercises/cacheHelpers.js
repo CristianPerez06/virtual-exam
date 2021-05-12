@@ -3,9 +3,9 @@ import { addItemToList, updateItemInList, removeItemFromList } from '../../commo
 import { LIST_ANSWERS } from '../../common/requests/answers'
 import { LIST_EXERCISES } from '../../common/requests/exercises'
 
-export const syncExercisesCacheOnCreate = (cache, item) => {
+export const syncCacheOnCreate = (cache, item, variables) => {
   // Read Cache Query
-  const { listExercises } = readCache(cache, LIST_EXERCISES)
+  const { listExercises } = readCache(cache, LIST_EXERCISES, variables)
   // If list is not in cache yet then we don't do anything
   if (!listExercises) return
   // Add new item to list
@@ -14,13 +14,13 @@ export const syncExercisesCacheOnCreate = (cache, item) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCache(cache, LIST_EXERCISES, { listExercises: { ...listToCache } })
+  writeCache(cache, LIST_EXERCISES, { listExercises: { ...listToCache } }, variables)
   return listToCache
 }
 
-export const syncExercisesCacheOnUpdate = (cache, item) => {
+export const syncCacheOnUpdate = (cache, item, variables) => {
   // Read Cache
-  const { listExercises } = readCache(cache, LIST_EXERCISES)
+  const { listExercises } = readCache(cache, LIST_EXERCISES, variables)
   // If list is not in cache yet then we don't do anything
   if (!listExercises) return
   // Update item in list
@@ -29,13 +29,13 @@ export const syncExercisesCacheOnUpdate = (cache, item) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCache(cache, LIST_EXERCISES, { listExercises: { ...listToCache } })
+  writeCache(cache, LIST_EXERCISES, { listExercises: { ...listToCache } }, variables)
   return listToCache
 }
 
-export const syncExercisesCacheOnDelete = (cache, item) => {
+export const syncCacheOnDelete = (cache, item, variables) => {
   // Read Cache
-  const { listExercises } = readCache(cache, LIST_EXERCISES)
+  const { listExercises } = readCache(cache, LIST_EXERCISES, variables)
   // If list is not in cache yet then we don't do anything
   if (!listExercises) return
   // Remove item from list
@@ -44,7 +44,7 @@ export const syncExercisesCacheOnDelete = (cache, item) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCache(cache, LIST_EXERCISES, { listExercises: { ...listToCache } })
+  writeCache(cache, LIST_EXERCISES, { listExercises: { ...listToCache } }, variables)
   return listToCache
 }
 

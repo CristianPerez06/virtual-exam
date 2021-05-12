@@ -22,7 +22,7 @@ import { CREATE_EXERCISE, UPDATE_EXERCISE, GET_EXERCISE } from '../../common/req
 import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS } from '../../common/requests/units'
 import { DISABLE_ANSWER, LIST_ANSWERS } from '../../common/requests/answers'
-import { syncExercisesCacheOnCreate, syncExercisesCacheOnUpdate, syncAnswersCacheOnDelete } from './cacheHelpers'
+import { syncCacheOnCreate, syncCacheOnUpdate, syncAnswersCacheOnDelete } from './cacheHelpers'
 
 const ExercisesEditor = (props) => {
   // Props and params
@@ -97,13 +97,15 @@ const ExercisesEditor = (props) => {
       ? createExercise({
         variables: { name: name, courseId: courseId, unitId: unitId },
         update: (cache, result) => {
-          syncExercisesCacheOnCreate(cache, result.data.createExercise)
+          const variables = { courseId: courseId, unitId: unitId }
+          syncCacheOnCreate(cache, result.data.createExercise, variables)
         }
       })
       : updateExercise({
         variables: { id: params.id, name: name, courseId: courseId, unitId: unitId },
         update: (cache, result) => {
-          syncExercisesCacheOnUpdate(cache, result.data.updateExercise)
+          const variables = { courseId: courseId, unitId: unitId }
+          syncCacheOnUpdate(cache, result.data.updateExercise, variables, variables)
         }
       })
   }
