@@ -3,7 +3,18 @@ import { Form } from 'react-final-form'
 import { Button, Input } from 'reactstrap'
 import { Link, useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, TranslatableErrors, Table, DeleteModal, FieldWrapper, SelectWrapper, TranslatableTitle, ButtonSubmit, ButtonGoTo } from '../../components/common'
+import {
+  CustomAlert,
+  TranslatableErrors,
+  Table,
+  DeleteModal,
+  FieldWrapper,
+  SelectWrapper,
+  TranslatableTitle,
+  ButtonSubmit,
+  ButtonGoTo,
+  NoResults
+} from '../../components/common'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl, FormattedMessage } from 'react-intl'
@@ -302,7 +313,7 @@ const ExercisesEditor = (props) => {
                   <FormattedMessage id='common_entity.answers' />
                 </p>
                 {answers.length === 0
-                  ? <div id='no-results' className='text-center mt-2 mb-3'><FormattedMessage id='common_message.no_results' /></div>
+                  ? <NoResults />
                   : <Table columns={columns} data={answers} paginationEnabled={false} />}
                 {(answers.length === 0 || answers.every(answer => answer.correct === false)) && (
                   <CustomAlert messages={{ id: 'exercise_answer_correct_needed', message: formatMessage({ id: 'exercise_answer_correct_needed' }) }} color='warning' />

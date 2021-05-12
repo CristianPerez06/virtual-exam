@@ -1,0 +1,18 @@
+type Exam {
+  id: ID!
+  name: String!
+  examTemplateId: ID!
+}
+
+type Exams {
+  data: [Exam]
+  count: Int!
+}
+
+extend type Query {
+  listExams(idNumber: ID!): Exams
+}
+
+extend type Mutation {
+  createExam(assignedExamId: ID! examTemplateId: ID!, idNumber: String!): Exam
+}

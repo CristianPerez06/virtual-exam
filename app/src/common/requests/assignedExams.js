@@ -23,7 +23,6 @@ export const CREATE_ASSIGNED_EXAM = gql`
     }
   }
 `
-
 export const DELETE_ASSIGNED_EXAM = gql`
   mutation deleteAssignedExam($id: ID!) {
     deleteAssignedExam(id: $id){

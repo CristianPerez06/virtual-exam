@@ -1,8 +1,9 @@
 import React from 'react'
 import { Button } from 'reactstrap'
 import { Table } from '../../components/common'
-import { injectIntl, FormattedMessage } from 'react-intl'
+import { injectIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
+import NoResults from './NoResults'
 
 const TwoColumnsTable = (props) => {
   const {
@@ -62,7 +63,7 @@ const TwoColumnsTable = (props) => {
   return (
     <div className='two-columns-table'>
       {items.length === 0
-        ? <div id='no-results' className='text-center mt-2 mb-3'><FormattedMessage id='common_message.no_results' /></div>
+        ? <NoResults />
         : <Table columns={columns} data={items} paginationEnabled={paginationEnabled} />}
     </div>
   )

@@ -6,7 +6,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LIST_EXERCISES } from '../../common/requests/exercises'
 import { ADD_EXERCISE_TO_EXAM_TEMPLATE, LIST_EXAM_TEMPLATE_EXERCISES, REMOVE_EXERCISE_FROM_EXAM_TEMPLATE } from '../../common/requests/templates'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
-import { TranslatableErrors, DeleteModal, Table } from '../../components/common'
+import { TranslatableErrors, DeleteModal, Table, NoResults } from '../../components/common'
 import { syncCacheOnAddTemplateExercise, syncCacheOnRemoveTemplateExercise } from './cacheHelpers'
 
 const ExamTemplateExercises = (props) => {
@@ -199,7 +199,7 @@ const ExamTemplateExercises = (props) => {
       <div className='row'>
         <div className='col-md-12 col-xs-12 text-right'>
           {templateExercises.length === 0
-            ? <div id='no-results' className='text-center mt-2 mb-3'><FormattedMessage id='common_message.no_results' /></div>
+            ? <NoResults />
             : <Table columns={columns} data={templateExercises} />}
         </div>
         <div id='info-exercise-modify' className='d-flex justify-content-around mt-2 w-100'>

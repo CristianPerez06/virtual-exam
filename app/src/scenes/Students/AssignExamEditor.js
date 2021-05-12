@@ -4,7 +4,7 @@ import { Form } from 'react-final-form'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { useRouteMatch } from 'react-router-dom'
 import { required } from '../../common/validators'
-import { ButtonGoTo, SelectWrapper, TranslatableErrors, Table, DeleteModal, LoadingInline } from '../../components/common'
+import { ButtonGoTo, SelectWrapper, TranslatableErrors, Table, DeleteModal, LoadingInline, NoResults } from '../../components/common'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LIST_COURSES } from '../../common/requests/courses'
@@ -64,6 +64,8 @@ const AssignExamEditor = (props) => {
   }
 
   // Handlers
+  // TO DO - Get User info to display in component
+
   const onSuccess = (result) => {
     setErrors()
     setFilters({})
@@ -138,7 +140,6 @@ const AssignExamEditor = (props) => {
     courseName: formatMessage({ id: 'course_name' }),
     examTemplateName: formatMessage({ id: 'exam_template_name' }),
     action: formatMessage({ id: 'action' }),
-    edit: formatMessage({ id: 'button.edit' }),
     delete: formatMessage({ id: 'button.delete' })
   }
 
@@ -230,7 +231,7 @@ const AssignExamEditor = (props) => {
                 <div className='row'>
                   <div className='col-md-12 col-xs-12'>
                     {assignedExams.length === 0
-                      ? <div id='no-results' className='text-center mt-2 mb-3'><FormattedMessage id='common_message.no_results' /></div>
+                      ? <NoResults />
                       : <Table columns={columns} data={assignedExams} paginationEnabled={false} />}
                   </div>
                 </div>
@@ -245,8 +246,6 @@ const AssignExamEditor = (props) => {
                   onDeleteClick={() => onDeleteConfirmClicked()}
                 />
               </div>
-
-              {errors && <TranslatableErrors errors={errors} className='ml-3' />}
             </div>
 
             <hr />

@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader, Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { useAuthContext } from '../../hooks'
 import { Link } from 'react-router-dom'
-import { Loading, TranslatableErrors, Table } from '../../components/common'
+import { Loading, TranslatableErrors, Table, NoResults } from '../../components/common'
 
 const StudentsList = (props) => {
   // Props and params
@@ -97,7 +97,7 @@ const StudentsList = (props) => {
                 <FormattedMessage id='common_entity.students' />
               </p>
               {students.length === 0
-                ? <div id='no-results' className='text-center mt-2 mb-3'><FormattedMessage id='common_message.no_results' /></div>
+                ? <NoResults />
                 : <Table columns={columns} data={students} />}
             </div>
           </CardBody>

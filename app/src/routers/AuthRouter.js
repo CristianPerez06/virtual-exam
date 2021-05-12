@@ -3,7 +3,15 @@ import { Route, Switch, Redirect, useLocation } from 'react-router-dom'
 import { Layout } from '../components/layout'
 import { PageNotFound, Error, Loading } from '../components/common'
 import { Home } from '../components'
-import { AsyncCourses, AsyncUnits, AsyncSettings, AsyncExercises, AsyncExamTemplates, AsyncStudents } from './Lazyimports'
+import {
+  AsyncCourses,
+  AsyncUnits,
+  AsyncSettings,
+  AsyncExercises,
+  AsyncExamTemplates,
+  AsyncStudents,
+  AsyncExams
+} from './Lazyimports'
 import { ACCOUNT_ACTION_TYPES } from '../common/constants'
 import { useAuthContext } from '../hooks'
 
@@ -53,6 +61,7 @@ const AuthRouter = () => {
             <Route path='/exercises' name='Exercises' component={AsyncExercises} />
             <Route path='/exam-templates' name='Exam templates' component={AsyncExamTemplates} />
             <Route path='/students' name='Students' component={AsyncStudents} />
+            <Route path='/exams' name='Exams' component={AsyncExams} />
             <Route path='/settings' name='Settings' component={AsyncSettings} />
             <Route name='/error' component={Error} />
             <Route name='Page Not Found' component={PageNotFound} />
