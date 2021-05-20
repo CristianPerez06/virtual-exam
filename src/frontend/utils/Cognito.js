@@ -1,14 +1,15 @@
 import AWS from 'aws-sdk'
 import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js'
 import { COGNITO_ERROR_CODES } from '../common/constants'
+import variables from '../variables'
 
-const UserPoolId = process.env.REACT_APP_COGNITO_USER_POOL_ID
-const ClientId = process.env.REACT_APP_COGNITO_CLIENT_ID
+const UserPoolId = variables.cognitoUserPoolId
+const ClientId = variables.cognitoClientId
 
 AWS.config.update({
-  region: process.env.REACT_APP_COGNITO_REGION,
-  accessKeyId: process.env.REACT_APP_COGNITO_ACCESS_KEY,
-  secretAccessKey: process.env.REACT_APP_COGNITO_SECRET_ACCESS_KEY
+  region: variables.cognitoRegion,
+  accessKeyId: variables.cognitoAccessKey,
+  secretAccessKey: variables.cognitoSecretKey
 })
 
 class Cognito {
