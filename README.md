@@ -14,27 +14,38 @@ Virtual exam is an app that allows students to take their exams online.
 
 ## Installation
 
-1. Create an .env file inside app folder with following structure and complete with corresponding values:
-  ```
-  REACT_APP_COGNITO_REGION=xx-xxxx-x
-  REACT_APP_COGNITO_USER_POOL_ID=xx-xxxx-x_xxxxxxxxx
-  REACT_APP_COGNITO_CLIENT_ID=xxxx....
-  REACT_APP_COGNITO_ACCESS_KEY=xxxx....
-  REACT_APP_COGNITO_SECRET_ACCESS_KEY=xxxx....
-  ```
- 
-2. Create an .env file inside server folder with following structure and complete with corresponding values:
-  ```
-  CONNECTION=mongodb+srv://xxxx....
-  DB=virtual-exam
-  COGNITO_REGION=xx-xxxx-x
-  COGNITO_USER_POOL_ID=xx-xxxx-x_xxxxxxxxx
-  COGNITO_CLIENT_ID=xxxx....
-  ```
+1. Rename the `.env.file` inside root folder to `.env` and fill the empty values:
 
-3. Go to /server
-4. `npm install`
-5. `npm run server`
-6. Go to /app
-7. `npm install`
-8. `npm start`
+```
+# ------ SERVER ------ 
+DB=virtual-exam
+COGNITO_CLIENT_ID=
+COGNITO_REGION=
+COGNITO_USER_POOL_ID=
+
+# only for dev
+DEFAULT_CONNECTION_URL=
+# only for prod
+# CONNECTION_URL=
+
+# ------ CLIENT ------
+REACT_APP_COGNITO_ACCESS_KEY=
+REACT_APP_COGNITO_CLIENT_ID=
+REACT_APP_COGNITO_REGION=
+REACT_APP_COGNITO_SECRET_ACCESS_KEY=
+REACT_APP_COGNITO_USER_POOL_ID=
+
+#prod
+#REACT_APP_API=/graphql
+#dev
+REACT_APP_API=http://localhost:4000/graphql
+```
+ 
+3. Go to root folder
+4. type `npm install`
+5. Run the server: type `npm run back`
+6. Run the client: type `npm run front`
+
+## Live app
+https://virtual-exam-ucel.herokuapp.com
+
