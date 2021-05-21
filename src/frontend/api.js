@@ -5,8 +5,9 @@ import { ApolloLink } from 'apollo-link'
 import { onError } from 'apollo-link-error'
 import Cookies from 'js-cookie'
 import { COOKIE_NAMES, GRAPHQL_ERRORS } from './common/constants'
+import variables from './variables'
 
-const API = 'http://localhost:4000/graphql'
+const API = variables.api
 
 const httpLink = new HttpLink({
   uri: API

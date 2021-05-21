@@ -1,11 +1,10 @@
+require('dotenv').config()
 const { MongoClient } = require('mongodb')
+const variables = require('../variables')
 const debug = require('debug')('virtual-exam:mongo')
 
-const DEFAULT_CONNECTION_URL = 'mongodb://localhost:27017'
-const DEFAULT_MONGO_DB = 'virtual-exam'
-
-const connUrl = process.env.CONNECTION || DEFAULT_CONNECTION_URL
-const dbName = process.env.DB || DEFAULT_MONGO_DB
+const connUrl = variables.connection || variables.defaultConnection
+const dbName = variables.db
 
 const dbPromise = MongoClient.connect(
   connUrl,

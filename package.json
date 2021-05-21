@@ -1,7 +1,18 @@
 {
-  "name": "app",
-  "version": "0.1.0",
-  "private": true,
+  "name": "server",
+  "version": "1.0.0",
+  "description": "server",
+  "main": "server.js",
+  "scripts": {
+    "front": "react-scripts start",
+    "back": "DEBUG=${DEBUG:=virtual-exam:*} nodemon server",
+    "start": "DEBUG=${DEBUG:=virtual-exam:*} node server",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@apollo/client": "^3.3.12",
     "@testing-library/jest-dom": "^4.2.4",
@@ -10,13 +21,22 @@
     "amazon-cognito-identity-js": "^4.5.0",
     "apollo-boost": "^0.4.9",
     "apollo-link": "^1.2.14",
+    "apollo-server-express": "^2.19.1",
     "aws-sdk": "^2.897.0",
+    "cors": "^2.8.5",
     "date-fns": "^2.21.1",
+    "debug": "^4.3.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
     "final-form": "^4.20.1",
-    "graphql": "^15.4.0",
+    "graphql-import-node": "0.0.4",
     "graphql-tag": "^2.11.0",
     "js-cookie": "^2.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.4",
+    "mongodb": "^3.6.3",
     "node-sass": "^4.14.1",
+    "nodemon": "^2.0.7",
     "react": "^16.14.0",
     "react-apollo": "^3.1.5",
     "react-dom": "^16.14.0",
@@ -28,16 +48,9 @@
     "react-select": "^4.3.0",
     "react-table": "^7.6.3",
     "reactstrap": "^8.6.0",
-    "styled-components": "^5.2.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "styled-components": "^5.2.1",
+    "@babel/core": "^7.14.3",
+    "graphql": "^14.7.0"
   },
   "browserslist": {
     "production": [

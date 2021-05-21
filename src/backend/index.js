@@ -1,8 +1,11 @@
-require('dotenv').config()
 const express = require('express')
+const path = require('path')
 const cors = require('cors')
 const { ApolloServer, AuthenticationError } = require('apollo-server-express')
 const { loadDb } = require('./middleware/mongo')
+const variables = require('../backend/variables')
+const router = express.Router()
+require('dotenv').config()
 
 const jwt = require('jsonwebtoken')
 const jtp = require('jwk-to-pem')
@@ -11,10 +14,7 @@ const debug = require('debug')('virtual-exam:server')
 
 debug('Booting up server')
 
-const POOL_REGION = process.env.COGNITO_REGION
-const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID
-const COGNITO_CLIENT_ID = process.env.COGNITO_CLIENT_ID
-const JWT_ISSUER = `https://cognito-idp.${POOL_REGION}.amazonaws.com/${COGNITO_USER_POOL_ID}`
+const JWT_ISSUER = `https://cognito-idp.${variables.cognitoRegion}.amazonaws.com/${variables.cognitoUserPoolId}`
 
 const jsonWebKeys = [
   {
@@ -37,7 +37,7 @@ const jsonWebKeys = [
 
 const JWT_PUBLIC_KEY = jtp(jsonWebKeys[1])
 
-// Grapqhl APIs
+// Graphql APIs
 const { baseDefs, baseResolvers } = require('./api/base/index')
 const { courseDefs, courseResolvers } = require('./api/course/index')
 const { unitDefs, unitResolvers } = require('./api/unit/index')
@@ -94,7 +94,7 @@ const server = new ApolloServer({
     if (user.iss !== JWT_ISSUER) {
       throw new AuthenticationError('issuer invalid')
     }
-    if (user.client_id !== COGNITO_CLIENT_ID) {
+    if (user.client_id !== variables.cognitoClientId) {
       throw new AuthenticationError('audience invalid')
     }
 
@@ -104,18 +104,36 @@ const server = new ApolloServer({
 
 const app = express()
 
-app.use(cors({
-  // TO DO
-  // origin: 'http://localhost:3001',
-  // credentials: true
-}))
+// Middlewares
+app.use(cors({}))
+app.use(require('compression')())
+app.use(express.json())
+app.use(express.static(path.join(__dirname, '../../build')))
 app.use(loadDb)
+
+// Serve react files
+app.get('/*', (req, res) => res.sendFile(path.join(__dirname, '../../build', 'index.html')))
+
+// Routing
+app.use('/', require('./utilities/router'));
 
 server.applyMiddleware({ app })
 
-app.listen(
-  { port: 4000 },
-  () => {
-    debug(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+const port = variables.port || 4000
+const listener = app.listen(
+  { port: port },
+  (res) => {
+    debug('🚀 Server ready 🚀')
+    debug(`Port: ${port}`)
+    debug(`Graphql path: ${server.graphqlPath}`)
+    const serverAddress = listener.address().address === '::' ? 'localhost' : listener.address().address
+    debug(`Server address: ${serverAddress}`)
   }
 )
+
+// app.listen(
+//   { port: 4000 },
+//   () => {
+//     debug(`🚀 Server ready at http://localhost:${4000}${server.graphqlPath}`)
+//   }
+// )
