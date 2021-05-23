@@ -92,7 +92,9 @@ const resolver = {
 
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
-      const isDuplicated = docWithSameName && docWithSameName.courseId.toString() === courseId
+      const isDuplicated = docWithSameName &&
+        docWithSameName.courseId.toString() === courseId &&
+          docWithSameName.disabled !== true
       if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }
@@ -127,8 +129,8 @@ const resolver = {
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
       const isDuplicated = docWithSameName &&
-        docWithSameName.disabled !== true &&
-        docWithSameName.courseId.toString() === courseId
+        docWithSameName.courseId.toString() === courseId &&
+        docWithSameName.disabled !== true
       if (isDuplicated) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
       }

@@ -59,7 +59,8 @@ const UnitsList = (props) => {
     disableUnit({
       variables: { id: unitToDelete.id },
       update: (cache, result) => {
-        const updatedUnitList = syncCacheOnDelete(cache, unitToDelete)
+        const variables = { courseId: filters.selectedCourse.value }
+        const updatedUnitList = syncCacheOnDelete(cache, unitToDelete, variables)
         setUnits(updatedUnitList.data)
       }
     })
