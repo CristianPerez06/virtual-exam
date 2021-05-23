@@ -70,13 +70,15 @@ const UnitsEditor = (props) => {
       ? createUnit({
         variables: { name: name, courseId: courseId },
         update: (cache, result) => {
-          syncCacheOnCreate(cache, result.data.createUnit)
+          const variables = { courseId: courseId }
+          syncCacheOnCreate(cache, result.data.createUnit, variables)
         }
       })
       : updateUnit({
         variables: { id: params.id, name: name, courseId: courseId },
         update: (cache, result) => {
-          syncCacheOnUpdate(cache, result.data.updateUnit)
+          const variables = { courseId: courseId }
+          syncCacheOnUpdate(cache, result.data.updateUnit, variables)
         }
       })
   }
