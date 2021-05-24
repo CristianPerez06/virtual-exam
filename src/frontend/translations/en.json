@@ -97,6 +97,7 @@
   "exercise_updated": "Exercise updated succesfully",
   "exercise_deleted": "Exercise deleted succesfully",
   "exercise_answer_correct_needed": "In order to use this exercise you need to add a correct answer",
+  "at_least_two_answers_needed": "In order to use this exercise you need to add at least 2 answers",
   "exercises_edit_course": "Exercises related to current template will be deleted if change the Course.",
 
   "answer_name": "Answer name",
@@ -112,6 +113,7 @@
   "exam_template_deleted": "Exam template deleted successfully",
   "exam_template_exercise_added": "Exercise successfully added to the Exam template",
   "exam_template_exercise_removed": "Exercise successfully remoed from the Exam template",
+  "at_least_two_exercises_needed": "In order to use this template you need add at least 2 exercises",
 
   "student_id_number": "ID Number",
 

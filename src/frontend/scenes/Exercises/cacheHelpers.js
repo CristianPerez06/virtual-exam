@@ -90,5 +90,5 @@ export const syncAnswersCacheOnDelete = (cache, item, variables) => {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
   writeCache(cache, LIST_ANSWERS, { listAnswers: { ...listToCache } }, variables)
-  return variables
+  return listToCache
 }

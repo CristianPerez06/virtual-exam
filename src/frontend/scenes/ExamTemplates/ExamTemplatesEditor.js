@@ -3,7 +3,7 @@ import { Button } from 'reactstrap'
 import { Form } from 'react-final-form'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, ButtonSubmit, ButtonGoTo, FieldWrapper, SelectWrapper, TranslatableTitle, TranslatableErrors } from '../../components/common'
+import { ButtonSubmit, ButtonGoTo, FieldWrapper, SelectWrapper, TranslatableTitle, TranslatableErrors } from '../../components/common'
 import { required } from '../../common/validators'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { CREATE_EXAM_TEMPLATE, GET_EXAM_TEMPLATE, UPDATE_EXAM_TEMPLATE, RESET_EXAM_TEMPLATE } from '../../common/requests/templates'
@@ -21,8 +21,8 @@ const ExamTemplatesEditor = (props) => {
   const history = useHistory()
 
   // State
-  const [templateCreated, setTemplateCreated] = useState(false)
-  const [templateUpdated, setTemplateUpdated] = useState(false)
+  // const [templateCreated, setTemplateCreated] = useState(false)
+  // const [templateUpdated, setTemplateUpdated] = useState(false)
   const [courses, setCourses] = useState([])
   const [initialValues, setInitialValues] = useState({})
   const [filters, setFilters] = useState({})
@@ -35,8 +35,8 @@ const ExamTemplatesEditor = (props) => {
     if (result.createExamTemplate) {
       const { id } = result.createExamTemplate
 
-      setTemplateCreated(true)
-      setTemplateUpdated(false)
+      // setTemplateCreated(true)
+      // setTemplateUpdated(false)
       history.push({
         pathname: `/exam-templates/${id}`,
         state: { isCreating: false }
@@ -47,14 +47,14 @@ const ExamTemplatesEditor = (props) => {
 
       setEditableCourse(false)
       setInitialValues({ ...initialValues, courseId: courseId })
-      setTemplateCreated(false)
-      setTemplateUpdated(true)
+      // setTemplateCreated(false)
+      // setTemplateUpdated(true)
     }
     if (result.resetExamTemplate) {
       const { courseId, ...rest } = initialValues
       setInitialValues({ ...rest })
-      setTemplateCreated(false)
-      setTemplateUpdated(false)
+      // setTemplateCreated(false)
+      // setTemplateUpdated(false)
     }
     setErrors()
   }
@@ -76,8 +76,8 @@ const ExamTemplatesEditor = (props) => {
   }
 
   const onError = (err) => {
-    setTemplateCreated(false)
-    setTemplateUpdated(false)
+    // setTemplateCreated(false)
+    // setTemplateUpdated(false)
 
     const { graphQLErrors } = err
     const translatableErrors = getTranslatableErrors(graphQLErrors)
@@ -119,7 +119,7 @@ const ExamTemplatesEditor = (props) => {
 
     // Reset States to tnitial values
     setErrors()
-    setTemplateUpdated(false)
+    // setTemplateUpdated(false)
     setEditableCourse(true)
     setEditConfirmModalIsOpen(false)
 
@@ -162,8 +162,9 @@ const ExamTemplatesEditor = (props) => {
   useEffect(() => {
     // State cleanup in case user was editing and now wants to create
     if (isCreating) {
-      setTemplateUpdated(false)
+      // setTemplateUpdated(false)
       setInitialValues({})
+      setFilters({ selectedCourse: '' })
     }
   }, [isCreating])
 
@@ -249,8 +250,10 @@ const ExamTemplatesEditor = (props) => {
 
             <div id='info' className='d-flex justify-content-around mt-2'>
               {errors && <TranslatableErrors errors={errors} className='ml-3' />}
+              {/* 
               {!creating && templateCreated && <CustomAlert messages={{ id: 'exam_template_created', message: formatMessage({ id: 'exam_template_created' }) }} color='success' />}
               {!updating && templateUpdated && <CustomAlert messages={{ id: 'exam_template_updated', message: formatMessage({ id: 'exam_template_updated' }) }} color='success' />}
+              */}
             </div>
           </form>
         )}

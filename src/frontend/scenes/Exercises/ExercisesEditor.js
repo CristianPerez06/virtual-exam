@@ -39,6 +39,7 @@ const ExercisesEditor = (props) => {
   const [initialValues, setInitialValues] = useState({})
   const [filters, setFilters] = useState({})
   const [errors, setErrors] = useState()
+  const [alerts, setAlerts] = useState()
   const [answers, setAnswers] = useState([])
   const [answerToDelete, setAnswerToDelete] = useState()
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
@@ -110,6 +111,17 @@ const ExercisesEditor = (props) => {
       })
   }
 
+  const getAlerts = (answersList) => {
+    if (answersList.length <= 1) {
+      const moreAnswersNeeded = { id: 'at_least_two_answers_needed' }
+      return moreAnswersNeeded
+    }
+    if (answersList.every(answer => answer.correct === false)) {
+      const correctAnswerNeeded = { id: 'exercise_answer_correct_needed' }
+      return correctAnswerNeeded
+    }
+  }
+
   const validateBeforeSubmit = (values) => {
     const errors = {}
     if (!values.name) { errors.name = formatMessage({ id: 'common_field_error.required' }) }
@@ -134,7 +146,9 @@ const ExercisesEditor = (props) => {
       variables: { id: answerToDelete.id },
       update: (cache, result) => {
         const updatedAnswersList = syncAnswersCacheOnDelete(cache, answerToDelete, { exerciseId: params.id })
+        const alerts = getAlerts(updatedAnswersList.data)
         setAnswers(updatedAnswersList.data)
+        setAlerts(alerts)
       }
     })
   }
@@ -181,7 +195,9 @@ const ExercisesEditor = (props) => {
       onCompleted: (data) => {
         if (!data) return
         const answers = { ...data.listAnswers }
+        const alerts = getAlerts(answers.data)
         setAnswers(answers.data)
+        setAlerts(alerts)
       },
       onError
     }
@@ -317,9 +333,7 @@ const ExercisesEditor = (props) => {
                 {answers.length === 0
                   ? <NoResults />
                   : <Table columns={columns} data={answers} paginationEnabled={false} />}
-                {(answers.length === 0 || answers.every(answer => answer.correct === false)) && (
-                  <CustomAlert messages={{ id: 'exercise_answer_correct_needed', message: formatMessage({ id: 'exercise_answer_correct_needed' }) }} color='warning' />
-                )}
+                {(alerts) && <CustomAlert messages={alerts} color='warning' />}
               </div>
             )}
 

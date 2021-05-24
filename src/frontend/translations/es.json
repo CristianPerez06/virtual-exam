@@ -97,6 +97,7 @@
   "exercise_updated": "Ejercicio actualizado exitosamente",
   "exercise_deleted": "Ejercicio eliminado exitosamente",
   "exercise_answer_correct_needed": "Para usar este ejercicio necesita una respuesta correcta",
+  "at_least_two_answers_needed": "Para usar este ejercicio necesita al agregar menos 2 respuestas",
   "exercises_edit_course": "Los ejercicios asociados a la Plantilla seran eliminados si cambia el Curso seleccionado.",
 
   "answer_name": "Titulo de la respuesta",
@@ -112,6 +113,7 @@
   "exam_template_deleted": "Plantilla de Examen eliminada exitosamente",
   "exam_template_exercise_added": "Ejercicio agregado exitosamente a la Plantilla de Examen",
   "exam_template_exercise_removed": "Ejercicio quitado exitosamente de la Plantilla de Examen",
+  "at_least_two_exercises_needed": "Para usar esta plantilla necesita agregar al menos 2 ejercicios",
 
   "student_id_number": "Legajo",
 
