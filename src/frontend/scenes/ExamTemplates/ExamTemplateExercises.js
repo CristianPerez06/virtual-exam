@@ -6,7 +6,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LIST_EXERCISES } from '../../common/requests/exercises'
 import { ADD_EXERCISE_TO_EXAM_TEMPLATE, LIST_EXAM_TEMPLATE_EXERCISES, REMOVE_EXERCISE_FROM_EXAM_TEMPLATE } from '../../common/requests/templates'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
-import { TranslatableErrors, DeleteModal, Table, NoResults } from '../../components/common'
+import { TranslatableErrors, DeleteModal, Table, NoResults, CustomAlert } from '../../components/common'
 import { syncCacheOnAddTemplateExercise, syncCacheOnRemoveTemplateExercise } from './cacheHelpers'
 
 const ExamTemplateExercises = (props) => {
@@ -26,6 +26,7 @@ const ExamTemplateExercises = (props) => {
   const [templateExerciseToDelete, setTemplateExerciseToDelete] = useState()
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
   const [errors, setErrors] = useState()
+  const [alerts, setAlerts] = useState()
   const [exerciseModifyErrors, setExerciseModifyErrors] = useState(false)
 
   // Handlers
@@ -58,10 +59,12 @@ const ExamTemplateExercises = (props) => {
     setExercises(mappedExercises)
   }
 
-  const onFetchTemplateExerciseSuccess = (result) => {
+  const onFetchTemplateExercisesSuccess = (result) => {
     if (!result) return
     const templateExercises = result.listExamTemplateExercises.data
     setTemplateExercises(templateExercises)
+    const alerts = getAlerts(templateExercises)
+    setAlerts(alerts)
   }
 
   const onDeleteConfirmClicked = () => {
@@ -71,6 +74,8 @@ const ExamTemplateExercises = (props) => {
         const variables = { id: examTemplateId }
         const updatedTemplateExercisesList = syncCacheOnRemoveTemplateExercise(cache, templateExerciseToDelete, variables)
         setTemplateExercises(updatedTemplateExercisesList.data)
+        const alerts = getAlerts(updatedTemplateExercisesList.data)
+        setAlerts(alerts)
       }
     })
     setDeleteModalIsOpen(!deleteModalIsOpen)
@@ -81,6 +86,13 @@ const ExamTemplateExercises = (props) => {
     setDeleteModalIsOpen(!deleteModalIsOpen)
   }
 
+  const getAlerts = (exercisesList) => {
+    if (exercisesList.length <= 1) {
+      const moreExercisesNeeded = { id: 'at_least_two_exercises_needed' }
+      return moreExercisesNeeded
+    }
+  }
+
   // Button handlers
   const onAddExerciseClicked = async () => {
     addExerciseToExamTemplate({
@@ -89,6 +101,8 @@ const ExamTemplateExercises = (props) => {
         const variables = { id: examTemplateId }
         const updatedTemplateExercisesList = syncCacheOnAddTemplateExercise(cache, result.data.addExerciseToExamTemplate, variables)
         setTemplateExercises(updatedTemplateExercisesList.data)
+        const alerts = getAlerts(updatedTemplateExercisesList.data)
+        setAlerts(alerts)
       }
     })
   }
@@ -111,7 +125,7 @@ const ExamTemplateExercises = (props) => {
     LIST_EXAM_TEMPLATE_EXERCISES,
     {
       variables: { id: examTemplateId },
-      onCompleted: onFetchTemplateExerciseSuccess,
+      onCompleted: onFetchTemplateExercisesSuccess,
       onError
     }
   )
@@ -204,6 +218,7 @@ const ExamTemplateExercises = (props) => {
         </div>
         <div id='info-exercise-modify' className='d-flex justify-content-around mt-2 w-100'>
           {exerciseModifyErrors && !cleanMessages && <TranslatableErrors errors={exerciseModifyErrors} className='ml-3' />}
+          {(alerts) && <CustomAlert messages={alerts} color='warning' />}
         </div>
       </div>
 
