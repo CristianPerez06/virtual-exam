@@ -131,7 +131,7 @@ const resolver = {
         (docWithSameName.courseId || '').toString() === courseId &&
         docWithSameName.disabled !== true
       if (isDuplicated) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Query
@@ -167,7 +167,7 @@ const resolver = {
         (docWithSameName.courseId || '').toString() === courseId &&
         docWithSameName.disabled !== true
       if (isDuplicated) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Query
@@ -194,9 +194,24 @@ const resolver = {
 
       // Args
       const { id } = args
+      const objTempId = new ObjectId(id)
 
       // Collection
       const collection = context.db.collection('exam-templates')
+      const assignedExamsCollection = context.db.collection('assigned-exams')
+
+      // Validate related entities
+      const findRelatedEntities = [{
+        $match: {
+          disabled: { $ne: true },
+          examTemplateId: { $eq: objTempId }
+        }
+      }]
+      const assignedExamsRelated = await assignedExamsCollection.aggregate(findRelatedEntities).toArray()
+      debug('assignedExamsRelated: ', assignedExamsRelated)
+      if (assignedExamsRelated.length !== 0) {
+        throw new ApolloError(BACKEND_ERRORS.RELATED_ENTITY_EXISTS)
+      }
 
       // Query
       const update = {
@@ -235,8 +250,8 @@ const resolver = {
       if (result && result.n === 1 && result.ok === 1) {
         return { done: true }
       } else {
-        debug('deleteExamTemplate error:', BACKEND_ERRORS.DELETE_FAILED.Code)
-        throw new Error(BACKEND_ERRORS.DELETE_FAILED.Code)
+        debug('deleteExamTemplate error:', BACKEND_ERRORS.DELETE_FAILED)
+        throw new Error(BACKEND_ERRORS.DELETE_FAILED)
       }
     },
     resetExamTemplate: async (parent, args, context) => {
@@ -288,7 +303,7 @@ const resolver = {
       // Look up for duplicates
       const dupExercise = examTemplateExercises.find(x => x.toString() === objExercId.toString())
       if (dupExercise) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       const newExercises = addItemToList(examTemplateExercises, objExercId)

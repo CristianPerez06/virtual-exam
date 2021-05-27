@@ -19,6 +19,7 @@
   "common_error.duplicated_entity": "Ya existe una entidad con el mismo nombre",
 
   "entity_error.correct_answer_already_selected": "Ya existe una respuesta correcta.",
+  "entity_error.related_entity_exists": "Antes de eliminar esta entidad necesita eliminar las entidades relacionadas.",
 
   "common_field_error.required": "Campo requerido",
   "common_field_error.must_be_a_number": "El campo debe contener solo números",
@@ -86,11 +87,13 @@
   "course_created": "Curso creado exitosamente",
   "course_updated": "Curso actualizado exitosamente",
   "course_deleted": "Curso eliminado exitosamente",
+  "course_delete_related_entities": "Tal vez tenga que eliminar 'Unidades' relacionadas.",
 
   "unit_name": "Nombre de la Unidad",
   "unit_created": "Unidad creada exitosamente",
   "unit_updated": "Unidad actualizada exitosamente",
   "unit_deleted": "Unidad eliminada exitosamente",
+  "unit_delete_related_entities": "Tal vez tenga que eliminar 'Ejercicios' relacionados.",
 
   "exercise_name": "Titulo del ejercicio",
   "exercise_created": "Ejercicio creado exitosamente",
@@ -99,6 +102,7 @@
   "exercise_answer_correct_needed": "Para usar este ejercicio necesita una respuesta correcta",
   "at_least_two_answers_needed": "Para usar este ejercicio necesita al agregar menos 2 respuestas",
   "exercises_edit_course": "Los ejercicios asociados a la Plantilla seran eliminados si cambia el Curso seleccionado.",
+  "exercise_delete_related_entities": "Tal vez tenga que quitar referencias a 'Plantillas de Examen' relacionadas.",
 
   "answer_name": "Titulo de la respuesta",
   "answer_description": "Descripción de la respuesta",

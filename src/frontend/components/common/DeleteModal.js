@@ -6,6 +6,7 @@ import { LoadingInline } from '../../components/common'
 const DeleteModal = (props) => {
   const {
     modalIsOpen,
+    additionalInfo,
     isBussy,
     onCloseClick,
     onDeleteClick
@@ -18,6 +19,7 @@ const DeleteModal = (props) => {
       </ModalHeader>
       <ModalBody>
         <FormattedMessage id='delete_this_record' />
+        {additionalInfo && <span className='d-block'><FormattedMessage id={additionalInfo} /></span>}
       </ModalBody>
       <ModalFooter>
         <Button

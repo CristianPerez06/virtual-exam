@@ -220,6 +220,28 @@ const AssignExamEditor = (props) => {
               </div>
             </div>
 
+            <div id='buttons' className='d-flex justify-content-center'>
+              <Button
+                color='primary'
+                type='submit'
+                className='m-2'
+                disabled={creating || fetchingCourses || fetchingExamTemplates || pristine}
+              >
+                <FormattedMessage id='button.assign_exam' />
+                {creating && <LoadingInline className='ml-3' />}
+              </Button>
+              <ButtonGoTo
+                path='/students/list'
+                color='secondary'
+                translatableTextId='button.go_to_list'
+                isDisabled={creating}
+              />
+            </div>
+
+            <div id='info' className='d-flex justify-content-around mt-2'>
+              {errors && <TranslatableErrors errors={errors} className='ml-3' />}
+            </div>
+
             <hr />
 
             <div id='assigned-exams' className='mt-5'>
@@ -248,29 +270,6 @@ const AssignExamEditor = (props) => {
               </div>
             </div>
 
-            <hr />
-
-            <div id='buttons' className='d-flex justify-content-center'>
-              <Button
-                color='primary'
-                type='submit'
-                className='m-2'
-                disabled={creating || fetchingCourses || fetchingExamTemplates || pristine}
-              >
-                <FormattedMessage id='button.assign_exam' />
-                {creating && <LoadingInline className='ml-3' />}
-              </Button>
-              <ButtonGoTo
-                path='/students/list'
-                color='secondary'
-                translatableTextId='button.go_to_list'
-                isDisabled={creating}
-              />
-            </div>
-
-            <div id='info' className='d-flex justify-content-around mt-2'>
-              {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-            </div>
           </form>
         )}
       />

@@ -96,7 +96,7 @@ const resolver = {
         docWithSameName.courseId.toString() === courseId &&
           docWithSameName.disabled !== true
       if (isDuplicated) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Query
@@ -132,7 +132,7 @@ const resolver = {
         docWithSameName.courseId.toString() === courseId &&
         docWithSameName.disabled !== true
       if (isDuplicated) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Query
@@ -159,9 +159,24 @@ const resolver = {
 
       // Args
       const { id } = args
+      const objUnitId = new ObjectId(id)
 
       // Collection
       const collection = context.db.collection('units')
+      const exercisesCollection = context.db.collection('exercises')
+
+      // Validate related entities
+      const findRelatedEntities = [{
+        $match: {
+          disabled: { $ne: true },
+          unitId: objUnitId
+        }
+      }]
+      const exercisesRelated = await exercisesCollection.aggregate(findRelatedEntities).toArray()
+      debug('exercisesRelated: ', exercisesRelated)
+      if (exercisesRelated.length !== 0) {
+        throw new ApolloError(BACKEND_ERRORS.RELATED_ENTITY_EXISTS)
+      }
 
       // Query
       const update = {
@@ -200,8 +215,8 @@ const resolver = {
       if (result && result.n === 1 && result.ok === 1) {
         return { done: true }
       } else {
-        debug('deleteUnit error:', BACKEND_ERRORS.DELETE_FAILED.Code)
-        throw new Error(BACKEND_ERRORS.DELETE_FAILED.Code)
+        debug('deleteUnit error:', BACKEND_ERRORS.DELETE_FAILED)
+        throw new Error(BACKEND_ERRORS.DELETE_FAILED)
       }
     }
   }

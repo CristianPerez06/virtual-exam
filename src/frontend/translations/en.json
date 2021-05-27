@@ -19,6 +19,7 @@
   "common_error.duplicated_entity": "An entity with the same name already exist",
 
   "entity_error.correct_answer_already_selected": "A correct answer was already selected",
+  "entity_error.related_entity_exists": "Before deleting this entity you should also delete the related ones.",
 
   "common_field_error.required": "Required field",
   "common_field_error.must_be_a_number": "Field can only accept numbers",
@@ -86,11 +87,13 @@
   "course_created": "Course created succesfully",
   "course_updated": "Course updated succesfully",
   "course_deleted": "Course deleted successfully",
+  "course_delete_related_entities": "You may have to delete related 'Units'.",
 
   "unit_name": "Unit name",
   "unit_created": "Unit created succesfully",
   "unit_updated": "Unit updated succesfully",
   "unit_deleted": "Unit deleted successfully",
+  "unit_delete_related_entities": "You may have to delete related 'Exercises'.",
 
   "exercise_name": "Exercise name",
   "exercise_created": "Exercise created succesfully",
@@ -99,6 +102,7 @@
   "exercise_answer_correct_needed": "In order to use this exercise you need to add a correct answer",
   "at_least_two_answers_needed": "In order to use this exercise you need to add at least 2 answers",
   "exercises_edit_course": "Exercises related to current template will be deleted if change the Course.",
+  "exercise_delete_related_entities": "You may have to remove all references to related 'Exam templates'.",
 
   "answer_name": "Answer name",
   "answer_description": "Answer description",

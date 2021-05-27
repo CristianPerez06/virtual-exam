@@ -230,11 +230,6 @@ const ExamTemplatesEditor = (props) => {
               </div>
             </div>
 
-            <hr />
-
-            {/* Exercises list editor */}
-            {!isCreating && initialValues.courseId && !fetching && !fetchingCourses && <ExamTemplateExercises examTemplateId={params.id} courseId={initialValues.courseId} />}
-
             <div id='buttons' className='d-flex justify-content-center'>
               <ButtonSubmit
                 isDisabled={creating || updating || fetchingCourses || pristine}
@@ -250,11 +245,17 @@ const ExamTemplatesEditor = (props) => {
 
             <div id='info' className='d-flex justify-content-around mt-2'>
               {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-              {/* 
+              {/*
               {!creating && templateCreated && <CustomAlert messages={{ id: 'exam_template_created', message: formatMessage({ id: 'exam_template_created' }) }} color='success' />}
               {!updating && templateUpdated && <CustomAlert messages={{ id: 'exam_template_updated', message: formatMessage({ id: 'exam_template_updated' }) }} color='success' />}
               */}
             </div>
+
+            <hr />
+
+            {/* Exercises list editor */}
+            {!isCreating && initialValues.courseId && !fetching && !fetchingCourses && <ExamTemplateExercises examTemplateId={params.id} courseId={initialValues.courseId} />}
+
           </form>
         )}
       />

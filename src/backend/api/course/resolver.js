@@ -93,7 +93,7 @@ const resolver = {
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
       if (docWithSameName && docWithSameName.disabled !== true) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Query
@@ -121,7 +121,7 @@ const resolver = {
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
       if (docWithSameName && docWithSameName.disabled !== true) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Query
@@ -147,9 +147,24 @@ const resolver = {
 
       // Args
       const { id } = args
+      const objCourseId = new ObjectId(id)
 
       // Collection
       const collection = context.db.collection('courses')
+      const unitsCollection = context.db.collection('units')
+
+      // Validate related entities
+      const findRelatedEntities = [{
+        $match: {
+          disabled: { $ne: true },
+          courseId: objCourseId
+        }
+      }]
+      const unitsRelated = await unitsCollection.aggregate(findRelatedEntities).toArray()
+      debug('unitsRelated: ', unitsRelated)
+      if (unitsRelated.length !== 0) {
+        throw new ApolloError(BACKEND_ERRORS.RELATED_ENTITY_EXISTS)
+      }
 
       // Query
       const update = {
@@ -160,7 +175,7 @@ const resolver = {
       }
 
       // Exec
-      const response = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, update, { returnOriginal: false, w: 'majority' })
+      const response = await collection.findOneAndUpdate({ _id: objCourseId }, update, { returnOriginal: false, w: 'majority' })
 
       // Results
       if (response.ok !== 1) {
@@ -188,8 +203,8 @@ const resolver = {
       if (result && result.n === 1 && result.ok === 1) {
         return { done: true }
       } else {
-        debug('deleteCourse error:', BACKEND_ERRORS.DELETE_FAILED.Code)
-        throw new Error(BACKEND_ERRORS.DELETE_FAILED.Code)
+        debug('deleteCourse error:', BACKEND_ERRORS.DELETE_FAILED)
+        throw new Error(BACKEND_ERRORS.DELETE_FAILED)
       }
     }
   }

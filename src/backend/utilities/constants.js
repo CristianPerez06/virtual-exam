@@ -1,20 +1,9 @@
 const BACKEND_ERRORS = {
-  DUPLICATED_ENTITY: {
-    Code: 'duplicated_entity',
-    Message: 'Duplicated entity'
-  },
-  DELETE_FAILED: {
-    Code: 'delete_failed',
-    Message: 'Delete failed'
-  },
-  PARAMETER_NOT_PROVIDED: {
-    Code: 'parameter_not_provided',
-    Message: 'Parameter not provided'
-  },
-  CORRECT_ANSWER_ALREADY_SELECTED: {
-    Code: 'correct_answer_already_selected',
-    Message: 'A correct answer was already selected'
-  }
+  DUPLICATED_ENTITY: 'duplicated_entity',
+  DELETE_FAILED: 'delete_failed',
+  PARAMETER_NOT_PROVIDED: 'parameter_not_provided',
+  CORRECT_ANSWER_ALREADY_SELECTED: 'correct_answer_already_selected',
+  RELATED_ENTITY_EXISTS: 'related_entity_exists'
 }
 
 module.exports = {

@@ -4,7 +4,6 @@ const cors = require('cors')
 const { ApolloServer, AuthenticationError } = require('apollo-server-express')
 const { loadDb } = require('./middleware/mongo')
 const variables = require('../backend/variables')
-const router = express.Router()
 require('dotenv').config()
 
 const jwt = require('jsonwebtoken')
@@ -115,7 +114,7 @@ app.use(loadDb)
 app.get('/*', (req, res) => res.sendFile(path.join(__dirname, '../../build', 'index.html')))
 
 // Routing
-app.use('/', require('./utilities/router'));
+app.use('/', require('./utilities/router'))
 
 server.applyMiddleware({ app })
 
