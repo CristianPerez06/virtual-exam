@@ -114,7 +114,7 @@ const UnitsEditor = (props) => {
   }, [isCreating])
 
   return (
-    <div className='unit-editor bg-light p-5' style={{ width: 850 + 'px' }}>
+    <div className='unit-editor border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
       <Form
         onSubmit={onSubmit}
         validate={validateBeforeSubmit}
@@ -163,11 +163,13 @@ const UnitsEditor = (props) => {
               />
             </div>
 
-            <div id='info' className='d-flex justify-content-around mt-5'>
-              {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-              {!creating && unitCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'unit_created' }) }} color='success' />}
-              {!updating && unitUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'unit_updated' }) }} color='success' />}
-            </div>
+            {(errors || unitCreated || unitUpdated) && (
+              <div id='info' className='d-flex justify-content-around mt-4'>
+                {errors && <TranslatableErrors errors={errors} className='ml-3' />}
+                {!creating && unitCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'unit_created' }) }} color='success' />}
+                {!updating && unitUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'unit_updated' }) }} color='success' />}
+              </div>
+            )}
 
           </form>
         )}

@@ -23,6 +23,7 @@ const Styles = styled.div`
       padding: 0.5rem;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
+      white-space: nowrap;
 
       :last-child {
         border-right: 0;

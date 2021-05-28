@@ -24,6 +24,41 @@ init()
 
 const resolver = {
   Query: {
+    getExam: async (parent, args, context) => {
+      debug('Running getExam query with params:', args)
+
+      // Params
+      const { id } = args
+      const objId = new ObjectId(id)
+
+      // Collection
+      const collection = context.db.collection('exams')
+
+      // Query
+      const query = { _id: objId }
+
+      // Exec
+      const docs = await collection
+        .find(query)
+        .toArray()
+
+      // Results
+      const { exercises, ...rest } = docs[0]
+      const exam = prepSingleResultForUser(rest)
+
+      const mappedExercises = exercises.map((exercise) => {
+        const { answers, ...rest } = exercise
+        const mappedAnswers = answers.map((answer) => {
+          return prepSingleResultForUser(answer)
+        })
+        const exerciseForUser = prepSingleResultForUser(rest)
+        exerciseForUser.answers = mappedAnswers
+        return exerciseForUser
+      })
+      exam.exercises = mappedExercises
+      debug('exam', exam)
+      return exam
+    },
     listExams: async (parent, args, context) => {
       debug('Running listExams query with params:', args)
 
@@ -92,6 +127,64 @@ const resolver = {
         throw new Error(responseCreate.error.message)
       }
       return prepSingleResultForUser(responseCreate.ops[0])
+    },
+    finishExam: async (parent, args, context) => {
+      debug('Running finishExam mutation with params:', args)
+
+      // Args
+      const { id, answerPerExerciseList } = args
+      const objExamId = new ObjectId(id)
+
+      // Collection
+      const collection = context.db.collection('exams')
+
+      // Get exam
+      const exam = await collection.findOne({ _id: objExamId })
+
+      // Map selected answers
+      const transformedExercises = exam.exercises.map(exercise => {
+        // Exercise to update
+        const transformedExercise = { ...exercise }
+
+        // Get Updated values
+        const answerPerExercise = answerPerExerciseList.find(x => x.exerciseId === exercise._id.toString())
+
+        const transformedAnswers = transformedExercise.answers.map((answer) => {
+          // When no answer was selected
+          if (!answerPerExercise) {
+            answer.selected = false
+            return answer
+          }
+
+          // When an answer was selected
+          answer.selected = answer._id.toString() === answerPerExercise.answerId
+          return answer
+        })
+
+        // Update exercise with updated answers
+        transformedExercise.answers = transformedAnswers
+
+        return transformedExercise
+      })
+
+      // Query
+      const update = {
+        $set: {
+          exercises: transformedExercises,
+          completed: true,
+          updated: new Date().toISOString()
+        }
+      }
+
+      const response = await collection.findOneAndUpdate({ _id: objExamId }, update, { returnDocument: 'after', w: 'majority' })
+
+      // Results
+      if (response.ok !== 1) {
+        debug('finishExam error:', response.lastErrorObject)
+        throw new Error(response.lastErrorObject)
+      }
+
+      return prepSingleResultForUser(response.value)
     }
   }
 }

@@ -4,12 +4,11 @@ import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_ASSIGNED_EXAMS } from '../../common/requests/assignedExams'
 import { CREATE_EXAM, LIST_EXAMS } from '../../common/requests/exams'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { TranslatableErrors } from '../../components/common'
+import { ModalWrapper, TranslatableErrors } from '../../components/common'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { COOKIE_NAMES } from '../../common/constants'
 import { syncCacheOnCreate, syncCacheOnDeleteAssignedExam } from './cacheHelpers'
 import Cookies from 'js-cookie'
-import ConfirmExamModal from './ConfirmExamModal'
 import TableExams from './TableExams'
 import TablePendingExams from './TablePendingExams'
 
@@ -101,7 +100,7 @@ const ExamsList = (props) => {
 
   return (
     <div className='exams-list' style={{ width: 850 + 'px' }}>
-      <Card className='mx-auto'>
+      <Card className='mx-auto shadow mb-3 bg-white rounded'>
         <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
           <p className='h4'>
             <FormattedMessage id='common_entity.assigned_exams' />
@@ -113,7 +112,7 @@ const ExamsList = (props) => {
             loading={fetchingAssignedExams}
             assignedExams={assignedExams}
             disableButtons={creating}
-            onButtonClicked={onStartClicked}
+            onStartClicked={onStartClicked}
           />
           <TableExams
             loading={fetchingExams}
@@ -123,8 +122,12 @@ const ExamsList = (props) => {
 
           {/* Delete modal */}
           <div id='delete-modal'>
-            <ConfirmExamModal
+            <ModalWrapper
               modalIsOpen={confirmModalIsOpen}
+              headerTextId='common_title.start_exam_confirmation'
+              bodyTextId='confirm_start_exam'
+              buttonTextId='button.confirm_start'
+              buttonColor='success'
               onCloseClick={() => onCancelClicked()}
               onConfirmClick={() => onConfirmStartClicked()}
             />

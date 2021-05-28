@@ -96,7 +96,7 @@ const UnitsList = (props) => {
     <div className='units-list' style={{ width: 850 + 'px' }}>
       {fetching && <Loading />}
       {!fetching &&
-        <Card className='mx-auto'>
+        <Card className='mx-auto shadow mb-3 bg-white rounded'>
           <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
             <p className='h4'>
               <FormattedMessage id='common_entity.units' />

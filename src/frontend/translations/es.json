@@ -50,6 +50,7 @@
   "common_title.edit_confirmation": "Confirmar edición",
   "common_title.edit": "Editar",
   "common_title.start_exam_confirmation": "Confirmar inicio de examen",
+  "common_title.finish_exam_confirmation": "Confirmar fin de examen",
 
   "button.register": "Registrar",
   "button.signin": "Iniciar",
@@ -82,6 +83,7 @@
   "button.start": "Comenzar",
   "button.confirm_start": "Confirmar inicio",
   "button.go_to_exam": "Ir al examen",
+  "button.go_to_exam_details": "Ver detalle",
 
   "course_name": "Nombre del curso",
   "course_created": "Curso creado exitosamente",
@@ -128,6 +130,7 @@
 
   "exam_name": "Nombre del examen",
   "exams_initiated_finalized": "Examenes iniciados o finalizados",
+  "exam_finish_exam": "Finalizar examen",
 
   "registration_completed": "Registracion exitosa",
   "first_name": "Nombre",
@@ -145,6 +148,10 @@
   "edit_item": "Editar item",
   "description": "Descripción",
   "confirm_start_exam": "¿Esta seguro de querer comenzar el examen?",
+  "confirm_finish_exam": "¿Esta seguro de querer finalizar el examen?",
+  "date": "Fecha",
+  "date_started": "Fecha inicio",
+  "date_finished": "Fecha fin",
 
   "language.spanish": "Español",
   "language.english": "Ingles"

@@ -177,7 +177,7 @@ const ExamTemplateExercises = (props) => {
   )
 
   return (
-    <div id='exam-template-exercises' className='mt-5'>
+    <div className='exam-template-exercises border shadow p-3 mb-3 bg-white rounded d-block'>
       <p className='text-center h5 mb-3'>
         <FormattedMessage id='common_entity.exercises' />
       </p>
@@ -216,10 +216,12 @@ const ExamTemplateExercises = (props) => {
             ? <NoResults />
             : <Table columns={columns} data={templateExercises} />}
         </div>
-        <div id='info-exercise-modify' className='d-flex justify-content-around mt-2 w-100'>
-          {exerciseModifyErrors && !cleanMessages && <TranslatableErrors errors={exerciseModifyErrors} className='ml-3' />}
-          {(alerts) && <CustomAlert messages={alerts} color='warning' />}
-        </div>
+        {(exerciseModifyErrors || alerts) && (
+          <div id='info-exercise-modify' className='d-flex justify-content-around mt-2 w-100'>
+            {exerciseModifyErrors && !cleanMessages && <TranslatableErrors errors={exerciseModifyErrors} className='ml-3' />}
+            {alerts && <CustomAlert messages={alerts} color='warning' />}
+          </div>
+        )}
       </div>
 
       {/* Delete modal */}
@@ -231,8 +233,6 @@ const ExamTemplateExercises = (props) => {
           onDeleteClick={() => onDeleteConfirmClicked()}
         />
       </div>
-
-      <hr />
     </div>
   )
 }

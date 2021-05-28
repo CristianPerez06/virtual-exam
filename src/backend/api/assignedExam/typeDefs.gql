@@ -3,6 +3,7 @@ type AssignedExam {
   idNumber: ID!
   examTemplateId: ID!
   examTemplateName: String!
+  created: String!
 }
 
 type AssignedExams {

@@ -67,7 +67,7 @@ const ExamTemplatesList = (props) => {
   const [disableExamTemplate, { loading: deleting }] = useMutation(DISABLE_EXAM_TEMPLATE, { onCompleted: stateCleanupOnDelete, onError })
 
   return (
-    <div className='exam-templates-list' style={{ width: 850 + 'px' }}>
+    <div className='exam-templates-list shadow mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
       {fetching && <Loading />}
       {!fetching &&
         <Card className='mx-auto'>

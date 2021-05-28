@@ -166,7 +166,7 @@ const resolver = {
       }
 
       // Exec
-      const response = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, update, { returnOriginal: false, w: 'majority' })
+      const response = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, update, { returnDocument: 'after', w: 'majority' })
 
       // Results
       if (response.ok !== 1) {
@@ -193,7 +193,7 @@ const resolver = {
       }
 
       // Exec
-      const response = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, update, { returnOriginal: false, w: 'majority' })
+      const response = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, update, { returnDocument: 'after', w: 'majority' })
 
       // Results
       if (response.ok !== 1) {

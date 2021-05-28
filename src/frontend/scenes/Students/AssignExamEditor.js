@@ -174,105 +174,106 @@ const AssignExamEditor = (props) => {
   )
 
   return (
-    <div className='students-exam--editor bg-light p-5' style={{ width: 850 + 'px' }}>
-      <Form
-        onSubmit={onSubmit}
-        initialValues={initialValues}
-        validate={validateBeforeSubmit}
-        render={({ handleSubmit, pristine }) => (
-          <form onSubmit={handleSubmit}>
-            <p className='text-center h4 mb-4'>
-              <FormattedMessage id='assign_exam' />
-            </p>
-            <div className='row d-flex justify-content-center mb-4'>
-              <div className='col-md-10 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='common_entity.course' />
-                </span>
-                <SelectWrapper
-                  fieldName='courseId'
-                  isDisabled={fetchingCourses}
-                  options={courses}
-                  validations={required}
-                  selectedValue={filters.selectedCourse}
-                  handleOnChange={(option) => {
-                    setFilters({ ...filters, selectedCourse: option.value })
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className='row d-flex justify-content-center mb-4'>
-              <div className='col-md-10 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='common_entity.exam_template' />
-                </span>
-                <SelectWrapper
-                  fieldName='examTemplateId'
-                  isDisabled={fetchingExamTemplates || !filters.selectedCourse}
-                  options={examTemplates}
-                  validations={required}
-                  selectedValue={filters.selectedExamTemplate}
-                  handleOnChange={(option) => {
-                    setFilters({ ...filters, selectedExamTemplate: option.value })
-                  }}
-                />
-              </div>
-            </div>
-
-            <div id='buttons' className='d-flex justify-content-center'>
-              <Button
-                color='primary'
-                type='submit'
-                className='m-2'
-                disabled={creating || fetchingCourses || fetchingExamTemplates || pristine}
-              >
-                <FormattedMessage id='button.assign_exam' />
-                {creating && <LoadingInline className='ml-3' />}
-              </Button>
-              <ButtonGoTo
-                path='/students/list'
-                color='secondary'
-                translatableTextId='button.go_to_list'
-                isDisabled={creating}
-              />
-            </div>
-
-            <div id='info' className='d-flex justify-content-around mt-2'>
-              {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-            </div>
-
-            <hr />
-
-            <div id='assigned-exams' className='mt-5'>
-              <p className='text-center h5 mb-3'>
-                <FormattedMessage id='assigned_exams' />
+    <div className='students-exam-editor' style={{ width: 850 + 'px' }}>
+      <div className='exercise-data border shadow p-3 mb-3 bg-white rounded d-block' >
+        <Form
+          onSubmit={onSubmit}
+          initialValues={initialValues}
+          validate={validateBeforeSubmit}
+          render={({ handleSubmit, pristine }) => (
+            <form onSubmit={handleSubmit}>
+              <p className='text-center h4 mb-4'>
+                <FormattedMessage id='assign_exam' />
               </p>
-
-              {!fetchingAssignedExams && (
-                <div className='row'>
-                  <div className='col-md-12 col-xs-12'>
-                    {assignedExams.length === 0
-                      ? <NoResults />
-                      : <Table columns={columns} data={assignedExams} paginationEnabled={false} />}
-                  </div>
+              <div className='row d-flex justify-content-center mb-4'>
+                <div className='col-md-10 col-xs-12'>
+                  <span className='text-left pl-1 pb-1'>
+                    <FormattedMessage id='common_entity.course' />
+                  </span>
+                  <SelectWrapper
+                    fieldName='courseId'
+                    isDisabled={fetchingCourses}
+                    options={courses}
+                    validations={required}
+                    selectedValue={filters.selectedCourse}
+                    handleOnChange={(option) => {
+                      setFilters({ ...filters, selectedCourse: option.value })
+                    }}
+                  />
                 </div>
-              )}
+              </div>
 
-              {/* Delete modal */}
-              <div id='delete-modal'>
-                <DeleteModal
-                  modalIsOpen={deleteModalIsOpen}
-                  isBussy={deletingAssignedExam}
-                  onCloseClick={() => onCancelClicked()}
-                  onDeleteClick={() => onDeleteConfirmClicked()}
+              <div className='row d-flex justify-content-center mb-4'>
+                <div className='col-md-10 col-xs-12'>
+                  <span className='text-left pl-1 pb-1'>
+                    <FormattedMessage id='common_entity.exam_template' />
+                  </span>
+                  <SelectWrapper
+                    fieldName='examTemplateId'
+                    isDisabled={fetchingExamTemplates || !filters.selectedCourse}
+                    options={examTemplates}
+                    validations={required}
+                    selectedValue={filters.selectedExamTemplate}
+                    handleOnChange={(option) => {
+                      setFilters({ ...filters, selectedExamTemplate: option.value })
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div id='buttons' className='d-flex justify-content-center'>
+                <Button
+                  color='primary'
+                  type='submit'
+                  className='m-2'
+                  disabled={creating || fetchingCourses || fetchingExamTemplates || pristine}
+                >
+                  <FormattedMessage id='button.assign_exam' />
+                  {creating && <LoadingInline className='ml-3' />}
+                </Button>
+                <ButtonGoTo
+                  path='/students/list'
+                  color='secondary'
+                  translatableTextId='button.go_to_list'
+                  isDisabled={creating}
                 />
               </div>
-            </div>
 
-          </form>
+              <div id='info' className='d-flex justify-content-around mt-2'>
+                {errors && <TranslatableErrors errors={errors} className='ml-3' />}
+              </div>
+
+            </form>
+          )}
+        />
+      </div>
+
+      {/* Assigned exams */}
+      <div className='assigned-exams border shadow p-3 mb-3 bg-white rounded d-block'>
+        <p className='text-center h5 mb-3'>
+          <FormattedMessage id='assigned_exams' />
+        </p>
+
+        {!fetchingAssignedExams && (
+          <div className='row'>
+            <div className='col-md-12 col-xs-12'>
+              {assignedExams.length === 0
+                ? <NoResults />
+                : <Table columns={columns} data={assignedExams} paginationEnabled={false} />}
+            </div>
+          </div>
         )}
-      />
+
+        {/* Delete modal */}
+        <div id='delete-modal'>
+          <DeleteModal
+            modalIsOpen={deleteModalIsOpen}
+            isBussy={deletingAssignedExam}
+            onCloseClick={() => onCancelClicked()}
+            onDeleteClick={() => onDeleteConfirmClicked()}
+          />
+        </div>
+      </div>
     </div>
   )
 }
