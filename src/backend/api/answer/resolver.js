@@ -55,7 +55,7 @@ const resolver = {
       const collection = context.db.collection('answers')
 
       if (!exerciseId) {
-        throw new ApolloError(BACKEND_ERRORS.PARAMETER_NOT_PROVIDED.Message, BACKEND_ERRORS.PARAMETER_NOT_PROVIDED.Code)
+        throw new ApolloError(BACKEND_ERRORS.PARAMETER_NOT_PROVIDED)
       }
 
       // Aggregate
@@ -90,7 +90,7 @@ const resolver = {
         docWithSameName.exerciseId.toString() === exerciseId &&
         docWithSameName.disabled !== true
       if (isDuplicated) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Lookup for duplicate Correct answers
@@ -100,7 +100,7 @@ const resolver = {
         .find(el => el.correct === true)
       const correctAlreadyExists = correctAnwer && correct === true
       if (correctAlreadyExists) {
-        throw new ApolloError(BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Message, BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Code)
+        throw new ApolloError(BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED)
       }
 
       // Query
@@ -139,7 +139,7 @@ const resolver = {
         docWithSameName._id.toString() !== id &&
         docWithSameName.disabled !== true
       if (isDuplicated) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Lookup for duplicate Correct answers
@@ -151,7 +151,7 @@ const resolver = {
         correctAnwer._id.toString() !== id &&
         correct === true
       if (correctAlreadyExists) {
-        throw new ApolloError(BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Message, BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED.Code)
+        throw new ApolloError(BACKEND_ERRORS.CORRECT_ANSWER_ALREADY_SELECTED)
       }
 
       // Query
@@ -221,8 +221,8 @@ const resolver = {
       if (result && result.n === 1 && result.ok === 1) {
         return { done: true }
       } else {
-        debug('deleteAnswer error:', BACKEND_ERRORS.DELETE_FAILED.Code)
-        throw new Error(BACKEND_ERRORS.DELETE_FAILED.Code)
+        debug('deleteAnswer error:', BACKEND_ERRORS.DELETE_FAILED)
+        throw new Error(BACKEND_ERRORS.DELETE_FAILED)
       }
     }
   }

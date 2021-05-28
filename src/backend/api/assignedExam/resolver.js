@@ -69,7 +69,7 @@ const resolver = {
       // Look up for duplicates
       const dup = await collection.findOne({ examTemplateId: objExamTemplateId, idNumber: idNumber })
       if (dup) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Query
@@ -112,8 +112,8 @@ const resolver = {
       if (result && result.n === 1 && result.ok === 1) {
         return { done: true }
       } else {
-        debug('deleteAssignedExam error:', BACKEND_ERRORS.DELETE_FAILED.Code)
-        throw new Error(BACKEND_ERRORS.DELETE_FAILED.Code)
+        debug('deleteAssignedExam error:', BACKEND_ERRORS.DELETE_FAILED)
+        throw new Error(BACKEND_ERRORS.DELETE_FAILED)
       }
     }
   }

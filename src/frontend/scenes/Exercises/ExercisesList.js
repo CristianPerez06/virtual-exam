@@ -187,6 +187,7 @@ const ExercisesList = (props) => {
           <div id='delete-modal'>
             <DeleteModal
               modalIsOpen={deleteModalIsOpen}
+              additionalInfo='exercise_delete_related_entities'
               isBussy={deleting}
               onCloseClick={() => onCancelClicked()}
               onDeleteClick={() => onDeleteConfirmClicked()}

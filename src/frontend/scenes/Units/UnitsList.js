@@ -134,6 +134,7 @@ const UnitsList = (props) => {
             <div id='delete-modal'>
               <DeleteModal
                 modalIsOpen={deleteModalIsOpen}
+                additionalInfo='unit_delete_related_entities'
                 isBussy={deleting}
                 onCloseClick={() => onCancelClicked()}
                 onDeleteClick={() => onDeleteConfirmClicked()}

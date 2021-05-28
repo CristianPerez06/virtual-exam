@@ -312,8 +312,6 @@ const ExercisesEditor = (props) => {
               </div>
             </div>
 
-            <hr />
-
             {/* Delete answer modal */}
             <div id='delete-modal'>
               <DeleteModal
@@ -324,23 +322,8 @@ const ExercisesEditor = (props) => {
               />
             </div>
 
-            {/* Answers */}
-            {!fetchingAnswers && (
-              <div id='answers-list' className='mt-4'>
-                <p className='text-center h5 mb-0'>
-                  <FormattedMessage id='common_entity.answers' />
-                </p>
-                {answers.length === 0
-                  ? <NoResults />
-                  : <Table columns={columns} data={answers} paginationEnabled={false} />}
-                {(alerts) && <CustomAlert messages={alerts} color='warning' />}
-              </div>
-            )}
-
-            <hr />
-
             {/* Buttons */}
-            <div id='buttons' className='d-flex justify-content-center mt-4'>
+            <div id='buttons' className='d-flex justify-content-center'>
               <ButtonSubmit
                 isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits || pristine}
                 isLoading={creating || updating || fetching}
@@ -363,6 +346,8 @@ const ExercisesEditor = (props) => {
               />
             </div>
 
+            <hr />
+
             {/* Info */}
             <div id='info' className='d-flex justify-content-around mt-4'>
               {errors && <TranslatableErrors errors={errors} className='ml-3' />}
@@ -370,6 +355,19 @@ const ExercisesEditor = (props) => {
               {!updating && exerciseUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'exercise_updated' }) }} color='success' />}
               {!deletingAnswer && answerDeleted && <CustomAlert messages={{ id: 'answer_deleted', message: `${formatMessage({ id: 'answer_deleted' })}: ${answerToDelete.name}` }} color='success' />}
             </div>
+
+            {/* Answers */}
+            {!fetchingAnswers && (
+              <div id='answers-list' className='mt-4'>
+                <p className='text-center h5 mb-0'>
+                  <FormattedMessage id='common_entity.answers' />
+                </p>
+                {answers.length === 0
+                  ? <NoResults />
+                  : <Table columns={columns} data={answers} paginationEnabled={false} />}
+                {(alerts) && <CustomAlert messages={alerts} color='warning' />}
+              </div>
+            )}
 
           </form>
         )}

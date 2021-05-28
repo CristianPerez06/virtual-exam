@@ -116,8 +116,6 @@ const CourseEditor = (props) => {
               </div>
             </div>
 
-            <hr />
-
             <div id='buttons' className='d-flex justify-content-center'>
               <ButtonSubmit
                 isDisabled={creating || updating || fetching || pristine}

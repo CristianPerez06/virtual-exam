@@ -90,6 +90,7 @@ const CoursesList = (props) => {
             <div id='delete-modal'>
               <DeleteModal
                 modalIsOpen={deleteModalIsOpen}
+                additionalInfo='course_delete_related_entities'
                 isBussy={deleting}
                 onCloseClick={() => onCancelClicked()}
                 onDeleteClick={() => onDeleteConfirmClicked()}

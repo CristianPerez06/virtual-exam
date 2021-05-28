@@ -58,7 +58,7 @@ const resolver = {
       // Look up for duplicates
       const dup = await collection.findOne({ idNumber: idNumber, examTemplateId: objExamTemplateId })
       if (dup) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Get exam template

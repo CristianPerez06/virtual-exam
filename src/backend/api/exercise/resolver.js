@@ -108,7 +108,7 @@ const resolver = {
         docWithSameName.unitId.toString() === unitId &&
         docWithSameName.disabled !== true
       if (isDuplicated) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Query
@@ -146,7 +146,7 @@ const resolver = {
         docWithSameName.unitId.toString() === unitId &&
         docWithSameName.disabled !== true
       if (isDuplicated) {
-        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY.Message, BACKEND_ERRORS.DUPLICATED_ENTITY.Code)
+        throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
       // Query
@@ -174,9 +174,26 @@ const resolver = {
 
       // Args
       const { id } = args
+      const objExerciseId = new ObjectId(id)
 
       // Collection
       const collection = context.db.collection('exercises')
+      const exercisesCollection = context.db.collection('exam-templates')
+
+      // Validate related entities
+      const findRelatedEntities = [{
+        $match: {
+          disabled: { $ne: true },
+          exercises: {
+            $elemMatch: { $eq: objExerciseId }
+          }
+        }
+      }]
+      const templatesRelated = await exercisesCollection.aggregate(findRelatedEntities).toArray()
+      debug('templatesRelated: ', templatesRelated)
+      if (templatesRelated.length !== 0) {
+        throw new ApolloError(BACKEND_ERRORS.RELATED_ENTITY_EXISTS)
+      }
 
       // Query
       const update = {
@@ -187,7 +204,7 @@ const resolver = {
       }
 
       // Exec
-      const response = await collection.findOneAndUpdate({ _id: new ObjectId(id) }, update, { returnOriginal: false, w: 'majority' })
+      const response = await collection.findOneAndUpdate({ _id: objExerciseId }, update, { returnOriginal: false, w: 'majority' })
 
       // Results
       if (response.ok !== 1) {
@@ -215,8 +232,8 @@ const resolver = {
       if (result && result.n === 1 && result.ok === 1) {
         return { done: true }
       } else {
-        debug('deleteExercise error:', BACKEND_ERRORS.DELETE_FAILED.Code)
-        throw new Error(BACKEND_ERRORS.DELETE_FAILED.Code)
+        debug('deleteExercise error:', BACKEND_ERRORS.DELETE_FAILED)
+        throw new Error(BACKEND_ERRORS.DELETE_FAILED)
       }
     }
   }
