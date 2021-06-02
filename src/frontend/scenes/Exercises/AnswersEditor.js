@@ -95,7 +95,7 @@ const AnswersEditor = (props) => {
   }, [isCreating])
 
   return (
-    <div className='answer-editor bg-light p-5' style={{ width: 850 + 'px' }}>
+    <div className='answer-editor border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
       <Form
         onSubmit={onSubmit}
         validate={validateBeforeSubmit}
@@ -131,8 +131,6 @@ const AnswersEditor = (props) => {
               </div>
             </div>
 
-            <hr />
-
             <div id='buttons' className='d-flex justify-content-center'>
               <ButtonSubmit
                 isDisabled={creating || updating || fetching || pristine}
@@ -146,11 +144,14 @@ const AnswersEditor = (props) => {
               />
             </div>
 
-            <div id='info' className='d-flex justify-content-around mt-5'>
-              {errors && <CustomAlert messages={errors} className='ml-3' />}
-              {!creating && answerCreated && <CustomAlert messages={{ id: 'answer_created', message: formatMessage({ id: 'answer_created' }) }} color='success' />}
-              {!updating && answerUpdated && <CustomAlert messages={{ id: 'answer_updated', message: formatMessage({ id: 'answer_updated' }) }} color='success' />}
-            </div>
+            {/* Info */}
+            {(errors || answerCreated || answerUpdated) && (
+              <div id='info' className='d-flex justify-content-around mt-5'>
+                {errors && <CustomAlert messages={errors} className='ml-3' />}
+                {!creating && answerCreated && <CustomAlert messages={{ id: 'answer_created', message: formatMessage({ id: 'answer_created' }) }} color='success' />}
+                {!updating && answerUpdated && <CustomAlert messages={{ id: 'answer_updated', message: formatMessage({ id: 'answer_updated' }) }} color='success' />}
+              </div>
+            )}
 
           </form>
         )}

@@ -3,10 +3,14 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LoadingInline } from '../../components/common'
 
-const EditCourseConfirmModal = (props) => {
+const ModalWrapper = (props) => {
   const {
     modalIsOpen,
     isBussy,
+    headerTextId,
+    bodyTextId,
+    buttonTextId,
+    buttonColor,
     onCloseClick,
     onConfirmClick
   } = props
@@ -14,18 +18,18 @@ const EditCourseConfirmModal = (props) => {
   return (
     <Modal isOpen={modalIsOpen} toggle={onCloseClick} disabled>
       <ModalHeader toggle={onCloseClick} disabled>
-        <FormattedMessage id='common_title.edit_confirmation' />
+        <FormattedMessage id={headerTextId} />
       </ModalHeader>
       <ModalBody>
-        <FormattedMessage id='exercises_edit_course' />
+        <FormattedMessage id={bodyTextId} />
       </ModalBody>
       <ModalFooter>
         <Button
-          color='danger'
+          color={buttonColor}
           onClick={onConfirmClick}
           disabled={isBussy}
         >
-          <FormattedMessage id='button.confirm' />
+          <FormattedMessage id={buttonTextId} />
           {isBussy && <LoadingInline className='ml-3' />}
         </Button>
         <Button
@@ -40,4 +44,4 @@ const EditCourseConfirmModal = (props) => {
   )
 }
 
-export default injectIntl(EditCourseConfirmModal)
+export default injectIntl(ModalWrapper)

@@ -1,7 +1,25 @@
+type ExamExerciseAnswer {
+  id: ID!
+  name: String!,
+  description: String!
+  correct: Boolean
+  selected: Boolean
+}
+
+type ExamExercise {
+  id: ID!
+  name: String!
+  answers: [ExamExerciseAnswer]!
+}
+
 type Exam {
   id: ID!
   name: String!
   examTemplateId: ID!
+  exercises: [ExamExercise]
+  created: String!
+  updated: String
+  completed: Boolean
 }
 
 type Exams {
@@ -9,10 +27,17 @@ type Exams {
   count: Int!
 }
 
+input AnswerPerExercise {
+  exerciseId: String!
+  answerId: String!
+}
+
 extend type Query {
+  getExam(id: ID!): Exam
   listExams(idNumber: ID!): Exams
 }
 
 extend type Mutation {
   createExam(assignedExamId: ID! examTemplateId: ID!, idNumber: String!): Exam
+  finishExam(id: ID!, answerPerExerciseList: [AnswerPerExercise]!): Exam
 }

@@ -50,6 +50,7 @@
   "common_title.edit_confirmation": "Edit confirmation",
   "common_title.edit": "Edit",
   "common_title.start_exam_confirmation": "Confirm exam start",
+  "common_title.finish_exam_confirmation": "Finish exam confirmation",
 
   "button.register": "Register",
   "button.signin": "Sign in",
@@ -82,6 +83,7 @@
   "button.start": "Start",
   "button.confirm_start": "Confirm start",
   "button.go_to_exam": "Go to exam",
+  "button.go_to_exam_details": "Go to exam details",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
@@ -117,7 +119,8 @@
   "exam_template_deleted": "Exam template deleted successfully",
   "exam_template_exercise_added": "Exercise successfully added to the Exam template",
   "exam_template_exercise_removed": "Exercise successfully remoed from the Exam template",
-  "at_least_two_exercises_needed": "In order to use this template you need add at least 2 exercises",
+  "at_least_two_exercises_needed": "In order to use this template you need to add at least 2 exercises",
+  "exam_finish_exam": "Y.",
 
   "student_id_number": "ID Number",
 
@@ -145,6 +148,10 @@
   "edit_item": "Edit item",
   "description": "Description",
   "confirm_start_exam": "Are you sure you want to start this exam?",
+  "confirm_finish_exam": "Are you sure you want to finish this exam?",
+  "date": "Date",
+  "date_started": "Date started",
+  "date_finished": "Date finished",
   
   "language.spanish": "Spanish",
   "language.english": "English"

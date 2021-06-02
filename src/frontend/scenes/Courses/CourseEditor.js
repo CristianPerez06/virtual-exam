@@ -98,7 +98,7 @@ const CourseEditor = (props) => {
   }, [isCreating])
 
   return (
-    <div className='course-editor bg-light p-5' style={{ width: 850 + 'px' }}>
+    <div className='course-editor border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
       <Form
         onSubmit={onSubmit}
         validate={validateBeforeSubmit}
@@ -129,12 +129,13 @@ const CourseEditor = (props) => {
               />
             </div>
 
-            <div id='info' className='d-flex justify-content-around mt-5'>
-              {errors && <CustomAlert messages={errors} className='ml-3' />}
-              {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage({ id: 'course_created' }) }} color='success' />}
-              {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage({ id: 'course_updated' }) }} color='success' />}
-            </div>
-
+            {(errors || courseCreated || courseUpdated) && (
+              <div id='info' className='d-flex justify-content-around mt-4'>
+                {errors && <CustomAlert messages={errors} className='ml-3' />}
+                {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage({ id: 'course_created' }) }} color='success' />}
+                {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage({ id: 'course_updated' }) }} color='success' />}
+              </div>
+            )}
           </form>
         )}
       />

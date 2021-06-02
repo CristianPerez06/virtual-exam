@@ -7,7 +7,8 @@ export const LIST_ASSIGNED_EXAMS = gql`
       data {
         id,
         examTemplateId
-        examTemplateName
+        examTemplateName,
+        created
       }
       count
     }

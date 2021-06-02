@@ -16,3 +16,4 @@ export { default as FieldWrapper } from './FinalFormFieldWrappers/FieldWrapper.j
 export { default as SelectWrapper } from './FinalFormFieldWrappers/SelectWrapper.js'
 export { default as TwoColumnsTable } from './TwoColumnsTable.js'
 export { default as NoResults } from './NoResults.js'
+export { default as ModalWrapper } from './ModalWrapper.js'

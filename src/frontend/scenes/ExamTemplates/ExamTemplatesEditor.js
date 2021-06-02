@@ -3,7 +3,7 @@ import { Button } from 'reactstrap'
 import { Form } from 'react-final-form'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { ButtonSubmit, ButtonGoTo, FieldWrapper, SelectWrapper, TranslatableTitle, TranslatableErrors } from '../../components/common'
+import { ButtonSubmit, ButtonGoTo, FieldWrapper, SelectWrapper, TranslatableTitle, TranslatableErrors, ModalWrapper } from '../../components/common'
 import { required } from '../../common/validators'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { CREATE_EXAM_TEMPLATE, GET_EXAM_TEMPLATE, UPDATE_EXAM_TEMPLATE, RESET_EXAM_TEMPLATE } from '../../common/requests/templates'
@@ -11,7 +11,6 @@ import { LIST_COURSES } from '../../common/requests/courses'
 import { syncCacheOnCreate, syncCacheOnUpdate, syncCacheOnResetTemplateExercises } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import ExamTemplateExercises from './ExamTemplateExercises'
-import EditCourseConfirmModal from './EditCourseConfirmModal'
 
 const ExamTemplatesEditor = (props) => {
   // Props and params
@@ -117,7 +116,7 @@ const ExamTemplatesEditor = (props) => {
       }
     })
 
-    // Reset States to tnitial values
+    // Reset States to initial values
     setErrors()
     // setTemplateUpdated(false)
     setEditableCourse(true)
@@ -169,96 +168,98 @@ const ExamTemplatesEditor = (props) => {
   }, [isCreating])
 
   return (
-    <div className='exams-template-editor bg-light p-5' style={{ width: 850 + 'px' }}>
-      <Form
-        onSubmit={onSubmit}
-        validate={validateBeforeSubmit}
-        initialValues={initialValues}
-        render={({ handleSubmit, pristine }) => (
-          <form onSubmit={handleSubmit}>
-            <TranslatableTitle isCreating={isCreating} entityName='exam_template' />
+    <div className='exams-template-editor' style={{ width: 850 + 'px' }}>
+      <div className='exam-template border shadow p-3 mb-3 bg-white rounded d-block' >
+        <Form
+          onSubmit={onSubmit}
+          validate={validateBeforeSubmit}
+          initialValues={initialValues}
+          render={({ handleSubmit, pristine }) => (
+            <form onSubmit={handleSubmit}>
+              <TranslatableTitle isCreating={isCreating} entityName='exam_template' />
 
-            <div className='row mb-4'>
-              <div className='col-md-12 col-xs-12'>
-                <div className={isCreating ? 'row d-flex justify-content-center' : 'row'}>
-                  <div className='col-md-10 col-xs-12'>
-                    <span className='text-left pl-1 pb-1'>
-                      <FormattedMessage id='common_entity.course' />
-                    </span>
-                    <SelectWrapper
-                      fieldName='courseId'
-                      isDisabled={fetchingCourses || !editableCourse}
-                      options={courses}
-                      validations={required}
-                      selectedValue={filters.selectedCourse}
-                      handleOnChange={(option) => {
-                        setFilters({ ...filters, selectedCourse: option.value })
-                      }}
-                    />
-                  </div>
-                  {!isCreating &&
-                    <div className='col-md-2 col-xs-12 text-right mt-4'>
-                      <Button
-                        type='button'
-                        color='info'
-                        disabled={creating || updating || fetching || resetting || fetchingCourses}
-                        onClick={() => {
-                          setEditConfirmModalIsOpen(true)
+              <div className='row mb-4'>
+                <div className='col-md-12 col-xs-12'>
+                  <div className={isCreating ? 'row d-flex justify-content-center' : 'row'}>
+                    <div className='col-md-10 col-xs-12'>
+                      <span className='text-left pl-1 pb-1'>
+                        <FormattedMessage id='common_entity.course' />
+                      </span>
+                      <SelectWrapper
+                        fieldName='courseId'
+                        isDisabled={fetchingCourses || !editableCourse}
+                        options={courses}
+                        validations={required}
+                        selectedValue={filters.selectedCourse}
+                        handleOnChange={(option) => {
+                          setFilters({ ...filters, selectedCourse: option.value })
                         }}
-                      >
-                        <FormattedMessage id='button.edit' />
-                      </Button>
-                      <div id='edit-confirm-modal'>
-                        <EditCourseConfirmModal
-                          modalIsOpen={editConfirmModalIsOpen}
-                          isBussy={resetting}
-                          onCloseClick={() => onCancelEditClicked()}
-                          onConfirmClick={() => onConfirmEditClicked()}
-                        />
-                      </div>
-                    </div>}
+                      />
+                    </div>
+                    {!isCreating &&
+                      <div className='col-md-2 col-xs-12 text-right mt-4'>
+                        <Button
+                          type='button'
+                          color='info'
+                          disabled={creating || updating || fetching || resetting || fetchingCourses}
+                          onClick={() => {
+                            setEditConfirmModalIsOpen(true)
+                          }}
+                        >
+                          <FormattedMessage id='button.edit' />
+                        </Button>
+                        <div id='edit-confirm-modal'>
+                          <ModalWrapper
+                            modalIsOpen={editConfirmModalIsOpen}
+                            headerTextId='common_title.edit_confirmation'
+                            bodyTextId='exercises_edit_course'
+                            buttonTextId='button.confirm'
+                            buttonColor='danger'
+                            onCloseClick={() => onCancelEditClicked()}
+                            onConfirmClick={() => onConfirmEditClicked()}
+                          />
+                        </div>
+                      </div>}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className='row'>
-              <div className='col-md-12 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='exam_template_name' />
-                </span>
-                <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'exam_template_name' })} />
+              <div className='row'>
+                <div className='col-md-12 col-xs-12'>
+                  <span className='text-left pl-1 pb-1'>
+                    <FormattedMessage id='exam_template_name' />
+                  </span>
+                  <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'exam_template_name' })} />
+                </div>
               </div>
-            </div>
 
-            <div id='buttons' className='d-flex justify-content-center'>
-              <ButtonSubmit
-                isDisabled={creating || updating || fetchingCourses || pristine}
-                isLoading={creating || updating}
-              />
-              <ButtonGoTo
-                path='/exam-templates/list'
-                color='secondary'
-                translatableTextId='button.go_to_list'
-                isDisabled={creating || updating || fetching || fetchingCourses}
-              />
-            </div>
+              <div id='buttons' className='d-flex justify-content-center'>
+                <ButtonSubmit
+                  isDisabled={creating || updating || fetchingCourses || pristine}
+                  isLoading={creating || updating}
+                />
+                <ButtonGoTo
+                  path='/exam-templates/list'
+                  color='secondary'
+                  translatableTextId='button.go_to_list'
+                  isDisabled={creating || updating || fetching || fetchingCourses}
+                />
+              </div>
 
-            <div id='info' className='d-flex justify-content-around mt-2'>
-              {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-              {/*
-              {!creating && templateCreated && <CustomAlert messages={{ id: 'exam_template_created', message: formatMessage({ id: 'exam_template_created' }) }} color='success' />}
-              {!updating && templateUpdated && <CustomAlert messages={{ id: 'exam_template_updated', message: formatMessage({ id: 'exam_template_updated' }) }} color='success' />}
-              */}
-            </div>
+              <div id='info' className='d-flex justify-content-around mt-2'>
+                {errors && <TranslatableErrors errors={errors} className='ml-3' />}
+                {/*
+                {!creating && templateCreated && <CustomAlert messages={{ id: 'exam_template_created', message: formatMessage({ id: 'exam_template_created' }) }} color='success' />}
+                {!updating && templateUpdated && <CustomAlert messages={{ id: 'exam_template_updated', message: formatMessage({ id: 'exam_template_updated' }) }} color='success' />}
+                */}
+              </div>
 
-            <hr />
-
-            {/* Exercises list editor */}
-            {!isCreating && initialValues.courseId && !fetching && !fetchingCourses && <ExamTemplateExercises examTemplateId={params.id} courseId={initialValues.courseId} />}
-
-          </form>
-        )}
-      />
+            </form>
+          )}
+        />
+      </div>
+      {/* Exercises list editor */}
+      {!isCreating && initialValues.courseId && !fetching && !fetchingCourses && <ExamTemplateExercises examTemplateId={params.id} courseId={initialValues.courseId} />}
     </div>
   )
 }

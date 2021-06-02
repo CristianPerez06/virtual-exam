@@ -259,119 +259,120 @@ const ExercisesEditor = (props) => {
   }, [isCreating])
 
   return (
-    <div className='exercise-editor bg-light p-5' style={{ width: 850 + 'px' }}>
-      <Form
-        onSubmit={onSubmit}
-        validate={validateBeforeSubmit}
-        initialValues={initialValues}
-        render={({ handleSubmit, pristine }) => (
-          <form onSubmit={handleSubmit}>
-            <TranslatableTitle isCreating={isCreating} entityName='exercise' />
+    <div className='exercise-editor' style={{ width: 850 + 'px' }}>
+      <div className='exercise-data border shadow p-3 mb-3 bg-white rounded d-block' >
+        <Form
+          onSubmit={onSubmit}
+          validate={validateBeforeSubmit}
+          initialValues={initialValues}
+          render={({ handleSubmit, pristine }) => (
+            <form onSubmit={handleSubmit}>
+              <TranslatableTitle isCreating={isCreating} entityName='exercise' />
 
-            {/* Course - Unit */}
-            <div className='row mb-4'>
-              <div className='col-md-6 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='common_entity.course' />
-                </span>
-                <SelectWrapper
-                  fieldName='courseId'
-                  isDisabled={fetchingCourses}
-                  options={courses}
-                  validations={required}
-                  selectedValue={filters.selectedCourse}
-                  handleOnChange={(option) => {
-                    setFilters({ ...filters, selectedCourse: option.value })
-                  }}
+              {/* Course - Unit */}
+              <div className='row mb-4'>
+                <div className='col-md-6 col-xs-12'>
+                  <span className='text-left pl-1 pb-1'>
+                    <FormattedMessage id='common_entity.course' />
+                  </span>
+                  <SelectWrapper
+                    fieldName='courseId'
+                    isDisabled={fetchingCourses}
+                    options={courses}
+                    validations={required}
+                    selectedValue={filters.selectedCourse}
+                    handleOnChange={(option) => {
+                      setFilters({ ...filters, selectedCourse: option.value })
+                    }}
+                  />
+                </div>
+                <div className='col-md-6 col-xs-12'>
+                  <span className='text-left pl-1 pb-1'>
+                    <FormattedMessage id='common_entity.unit' />
+                  </span>
+                  <SelectWrapper
+                    fieldName='unitId'
+                    isDisabled={!filters.selectedCourse || fetchingCourses}
+                    options={units}
+                    validations={required}
+                    selectedValue={filters.selectedUnit}
+                    handleOnChange={(option) => {
+                      setFilters({ ...filters, selectedUnit: option.value })
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Name */}
+              <div className='row'>
+                <div className='col-md-12 col-xs-12'>
+                  <span className='text-left pl-1 pb-1'>
+                    <FormattedMessage id='exercise_name' />
+                  </span>
+                  <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'exercise_name' })} />
+                </div>
+              </div>
+
+              {/* Delete answer modal */}
+              <div id='delete-modal'>
+                <DeleteModal
+                  modalIsOpen={deleteModalIsOpen}
+                  isBussy={deletingAnswer}
+                  onCloseClick={() => onCancelClicked()}
+                  onDeleteClick={() => onDeleteConfirmClicked()}
                 />
               </div>
-              <div className='col-md-6 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='common_entity.unit' />
-                </span>
-                <SelectWrapper
-                  fieldName='unitId'
-                  isDisabled={!filters.selectedCourse || fetchingCourses}
-                  options={units}
-                  validations={required}
-                  selectedValue={filters.selectedUnit}
-                  handleOnChange={(option) => {
-                    setFilters({ ...filters, selectedUnit: option.value })
-                  }}
+
+              {/* Buttons */}
+              <div id='buttons' className='d-flex justify-content-center'>
+                <ButtonSubmit
+                  isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits || pristine}
+                  isLoading={creating || updating || fetching}
                 />
-              </div>
-            </div>
 
-            {/* Name */}
-            <div className='row'>
-              <div className='col-md-12 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='exercise_name' />
-                </span>
-                <FieldWrapper fieldName='name' validations={required} placeHolder={formatMessage({ id: 'exercise_name' })} />
-              </div>
-            </div>
+                {!isCreating && (
+                  <ButtonGoTo
+                    path={`/exercises/${params.id}/answers/new`}
+                    color='info'
+                    translatableTextId='button.add_answer'
+                    isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
+                  />
+                )}
 
-            {/* Delete answer modal */}
-            <div id='delete-modal'>
-              <DeleteModal
-                modalIsOpen={deleteModalIsOpen}
-                isBussy={deletingAnswer}
-                onCloseClick={() => onCancelClicked()}
-                onDeleteClick={() => onDeleteConfirmClicked()}
-              />
-            </div>
-
-            {/* Buttons */}
-            <div id='buttons' className='d-flex justify-content-center'>
-              <ButtonSubmit
-                isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits || pristine}
-                isLoading={creating || updating || fetching}
-              />
-
-              {!isCreating && (
                 <ButtonGoTo
-                  path={`/exercises/${params.id}/answers/new`}
-                  color='info'
-                  translatableTextId='button.add_answer'
+                  path='/exercises/list'
+                  color='secondary'
+                  translatableTextId='button.go_to_list'
                   isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
                 />
+              </div>
+
+              {/* Info */}
+              {(errors || exerciseCreated || exerciseUpdated || answerDeleted) && (
+                <div id='info' className='d-flex justify-content-around mt-4'>
+                  {errors && <TranslatableErrors errors={errors} className='ml-3' />}
+                  {!creating && exerciseCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'exercise_created' }) }} color='success' />}
+                  {!updating && exerciseUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'exercise_updated' }) }} color='success' />}
+                  {!deletingAnswer && answerDeleted && <CustomAlert messages={{ id: 'answer_deleted', message: `${formatMessage({ id: 'answer_deleted' })}: ${answerToDelete.name}` }} color='success' />}
+                </div>
               )}
 
-              <ButtonGoTo
-                path='/exercises/list'
-                color='secondary'
-                translatableTextId='button.go_to_list'
-                isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
-              />
-            </div>
-
-            <hr />
-
-            {/* Info */}
-            <div id='info' className='d-flex justify-content-around mt-4'>
-              {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-              {!creating && exerciseCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'exercise_created' }) }} color='success' />}
-              {!updating && exerciseUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'exercise_updated' }) }} color='success' />}
-              {!deletingAnswer && answerDeleted && <CustomAlert messages={{ id: 'answer_deleted', message: `${formatMessage({ id: 'answer_deleted' })}: ${answerToDelete.name}` }} color='success' />}
-            </div>
-
-            {/* Answers */}
-            {!fetchingAnswers && (
-              <div id='answers-list' className='mt-4'>
-                <p className='text-center h5 mb-0'>
-                  <FormattedMessage id='common_entity.answers' />
-                </p>
-                {answers.length === 0
-                  ? <NoResults />
-                  : <Table columns={columns} data={answers} paginationEnabled={false} />}
-                {(alerts) && <CustomAlert messages={alerts} color='warning' />}
-              </div>
-            )}
-
-          </form>
-        )}
-      />
+            </form>
+          )}
+        />
+      </div>
+      {/* Answers */}
+      {!fetchingAnswers && (
+        <div className='answers-list border shadow p-3 mb-3 bg-white rounded'>
+          <p className='text-center h5 mb-0'>
+            <FormattedMessage id='common_entity.answers' />
+          </p>
+          {answers.length === 0
+            ? <NoResults />
+            : <Table columns={columns} data={answers} paginationEnabled={false} />}
+          {alerts && <CustomAlert messages={alerts} color='warning' />}
+        </div>
+      )}
     </div>
   )
 }

@@ -125,7 +125,7 @@ const ExercisesList = (props) => {
 
   return (
     <div className='exercises-list' style={{ width: 850 + 'px' }}>
-      <Card className='mx-auto'>
+      <Card className='mx-auto shadow mb-3 bg-white rounded'>
         <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
           <p className='h4'>
             <FormattedMessage id='common_entity.exercises' />
@@ -172,7 +172,7 @@ const ExercisesList = (props) => {
           </div>
 
           {fetching && <Loading />}
-          {!fetching && (
+          {!fetching && filters.selectedCourse && filters.selectedUnit && (
             <TwoColumnsTable
               entityName='exercise'
               entitiesPath='exercises'

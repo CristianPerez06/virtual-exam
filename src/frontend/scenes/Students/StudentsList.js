@@ -85,17 +85,14 @@ const StudentsList = (props) => {
     <div className='students-list' style={{ width: 850 + 'px' }}>
       {fetching && <Loading />}
       {!fetching &&
-        <Card className='mx-auto'>
+        <Card className='mx-auto shadow mb-3 bg-white rounded'>
           <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
             <p className='h4'>
               <FormattedMessage id='common_entity.students' />
             </p>
           </CardHeader>
           <CardBody className='d-flex flex-column'>
-            <div id='answers-list' className='mt-4'>
-              <p className='text-center h5 mb-0'>
-                <FormattedMessage id='common_entity.students' />
-              </p>
+            <div id='students-list'>
               {students.length === 0
                 ? <NoResults />
                 : <Table columns={columns} data={students} />}
