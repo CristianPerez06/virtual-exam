@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Loading, CustomAlert, ButtonGoTo, ModalWrapper } from '../../components/common'
+import { Loading, CustomAlert, ButtonGoTo, ModalWrapper, Timer } from '../../components/common'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { GET_EXAM, FINISH_EXAM } from '../../common/requests/exams'
@@ -29,6 +29,7 @@ const TakeExam = (props) => {
 
   const onFetchExamSuccess = (result) => {
     if (!result) return
+    setErrors()
     setExam(result.getExam)
   }
 
@@ -36,6 +37,17 @@ const TakeExam = (props) => {
     const { graphQLErrors } = err
     const translatableErrors = getTranslatableErrors(graphQLErrors)
     setErrors(translatableErrors)
+  }
+
+  const onTimeExpired = () => {
+    finishExam({
+      variables: { id: params.id, answerPerExerciseList: answerPerExerciseList },
+      update: (cache, result) => {
+        const variables = { idNumber: Cookies.get(COOKIE_NAMES.USER) }
+        syncCacheOnFinishExam(cache, result.data.finishExam, variables)
+      }
+    })
+    setFinishConfirmModalIsOpen(false)
   }
 
   // Button handlers
@@ -76,9 +88,12 @@ const TakeExam = (props) => {
   if (fetching) return <Loading />
 
   return (
-    <div className='take-exam border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
+    <div className='take-exam position border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
       {!fetching && exam && (
         <Form>
+          <div className='timer'>
+            <Timer startTime={new Date(exam.created)} minutesToExpire={60} onTimeExpired={onTimeExpired} />
+          </div>
           <Label className='h4'>{exam.name}</Label>
           {exam.exercises.map((exercise, exerciseIndex) => {
             return (
