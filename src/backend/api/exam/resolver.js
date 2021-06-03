@@ -91,7 +91,7 @@ const resolver = {
       const assignedExamsCollection = context.db.collection('assigned-exams')
 
       // Look up for duplicates
-      const dup = await collection.findOne({ idNumber: idNumber, examTemplateId: objExamTemplateId })
+      const dup = await collection.findOne({ idNumber: idNumber, examTemplateId: objExamTemplateId, completed: false })
       if (dup) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }

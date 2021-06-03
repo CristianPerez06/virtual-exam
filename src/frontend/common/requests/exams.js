@@ -6,6 +6,8 @@ export const GET_EXAM = gql`
     getExam(id: $id) {
       id
       name
+      created
+      updated
       completed
       exercises {
         id
@@ -41,6 +43,7 @@ export const CREATE_EXAM = gql`
       id
       name
       examTemplateId
+      created
     }
   }
 `
