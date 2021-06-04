@@ -6,3 +6,5 @@ export const AsyncExercises = React.lazy(() => import('../scenes/Exercises/Index
 export const AsyncExamTemplates = React.lazy(() => import('../scenes/ExamTemplates/Index'))
 export const AsyncStudents = React.lazy(() => import('../scenes/Students/Index'))
 export const AsyncExams = React.lazy(() => import('../scenes/Exams/Index'))
+export const AsyncStudentExams = React.lazy(() => import('../scenes/StudentExams/Index'))
+

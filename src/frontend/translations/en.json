@@ -130,7 +130,8 @@
   "pending_exams": "Pending exams",
 
   "exam_name": "Exam name",
-  "exams_initiated_finalized": "Exam initiated or finalized",
+  "exams_initiated_finalized": "Initiated or finalized exams",
+  "exams_finalized": "Finalized exams",
 
   "registration_completed": "Registration succesful",
   "first_name": "Name",
