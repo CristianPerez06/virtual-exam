@@ -5,7 +5,7 @@ import { Button } from 'reactstrap'
 import { required, shouldMatch, composeValidators, emailFormat, mustBeNumber, rangeValues } from '../../common/validators'
 import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { COGNITO_ERROR_CODES, ID_LENGTH } from '../../common/constants'
+import { COGNITO_ERROR_CODES, ID_LENGTH, ROLES } from '../../common/constants'
 import { translateFieldError } from '../../common/translations'
 import { useAuthContext } from '../../hooks'
 
@@ -56,9 +56,12 @@ const SignUp = (props) => {
       { name: 'family_name', value: lastname },
       { name: 'nickname', value: nickname }
     ]
+    const customAttributes = [
+      { name: 'role', value: ROLES.GUEST },
+    ]
     setIsLoading(true)
 
-    cognito.signUp(username, password, attributes)
+    cognito.signUp(username, password, attributes, customAttributes)
       .then(data => onSuccess(data))
       .catch(err => onError(err))
   }
@@ -173,19 +176,21 @@ const SignUp = (props) => {
                 </Button>
               </div>}
             <div className='d-flex justify-content-around pt-3'>
-              {/* TO DO - Error no se muestra */}
-              {!isLoading && error && <CustomAlert messages={error} />}
-              {!isLoading && !signUpInProgress &&
-                <div>
-                  <CustomAlert
-                    messages={{ id: 'registration_completed', message: formatMessage({ id: 'registration_completed' }) }}
-                    color='success'
-                    className='ml-3'
-                  />
-                  <Link className='nav-link' to='/login'>
-                    <FormattedMessage id='button.go_signin_page' />
-                  </Link>
-                </div>}
+              <>
+                {/* TO DO - Error no se muestra */}
+                {!isLoading && error && <CustomAlert messages={error} />}
+                {!isLoading && !signUpInProgress &&
+                  <div>
+                    <CustomAlert
+                      messages={{ id: 'registration_completed', message: formatMessage({ id: 'registration_completed' }) }}
+                      color='success'
+                      className='ml-3'
+                    />
+                  </div>}
+                <Link className='nav-link' to='/login'>
+                  <FormattedMessage id='button.go_signin_page' />
+                </Link>
+              </>
             </div>
           </form>
         )}

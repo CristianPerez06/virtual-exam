@@ -9,7 +9,8 @@ const cognito = new Cognito()
 const initialState = {
   isAuthenticated: false,
   user: null,
-  token: null
+  token: null,
+  role: null
 }
 
 const AuthContextProvider = (props) => {
@@ -27,18 +28,24 @@ const AuthContextProvider = (props) => {
       case ACCOUNT_ACTION_TYPES.REFRESH:
         Cookies.set(COOKIE_NAMES.USER, action.payload.user, { expires: cookieExpiration })
         Cookies.set(COOKIE_NAMES.TOKEN, action.payload.token, { expires: cookieExpiration })
+        Cookies.set(COOKIE_NAMES.ROLE, action.payload.role, { expires: cookieExpiration })
         return {
           ...state,
           isAuthenticated: true,
-          user: action.payload.user
+          token: action.payload.token,
+          user: action.payload.user,
+          role: action.payload.role
         }
       case ACCOUNT_ACTION_TYPES.LOGOUT:
         Cookies.remove(COOKIE_NAMES.USER)
         Cookies.remove(COOKIE_NAMES.TOKEN)
+        Cookies.remove(COOKIE_NAMES.ROLE)
         return {
           ...state,
           isAuthenticated: false,
-          user: null
+          token: null,
+          user: null,
+          role: null
         }
       default:
         return state

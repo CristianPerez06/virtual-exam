@@ -5,8 +5,8 @@ import { injectIntl, FormattedMessage } from 'react-intl'
 
 const Settings = (props) => {
   return (
-    <div className='settings'>
-      <Card className='mx-auto'>
+    <div className='settings' style={{ width: 850 + 'px' }}>
+      <Card className='mx-auto shadow mb-3 bg-white rounded'>
         <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
           <p className='h4'>
             <FormattedMessage id='settings' />
@@ -18,9 +18,6 @@ const Settings = (props) => {
               <div className='mt-2'>
                 <LocaleSelector />
               </div>
-            </Col>
-            <Col>
-              Right row
             </Col>
           </Row>
         </CardBody>

@@ -32,8 +32,8 @@ const AuthRouter = () => {
         const { user } = session
         const { accessToken } = refresh
         dispatch({
-          type: ACCOUNT_ACTION_TYPES.LOGIN,
-          payload: { user: user.username, token: accessToken.jwtToken }
+          type: ACCOUNT_ACTION_TYPES.REFRESH,
+          payload: { user: user.username, token: accessToken.jwtToken, role: session['custom:role'] }
         })
       } catch {
         dispatch({

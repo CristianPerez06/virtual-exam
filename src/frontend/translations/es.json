@@ -133,12 +133,13 @@
   "exams_finalized": "Examenes finalizados",
   "exam_finish_exam": "Finalizar examen",
 
-  "registration_completed": "Registracion exitosa",
+  "registration_completed": "Registro exitoso",
   "first_name": "Nombre",
   "last_name": "Apellido",
   "nick_name": "Usuario",
   "password": "Contraseña",
   "new_password": "Nueva contraseña",
+  "confirm_password": "Confirmar contraseña",
   "confirm_new_password": "Confirmar nueva contraseña",
   "recovery_code_sent": "Codigo de recuperación enviado",
   "recovery_code": "Codigo de recuperación",
@@ -153,6 +154,7 @@
   "date": "Fecha",
   "date_started": "Fecha inicio",
   "date_finished": "Fecha fin",
+  "welcome_virtual_exam": "Bienvenido a Virtual Exam",
 
   "language.spanish": "Español",
   "language.english": "Ingles"

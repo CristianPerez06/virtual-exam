@@ -18,7 +18,7 @@ const MainRouter = () => {
         const { user, accessToken } = session
         dispatch({
           type: ACCOUNT_ACTION_TYPES.LOGIN,
-          payload: { user: user.username, token: accessToken.jwtToken }
+          payload: { user: user.username, token: accessToken.jwtToken, role: session['custom:role'] }
         })
         setUser(user.username)
       } catch {
