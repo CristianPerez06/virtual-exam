@@ -121,6 +121,16 @@ const Header = () => {
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret>
+              <FormattedMessage id='button.exams' />
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem tag={Link} to='/student-exams/list'>
+                <FormattedMessage id='button.list' />
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
         </Nav>
         <Nav className='ml-auto' navbar>
           <UncontrolledDropdown nav inNavbar>
