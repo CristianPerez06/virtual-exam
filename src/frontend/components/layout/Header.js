@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useAuthContext } from '../../hooks'
 import Cookies from 'js-cookie'
-import { ACCOUNT_ACTION_TYPES, COOKIE_NAMES } from '../../common/constants'
+import { ACCOUNT_ACTION_TYPES, COOKIE_NAMES, ROLES } from '../../common/constants'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { Link } from 'react-router-dom'
 import { FaHome } from 'react-icons/fa'
@@ -23,7 +23,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   // hooks
-  const { dispatch, cognito } = useAuthContext()
+  const { dispatch, cognito, state } = useAuthContext()
 
   // handlers
   const handleLogout = () => {
@@ -49,89 +49,105 @@ const Header = () => {
               <FaHome style={{ fontSize: 25 + 'px' }} />
             </Link>
           </NavItem>
-          <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav caret>
-              <FormattedMessage id='button.courses' />
-            </DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem tag={Link} to='/courses/new'>
-                <FormattedMessage id='button.create' />
-              </DropdownItem>
-              <DropdownItem tag={Link} to='/courses/list'>
-                <FormattedMessage id='button.list' />
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav caret>
-              <FormattedMessage id='button.units' />
-            </DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem tag={Link} to='/units/new'>
-                <FormattedMessage id='button.create' />
-              </DropdownItem>
-              <DropdownItem tag={Link} to='/units/list'>
-                <FormattedMessage id='button.list' />
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav caret>
-              <FormattedMessage id='button.exercises' />
-            </DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem tag={Link} to='/exercises/new'>
-                <FormattedMessage id='button.create' />
-              </DropdownItem>
-              <DropdownItem tag={Link} to='/exercises/list'>
-                <FormattedMessage id='button.list' />
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav caret>
-              <FormattedMessage id='button.exam_templates' />
-            </DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem tag={Link} to='/exam-templates/new'>
-                <FormattedMessage id='button.create' />
-              </DropdownItem>
-              <DropdownItem tag={Link} to='/exam-templates/list'>
-                <FormattedMessage id='button.list' />
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav caret>
-              <FormattedMessage id='button.students' />
-            </DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem tag={Link} to='/students/list'>
-                <FormattedMessage id='button.list' />
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav caret>
-              <FormattedMessage id='button.exams' />
-            </DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem tag={Link} to='/exams/list'>
-                <FormattedMessage id='button.list' />
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav caret>
-              <FormattedMessage id='button.exams' />
-            </DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem tag={Link} to='/student-exams/list'>
-                <FormattedMessage id='button.list' />
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
+          {state.role === ROLES.ADMIN && (
+            <>
+              {/* Courses */}
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  <FormattedMessage id='button.courses' />
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem tag={Link} to='/courses/new'>
+                    <FormattedMessage id='button.create' />
+                  </DropdownItem>
+                  <DropdownItem tag={Link} to='/courses/list'>
+                    <FormattedMessage id='button.list' />
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+              {/* Units */}
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  <FormattedMessage id='button.units' />
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem tag={Link} to='/units/new'>
+                    <FormattedMessage id='button.create' />
+                  </DropdownItem>
+                  <DropdownItem tag={Link} to='/units/list'>
+                    <FormattedMessage id='button.list' />
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+              {/* Exercises */}
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  <FormattedMessage id='button.exercises' />
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem tag={Link} to='/exercises/new'>
+                    <FormattedMessage id='button.create' />
+                  </DropdownItem>
+                  <DropdownItem tag={Link} to='/exercises/list'>
+                    <FormattedMessage id='button.list' />
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+              {/* Templates */}
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  <FormattedMessage id='button.exam_templates' />
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem tag={Link} to='/exam-templates/new'>
+                    <FormattedMessage id='button.create' />
+                  </DropdownItem>
+                  <DropdownItem tag={Link} to='/exam-templates/list'>
+                    <FormattedMessage id='button.list' />
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+              {/* Students */}
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  <FormattedMessage id='button.students' />
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem tag={Link} to='/students/list'>
+                    <FormattedMessage id='button.list' />
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+              {/* Student Exams */}
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  <FormattedMessage id='button.exams' />
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem tag={Link} to='/student-exams/list'>
+                    <FormattedMessage id='button.list' />
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            </>
+          )}
+          {state.role === ROLES.GUEST && (
+            <>
+              {/* Exams */}
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  <FormattedMessage id='button.exams' />
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem tag={Link} to='/exams/list'>
+                    <FormattedMessage id='button.list' />
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            </>
+          )}
         </Nav>
+        {/* Settings */}
         <Nav className='ml-auto' navbar>
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav caret>

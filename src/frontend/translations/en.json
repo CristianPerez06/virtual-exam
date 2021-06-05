@@ -139,6 +139,7 @@
   "nick_name": "Username",
   "password": "Password",
   "new_password": "New password",
+  "confirm_password": "Confirm password",
   "confirm_new_password": "Confirm new password",
   "recovery_code_sent": "Recovery code sent",
   "recovery_code": "Recovery code",
@@ -153,7 +154,8 @@
   "date": "Date",
   "date_started": "Date started",
   "date_finished": "Date finished",
-  
+  "welcome_virtual_exam": "Welcome to Virtual Exam",
+
   "language.spanish": "Spanish",
   "language.english": "English"
 }

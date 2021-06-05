@@ -143,21 +143,20 @@ const SignUp = (props) => {
                 </div>}
             </div>
             <div className='d-flex justify-content-around pt-3'>
-              {!isLoading && error &&
-                <CustomAlert messages={error} className='ml-3' />}
-              {!isLoading && codeSent &&
-                <CustomAlert
-                  messages={{ id: 'recovery_code_sent', message: formatMessage({ id: 'recovery_code_sent' }) }}
-                  color='success'
-                  className='ml-3'
-                />}
-              {!isLoading && confirmedPassword &&
-                <div>
-                  <CustomAlert message='Password successfully updated' color='success' />
-                  <Link className='nav-link' to='/login'>
-                    <FormattedMessage id='button.go_signin_page' />
-                  </Link>
-                </div>}
+              <>
+                {!isLoading && error &&
+                  <CustomAlert messages={error} className='ml-3' />}
+                {!isLoading && codeSent &&
+                  <CustomAlert
+                    messages={{ id: 'recovery_code_sent', message: formatMessage({ id: 'recovery_code_sent' }) }}
+                    color='success'
+                    className='ml-3'
+                  />}
+                {!isLoading && confirmedPassword && <CustomAlert message='Password successfully updated' color='success' />}
+                <Link className='nav-link' to='/login'>
+                  <FormattedMessage id='button.go_signin_page' />
+                </Link>
+              </>
             </div>
           </form>
         )}
