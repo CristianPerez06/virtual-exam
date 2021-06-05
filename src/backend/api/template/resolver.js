@@ -110,7 +110,13 @@ const resolver = {
       const res = await collection.aggregate(aggregate).toArray()
 
       // Results
-      const data = res.map(x => prepSingleResultForUser(x.exercise))
+      const data = res.map(x => {
+        const exerciseWithPoints = {
+          ...x.exercise,
+          points: x.exercise.points || 0
+        }
+        return prepSingleResultForUser(exerciseWithPoints)
+      })
 
       return { id: id, data: data, count: data.length }
     }
@@ -301,12 +307,12 @@ const resolver = {
       const currentExercise = await exercisesCollection.findOne({ _id: objExercId })
 
       // Look up for duplicates
-      const dupExercise = examTemplateExercises.find(x => x.toString() === objExercId.toString())
+      const dupExercise = examTemplateExercises.find(x => x._id.toString() === objExercId.toString())
       if (dupExercise) {
         throw new ApolloError(BACKEND_ERRORS.DUPLICATED_ENTITY)
       }
 
-      const newExercises = addItemToList(examTemplateExercises, objExercId)
+      const newExercises = addItemToList(examTemplateExercises, { _id: objExercId })
 
       // Query
       const update = {
@@ -325,7 +331,8 @@ const resolver = {
         throw new Error(response.lastErrorObject)
       }
 
-      return prepSingleResultForUser(currentExercise)
+      const exerciseWithPoints = { ...currentExercise, points: 0 }
+      return prepSingleResultForUser(exerciseWithPoints)
     },
     removeExerciseFromExamTemplate: async (parent, args, context) => {
       debug('Running removeExerciseFromExamTemplate mutation with params:', args)
@@ -344,7 +351,8 @@ const resolver = {
 
       // Query
       const examTemplateExercises = examTemplate.exercises || []
-      const updatedExercisesList = removeItemFromList(examTemplateExercises, objExercId)
+      const updatedExercisesList = removeItemFromList(examTemplateExercises, { _id: objExercId })
+
       const update = {
         $set: {
           exercises: updatedExercisesList,
@@ -358,6 +366,49 @@ const resolver = {
       // Results
       if (response.ok !== 1) {
         debug('removeExerciseFromExamTemplate error:', response.lastErrorObject)
+        throw new Error(response.lastErrorObject)
+      }
+
+      return prepSingleResultForUser(currentExercise)
+    },
+    updateExerciseNote: async (parent, args, context) => {
+      debug('Running updateExerciseNote mutation with params:', args)
+
+      // Args
+      const { id, exerciseId, exercisePoints } = args
+      const objTempId = new ObjectId(id)
+      const objExercId = new ObjectId(exerciseId)
+
+      // Collection
+      const collection = context.db.collection('exam-templates')
+      const examTemplate = await collection.findOne({ _id: objTempId })
+
+      const exercisesCollection = context.db.collection('exercises')
+      const currentExercise = await exercisesCollection.findOne({ _id: objExercId })
+      const floatDecimalPoints = parseFloat(exercisePoints)
+      currentExercise.points = floatDecimalPoints
+
+      const updatedExercises = examTemplate.exercises.map((exercise) => {
+        if (exercise._id.toString() !== objExercId.toString()) return exercise
+
+        exercise.points = floatDecimalPoints
+        return exercise
+      })
+
+      // Query
+      const update = {
+        $set: {
+          exercises: updatedExercises,
+          updated: new Date().toISOString()
+        }
+      }
+
+      // Exec
+      const response = await collection.findOneAndUpdate({ _id: objTempId }, update, { returnDocument: 'after', w: 'majority' })
+
+      // Results
+      if (response.ok !== 1) {
+        debug('updateExerciseNote error:', response.lastErrorObject)
         throw new Error(response.lastErrorObject)
       }
 

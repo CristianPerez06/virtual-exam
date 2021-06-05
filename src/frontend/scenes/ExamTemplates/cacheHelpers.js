@@ -53,6 +53,21 @@ export const syncCacheOnAddTemplateExercise = (cache, item, variables) => {
   // If list is not in cache yet then we don't do anything
   if (!listExamTemplateExercises) return
   // Remove item from list
+  const newList = addItemToList(listExamTemplateExercises.data, item)
+  // Update Cache
+  const listToCache = {
+    data: [...newList], count: newList.length, __typename: item.__typename
+  }
+  writeCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, { listExamTemplateExercises: { ...listToCache } }, variables)
+  return listToCache
+}
+
+export const syncCacheOnUpdateTemplateExercise = (cache, item, variables) => {
+  // Read Cache
+  const { listExamTemplateExercises } = readCache(cache, LIST_EXAM_TEMPLATE_EXERCISES, variables)
+  // If list is not in cache yet then we don't do anything
+  if (!listExamTemplateExercises) return
+  // Remove item from list
   const newList = updateItemInList(listExamTemplateExercises.data, item)
   // Update Cache
   const listToCache = {

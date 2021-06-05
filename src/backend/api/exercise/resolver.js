@@ -184,9 +184,7 @@ const resolver = {
       const findRelatedEntities = [{
         $match: {
           disabled: { $ne: true },
-          exercises: {
-            $elemMatch: { $eq: objExerciseId }
-          }
+          'exercises._id': objExerciseId
         }
       }]
       const templatesRelated = await exercisesCollection.aggregate(findRelatedEntities).toArray()

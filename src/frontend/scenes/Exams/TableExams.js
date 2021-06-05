@@ -64,14 +64,14 @@ const TableExams = (props) => {
                         {columnTranslations.goToExamDetails}
                       </Button>
                     </Link>
-                  )
+                    )
                   : (
                     <Link to={`/exams/${row.original.id}`}>
                       <Button color='secondary' className='m-2' disabled={disableButtons}>
                         {columnTranslations.goToExam}
                       </Button>
                     </Link>
-                  )}
+                    )}
               </div>
             )
           }

@@ -1,0 +1,106 @@
+import React, { useState } from 'react'
+import { Button } from 'reactstrap'
+import { injectIntl, FormattedMessage } from 'react-intl'
+import Select from 'react-select'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import { LIST_EXERCISES } from '../../../common/requests/exercises'
+import { ADD_EXERCISE_TO_EXAM_TEMPLATE } from '../../../common/requests/templates'
+import { syncCacheOnAddTemplateExercise } from '../cacheHelpers'
+
+const AddExerciseSelector = (props) => {
+  // Props and params
+  const {
+    examTemplateId,
+    courseId,
+    onExerciseAdded,
+    onExerciseAddError
+  } = props
+
+  // State
+  const [exercises, setExercises] = useState([])
+  const [selectedExercise, setSelectedExercise] = useState()
+
+  // Handlers
+  const onSuccess = (res) => {
+    setSelectedExercise()
+    onExerciseAdded()
+  }
+
+  const onError = (err) => {
+    onExerciseAddError(err)
+  }
+
+  const onFetchExercisesSuccess = (res) => {
+    if (!res) return
+    const mappedExercises = res.listExercises.data.map((exercise) => {
+      return {
+        value: exercise.id,
+        label: exercise.name
+      }
+    })
+    setExercises(mappedExercises)
+  }
+
+  // Button handlers
+  const onAddExerciseClicked = async () => {
+    addExerciseToExamTemplate({
+      variables: { templateId: examTemplateId, exerciseId: selectedExercise.value },
+      update: (cache, result) => {
+        const variables = { id: examTemplateId }
+        const updatedTemplateExercisesList = syncCacheOnAddTemplateExercise(cache, result.data.addExerciseToExamTemplate, variables)
+        onSuccess(updatedTemplateExercisesList.data)
+      }
+    })
+  }
+
+  // Queries and mutations
+  const { loading: fetchingExercises } = useQuery(
+    LIST_EXERCISES,
+    {
+      variables: { courseId: courseId },
+      onCompleted: onFetchExercisesSuccess,
+      onError
+    }
+  )
+
+  const [addExerciseToExamTemplate, { loading: addingExerciseToTemplate }] = useMutation(
+    ADD_EXERCISE_TO_EXAM_TEMPLATE,
+    { onCompleted: onSuccess, onError: onError }
+  )
+
+  return (
+    <div className='add-exercise-selector'>
+      <p className='text-center h5 mb-3'>
+        <FormattedMessage id='common_entity.exercises' />
+      </p>
+      <div className='row'>
+        <div className='col-md-9 col-xs-12'>
+          <Select
+            value={selectedExercise}
+            options={exercises}
+            // isDisabled={fetchingExercises || addingExerciseToTemplate || removingExerciseFromTemplate}
+            isDisabled={fetchingExercises || addingExerciseToTemplate}
+            onChange={(option) => {
+              const selected = exercises.find(x => x.value === option.value)
+              setSelectedExercise(selected)
+            }}
+          />
+        </div>
+        <div className='col-md-3 col-xs-12 text-right'>
+          <Button
+            color='info'
+            // disabled={fetchingExercises || addingExerciseToTemplate || fetchingTemplateExercises || !selectedExercise}
+            disabled={fetchingExercises || addingExerciseToTemplate}
+            onClick={() => {
+              onAddExerciseClicked()
+            }}
+          >
+            <FormattedMessage id='button.add_exercise' />
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default injectIntl(AddExerciseSelector)
