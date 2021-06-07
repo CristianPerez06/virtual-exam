@@ -12,6 +12,7 @@ export const GET_EXAM = gql`
       exercises {
         id
         name
+        points
         answers {
           id
           name
@@ -43,7 +44,8 @@ export const CREATE_EXAM = gql`
       id
       name
       examTemplateId
-      created
+      created,
+      completed
     }
   }
 `

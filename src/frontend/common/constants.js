@@ -61,3 +61,8 @@ export const ROLES = {
   ADMIN: 'admin',
   GUEST: 'guest'
 }
+
+export const EXAM_SETTINGS = {
+  MINUTES_TO_EXPIRATION: 60,
+  PASSING_SCORE: 6
+}

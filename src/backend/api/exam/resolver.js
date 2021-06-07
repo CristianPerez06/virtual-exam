@@ -48,9 +48,7 @@ const resolver = {
 
       const mappedExercises = exercises.map((exercise) => {
         const { answers, ...rest } = exercise
-        const mappedAnswers = answers.map((answer) => {
-          return prepSingleResultForUser(answer)
-        })
+        const mappedAnswers = answers.map((answer) => prepSingleResultForUser(answer))
         const exerciseForUser = prepSingleResultForUser(rest)
         exerciseForUser.answers = mappedAnswers
         return exerciseForUser
@@ -105,7 +103,6 @@ const resolver = {
         ...getExercisesAndAnswers
       ]
       const exercisesAndAnswers = await templatesCollection.aggregate(aggregate).toArray()
-      debug(exercisesAndAnswers)
 
       // Create new exam
       const newItem = {

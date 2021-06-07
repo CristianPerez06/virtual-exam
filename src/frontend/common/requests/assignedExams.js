@@ -20,7 +20,8 @@ export const CREATE_ASSIGNED_EXAM = gql`
       id
       idNumber,
       examTemplateId,
-      examTemplateName
+      examTemplateName,
+      created
     }
   }
 `

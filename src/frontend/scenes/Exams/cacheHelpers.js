@@ -29,7 +29,7 @@ export const syncCacheOnFinishExam = (cache, item, variables) => {
   const listToCache = {
     data: [...newList], count: newList.length, __typename: item.__typename
   }
-  writeCache(cache, LIST_EXAMS, { listExams: { ...listToCache } })
+  writeCache(cache, LIST_EXAMS, { listExams: { ...listToCache } }, variables)
   return listToCache
 }
 

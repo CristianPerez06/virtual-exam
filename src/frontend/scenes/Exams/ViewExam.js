@@ -33,6 +33,7 @@ const ViewExam = (props) => {
     {
       variables: { id: params.id },
       skip: !params.id,
+      fetchPolicy: 'network-only',
       onCompleted: onSuccess,
       onError
     }
