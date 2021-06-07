@@ -109,7 +109,7 @@ const TakeExam = (props) => {
                       onChange={() => onAnswerClick({ exerciseId: exercise.id, answerId: answer.id })}
                     >
                       <Label check>
-                        <Input type='radio' name='radio1' disabled={exam.completed || examCompleted}/>{' '}
+                        <Input type='radio' name='radio1' disabled={exam.completed || examCompleted} />{' '}
                         {answer.name}
                       </Label>
                     </FormGroup>

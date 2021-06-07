@@ -10,7 +10,7 @@ import { CREATE_EXAM_TEMPLATE, GET_EXAM_TEMPLATE, UPDATE_EXAM_TEMPLATE, RESET_EX
 import { LIST_COURSES } from '../../common/requests/courses'
 import { syncCacheOnCreate, syncCacheOnUpdate, syncCacheOnResetTemplateExercises } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
-import ExamTemplateExercises from './ExamTemplateExercises'
+import ExamTemplateExercises from './components/ExamTemplateExercises'
 
 const ExamTemplatesEditor = (props) => {
   // Props and params

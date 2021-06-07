@@ -51,6 +51,7 @@
   "common_title.edit": "Edit",
   "common_title.start_exam_confirmation": "Confirm exam start",
   "common_title.finish_exam_confirmation": "Finish exam confirmation",
+  "common_title.edit_points": "Edit points",
 
   "button.register": "Register",
   "button.signin": "Sign in",
@@ -84,6 +85,7 @@
   "button.confirm_start": "Confirm start",
   "button.go_to_exam": "Go to exam",
   "button.go_to_exam_details": "Go to exam details",
+  "button.edit_points": "Points",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
@@ -102,7 +104,7 @@
   "exercise_updated": "Exercise updated succesfully",
   "exercise_deleted": "Exercise deleted succesfully",
   "exercise_answer_correct_needed": "In order to use this exercise you need to add a correct answer",
-  "at_least_two_answers_needed": "In order to use this exercise you need to add at least 2 answers",
+  "exercise_at_least_two_answers_needed": "In order to use this exercise you need to add at least 2 answers",
   "exercises_edit_course": "Exercises related to current template will be deleted if change the Course.",
   "exercise_delete_related_entities": "You may have to remove all references to related 'Exam templates'.",
 
@@ -119,8 +121,12 @@
   "exam_template_deleted": "Exam template deleted successfully",
   "exam_template_exercise_added": "Exercise successfully added to the Exam template",
   "exam_template_exercise_removed": "Exercise successfully remoed from the Exam template",
-  "at_least_two_exercises_needed": "In order to use this template you need to add at least 2 exercises",
-  "exam_finish_exam": "Y.",
+  "exam_template_at_least_two_exercises_needed": "This exam template needs at least 2 exercises",
+  "exam_template_all_exercises_must_have_points": "All exercises must have a score higher than 0",
+  "exam_template_note_cant_be_zero": "Max Exam template note can't be 0",
+  "exam_template_note_cant_be_higher_than_ten": "Max Exam template note can't be higher than 10",
+  "exam_template_note_must_be_close_to_nine_ninetynine": "Max Exam template note must be at least 9.99",
+  "exam_finish_exam": "Finish exam",
 
   "student_id_number": "ID Number",
 
@@ -155,6 +161,7 @@
   "date_started": "Date started",
   "date_finished": "Date finished",
   "welcome_virtual_exam": "Welcome to Virtual Exam",
+  "points": "Points",
 
   "language.spanish": "Spanish",
   "language.english": "English"

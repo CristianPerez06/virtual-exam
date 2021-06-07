@@ -3,9 +3,12 @@ import styled from 'styled-components'
 import { useTable, usePagination } from 'react-table'
 
 const Styles = styled.div`
-  padding: 1rem;
+  padding-top: 1rem;
+  font-size: 0.9rem;
 
   table {
+    table-layout: fixed;
+    width: 100%;
     border-spacing: 0;
     border: 1px solid black;
 
@@ -23,7 +26,6 @@ const Styles = styled.div`
       padding: 0.5rem;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
-      white-space: nowrap;
 
       :last-child {
         border-right: 0;

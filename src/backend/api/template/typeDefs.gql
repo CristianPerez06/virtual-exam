@@ -12,6 +12,7 @@ type ExamTemplates {
 type ExamTemplateExercise {
   id: ID!
   name: String!
+  points: Float
 }
 
 type ExamTemplateExercises {
@@ -33,4 +34,5 @@ extend type Mutation {
   resetExamTemplate(id: ID!): Response
   addExerciseToExamTemplate(templateId: ID!, exerciseId: ID!): ExamTemplateExercise
   removeExerciseFromExamTemplate(templateId: ID!, exerciseId: ID!): ExamTemplateExercise
+  updateExerciseNote(id: ID!, exerciseId: ID!, exercisePoints: Float!): ExamTemplateExercise
 }

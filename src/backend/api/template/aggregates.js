@@ -1,35 +1,43 @@
 const getExercises = [
   {
     $project: {
-      _id: 0,
-      exerciseIdsList: '$exercises'
+      _id: 0, 
+      exercisesWithPoints: '$exercises'
     }
   },
   {
     $unwind: {
-      path: '$exerciseIdsList',
+      path: '$exercisesWithPoints', 
       preserveNullAndEmptyArrays: false
     }
   },
   {
-    $group: {
-      _id: '$exerciseIdsList'
-    }
-  },
-  {
     $lookup: {
-      from: 'exercises',
-      localField: '_id',
-      foreignField: '_id',
+      from: 'exercises', 
+      localField: 'exercisesWithPoints._id', 
+      foreignField: '_id', 
       as: 'exercise'
     }
   },
   {
     $project: {
-      _id: 0,
+      _id: 0, 
       exercise: {
-        $arrayElemAt: ['$exercise', 0]
-      }
+        $arrayElemAt: [
+          '$exercise', 0
+        ]
+      }, 
+      points: '$exercisesWithPoints.points'
+    }
+  },
+  {
+    $addFields: {
+      'exercise.points': '$points'
+    }
+  },
+  {
+    $project: {
+      exercise: 1
     }
   }
 ]

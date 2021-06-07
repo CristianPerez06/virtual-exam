@@ -68,6 +68,7 @@ export const LIST_EXAM_TEMPLATE_EXERCISES = gql`
       data {
         id
         name
+        points
       }
       count
     }
@@ -77,7 +78,8 @@ export const ADD_EXERCISE_TO_EXAM_TEMPLATE = gql`
   mutation addExerciseToExamTemplate($templateId: ID!, $exerciseId: ID!) {
     addExerciseToExamTemplate(templateId: $templateId, exerciseId: $exerciseId){
       id,
-      name
+      name,
+      points
     }
   }
 `
@@ -86,6 +88,15 @@ export const REMOVE_EXERCISE_FROM_EXAM_TEMPLATE = gql`
     removeExerciseFromExamTemplate(templateId: $templateId, exerciseId: $exerciseId){
       id,
       name
+    }
+  }
+`
+export const UPDATE_EXERCISE_NOTE = gql`
+  mutation updateExerciseNote($id: ID!, $exerciseId: ID!, $exercisePoints: Float!) {
+    updateExerciseNote(id: $id, exerciseId: $exerciseId, exercisePoints: $exercisePoints){
+      id
+      name
+      points
     }
   }
 `

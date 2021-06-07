@@ -119,7 +119,6 @@ class Cognito {
         if (err) reject(err)
         resolve(data)
       }
-      debugger
       this.pool.signUp(username, password, [...attrList, ...customAttrList], null, callback)
     })
   }

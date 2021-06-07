@@ -113,7 +113,7 @@ const ExercisesEditor = (props) => {
 
   const getAlerts = (answersList) => {
     if (answersList.length <= 1) {
-      const moreAnswersNeeded = { id: 'at_least_two_answers_needed' }
+      const moreAnswersNeeded = { id: 'exercise_at_least_two_answers_needed' }
       return moreAnswersNeeded
     }
     if (answersList.every(answer => answer.correct === false)) {

@@ -26,6 +26,7 @@
     "apollo-link": "^1.2.14",
     "apollo-server-express": "^2.19.1",
     "aws-sdk": "^2.897.0",
+    "bignumber.js": "^9.0.1",
     "cors": "^2.8.5",
     "date-fns": "^2.21.1",
     "debug": "^4.3.1",
