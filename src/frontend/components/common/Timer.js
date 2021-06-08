@@ -6,11 +6,10 @@ const Timer = (props) => {
   const {
     startTime,
     minutesToExpire,
-    onTimeExpired
+    onTimeExpired,
   } = props
 
   const expiryTimestamp = addMinutes(startTime, minutesToExpire)
-
   const { seconds, minutes, hours, isRunning } = useTimer({
     expiryTimestamp,
     autoStart: true,
@@ -18,18 +17,18 @@ const Timer = (props) => {
       setTimeExpired(true)
     }
   })
-
   const [timeExpired, setTimeExpired] = useState(!isRunning)
 
   useEffect(() => {
     if (timeExpired) {
       onTimeExpired()
+      setTimeExpired(false)
     }
   }, [timeExpired, onTimeExpired])
 
   return (
     <div className='timer d-flex justify-content-end'>
-      <div className={`border border-${timeExpired ? 'warning' : 'secondary'} shadow p-2 mb-1 bg-white rounded text-right`}>
+      <div className={`border border-${timeExpired ? 'secondary' : 'warning'} shadow p-2 mb-1 bg-white rounded text-right`}>
         <span>{hours.toString().length === 1 ? `0${hours}` : hours}</span>
         :
         <span>{minutes.toString().length === 1 ? `0${minutes}` : minutes}</span>

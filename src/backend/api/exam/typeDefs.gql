@@ -9,6 +9,7 @@ type ExamExerciseAnswer {
 type ExamExercise {
   id: ID!
   name: String!
+  points: Float!
   answers: [ExamExerciseAnswer]!
 }
 

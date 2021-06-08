@@ -138,6 +138,8 @@
   "exam_name": "Exam name",
   "exams_initiated_finalized": "Initiated or finalized exams",
   "exams_finalized": "Finalized exams",
+  "exams_passed": "Exam passed",
+  "exams_failed": "Exam failed",
 
   "registration_completed": "Registration succesful",
   "first_name": "Name",
@@ -162,6 +164,7 @@
   "date_finished": "Date finished",
   "welcome_virtual_exam": "Welcome to Virtual Exam",
   "points": "Points",
+  "total_score": "Score",
 
   "language.spanish": "Spanish",
   "language.english": "English"

@@ -7,7 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { GET_EXAM, FINISH_EXAM } from '../../common/requests/exams'
 import Cookies from 'js-cookie'
-import { COOKIE_NAMES } from '../../common/constants'
+import { COOKIE_NAMES, EXAM_SETTINGS } from '../../common/constants'
 import { syncCacheOnFinishExam } from './cacheHelpers'
 
 const TakeExam = (props) => {
@@ -91,30 +91,30 @@ const TakeExam = (props) => {
     <div className='take-exam position border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
       {!fetching && exam && (
         <Form>
-          <div className='timer'>
-            <Timer startTime={new Date(exam.created)} minutesToExpire={60} onTimeExpired={onTimeExpired} />
-          </div>
+          {!examCompleted && <Timer startTime={new Date(exam.created)} minutesToExpire={EXAM_SETTINGS.MINUTES_TO_EXPIRATION} onTimeExpired={onTimeExpired} />}
           <Label className='h4'>{exam.name}</Label>
           {exam.exercises.map((exercise, exerciseIndex) => {
             return (
               <div className='exam-item' key={exerciseIndex}>
-                <span className='d-block'>{exerciseIndex + 1} - {exercise.name}</span>
-                <span className='d-block'>{exercise.description}</span>
-                {exercise.answers.map((answer, answerIndex) => {
-                  return (
-                    <FormGroup
-                      check
-                      key={answerIndex}
-                      className='ml-3'
-                      onChange={() => onAnswerClick({ exerciseId: exercise.id, answerId: answer.id })}
-                    >
-                      <Label check>
-                        <Input type='radio' name='radio1' disabled={exam.completed || examCompleted} />{' '}
-                        {answer.name}
-                      </Label>
-                    </FormGroup>
-                  )
-                })}
+                <FormGroup tag='fieldset'>
+                  <span className='d-block'>{exerciseIndex + 1} - {exercise.name}</span>
+                  <span className='d-block'>{exercise.description}</span>
+                  {exercise.answers.map((answer) => {
+                    return (
+                      <FormGroup
+                        check
+                        key={answer.id}
+                        className='ml-3'
+                        onChange={() => onAnswerClick({ exerciseId: exercise.id, answerId: answer.id })}
+                      >
+                        <Label check>
+                          <Input type='radio' name={exercise.id} disabled={exam.completed || examCompleted} />{' '}
+                          {answer.name}
+                        </Label>
+                      </FormGroup>
+                    )
+                  })}
+                </FormGroup>
                 <hr />
               </div>
             )
