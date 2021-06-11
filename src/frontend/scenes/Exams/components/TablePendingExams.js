@@ -1,6 +1,6 @@
 import React from 'react'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { Loading, Table, NoResults } from '../../components/common'
+import { Loading, Table, NoResults } from '../../../components/common'
 import { Button } from 'reactstrap'
 
 const TablePendingExams = (props) => {
@@ -57,14 +57,14 @@ const TablePendingExams = (props) => {
   )
 
   return (
-    <div className='row mt-3'>
+    <div className='row'>
       <div className='col-md-12 col-xs-12'>
         <p className='text-center h5 mb-0'>
           <FormattedMessage id='pending_exams' />
         </p>
         {loading && <Loading />}
         {!loading && assignedExams.length === 0 && <NoResults />}
-        {!loading && assignedExams.length !== 0 && <Table columns={columns} data={assignedExams} paginationEnabled={false} />}
+        {!loading && assignedExams.length !== 0 && <Table columns={columns} data={assignedExams} />}
       </div>
     </div>
   )

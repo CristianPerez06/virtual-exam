@@ -145,7 +145,7 @@ const TakeExam = (props) => {
           )}
         </Form>
       )}
-      <div id='edit-confirm-modal'>
+      <div id='confirm-finish-modal'>
         <ModalWrapper
           modalIsOpen={finishConfirmModalIsOpen}
           headerTextId='common_title.finish_exam_confirmation'

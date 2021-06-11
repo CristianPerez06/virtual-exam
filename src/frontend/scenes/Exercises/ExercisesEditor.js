@@ -96,12 +96,12 @@ const ExercisesEditor = (props) => {
     const { name, courseId, unitId } = values
     isCreating
       ? createExercise({
-        variables: { name: name, courseId: courseId, unitId: unitId },
-        update: (cache, result) => {
-          const variables = { courseId: courseId, unitId: unitId }
-          syncCacheOnCreate(cache, result.data.createExercise, variables)
-        }
-      })
+          variables: { name: name, courseId: courseId, unitId: unitId },
+          update: (cache, result) => {
+            const variables = { courseId: courseId, unitId: unitId }
+            syncCacheOnCreate(cache, result.data.createExercise, variables)
+          }
+        })
       : updateExercise({
         variables: { id: params.id, name: name, courseId: courseId, unitId: unitId },
         update: (cache, result) => {
@@ -260,7 +260,7 @@ const ExercisesEditor = (props) => {
 
   return (
     <div className='exercise-editor' style={{ width: 850 + 'px' }}>
-      <div className='exercise-data border shadow p-3 mb-3 bg-white rounded d-block' >
+      <div className='exercise-data border shadow p-3 mb-3 bg-white rounded d-block'>
         <Form
           onSubmit={onSubmit}
           validate={validateBeforeSubmit}
@@ -369,7 +369,7 @@ const ExercisesEditor = (props) => {
           </p>
           {answers.length === 0
             ? <NoResults />
-            : <Table columns={columns} data={answers} paginationEnabled={false} />}
+            : <Table columns={columns} data={answers} />}
           {alerts && <CustomAlert messages={alerts} color='warning' />}
         </div>
       )}

@@ -7,7 +7,7 @@ import { FaCheck, FaCheckDouble, FaTimesCircle } from 'react-icons/fa'
 
 const ReadOnlyExam = (props) => {
   // Props and params
-  const { exam, parent } = props
+  const { exam, goBackPath } = props
 
   const totalScore = exam.exercises.reduce((exerciseAcc, exerciseCurr) => {
     const solvedCorrectly = exerciseCurr.answers.find(x => x.correct && x.selected)
@@ -24,7 +24,7 @@ const ReadOnlyExam = (props) => {
             : <FormattedMessage id='exams_failed' />}
         </span>
 
-        <div className={`border border-secondary shadow p-2 mb-1 bg-white rounded text-right`}>
+        <div className='border border-secondary shadow p-2 mb-1 bg-white rounded text-right'>
           <i><FormattedMessage id='total_score' />: {totalScore}</i>
         </div>
       </div>
@@ -45,7 +45,7 @@ const ReadOnlyExam = (props) => {
                     return (
                       <tr key={answerIndex}>
                         <td style={{ width: 40 + 'px' }}>
-                          {answer.correct && <FaCheck /> }
+                          {answer.correct && <FaCheck />}
                         </td>
                         <td style={{ width: 40 + 'px' }}>
                           {answer.selected && answer.correct && <FaCheckDouble />}
@@ -54,7 +54,7 @@ const ReadOnlyExam = (props) => {
                         <td>
                           <FormGroup check>
                             <Label check>
-                              <Input type='radio' name={exercise.id} disabled defaultChecked={answer.selected}/>{' '}
+                              <Input type='radio' name={exercise.id} disabled defaultChecked={answer.selected} />{' '}
                               {answer.name}
                             </Label>
                           </FormGroup>
@@ -74,12 +74,12 @@ const ReadOnlyExam = (props) => {
       })}
       <div id='buttons' className='d-flex justify-content-center'>
         <ButtonGoTo
-          path={`/${parent}/list`}
+          path={goBackPath}
           color='secondary'
           translatableTextId='button.go_to_list'
         />
       </div>
-    </Form> 
+    </Form>
   )
 }
 

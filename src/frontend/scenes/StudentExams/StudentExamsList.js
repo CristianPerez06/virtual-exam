@@ -1,55 +1,64 @@
 import React, { useState, useEffect } from 'react'
-import { Card, CardBody, CardHeader } from 'reactstrap'
+import { Link } from 'react-router-dom'
 import Select from 'react-select'
+import { Button } from 'reactstrap'
 import { useQuery } from '@apollo/react-hooks'
 import { useAuthContext } from '../../hooks'
-import { TranslatableErrors } from '../../components/common'
+import mapStudents from '../../common/utils'
+import { TranslatableErrors, LoadingInline, NoResults, Table } from '../../components/common'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { LIST_EXAMS } from '../../common/requests/exams'
-import TableExams from './TableExams'
-// import { LIST_COURSES } from '../../common/requests/courses'
+import { LIST_ASSIGNED_EXAMS } from '../../common/requests/assignedExams'
+import { LIST_COURSES } from '../../common/requests/courses'
+import { format } from 'date-fns'
 
 const StudentExamsList = (props) => {
+  // Props and params
+  const { intl } = props
+  const { formatMessage } = intl
+
   // Hooks
   const { cognito } = useAuthContext()
 
   // State
   const [fetchingStudents, setFetchingStudents] = useState(false)
-  // const [courses, setCourses] = useState([])
+  const [courses, setCourses] = useState([])
   const [errors, setErrors] = useState()
+  const [assignedExams, setAssignedExams] = useState([])
   const [exams, setExams] = useState([])
   const [students, setStudents] = useState([])
   const [filters, setFilters] = useState({ selectedStudent: null, selectedCourse: null })
 
   // Handlers
   const onFetchStudentsSuccess = (data) => {
+    // TO DO - Handle error when no users where returned from AWS
     const { Users } = data
-    const mappedStudents = Users.map((user) => {
-      return {
-        value: user.Username,
-        label: user.Attributes.find(x => x.Name === 'name').Value + ' ' + user.Attributes.find(x => x.Name === 'family_name').Value
-      }
-    })
+    const mappedStudents = mapStudents(Users)
     setStudents(mappedStudents)
     setErrors()
     setFetchingStudents(false)
   }
 
-  // const onFetchCoursesSuccess = (result) => {
-  //   if (!result) return
-  //   const mappedCourses = result.listCourses.data.map((course) => {
-  //     return {
-  //       value: course.id,
-  //       label: course.name
-  //     }
-  //   })
-  //   setCourses(mappedCourses)
-  // }
+  const onFetchCoursesSuccess = (result) => {
+    if (!result) return
+    const mappedCourses = result.listCourses.data.map((course) => {
+      return {
+        value: course.id,
+        label: course.name
+      }
+    })
+    setCourses(mappedCourses)
+  }
 
   const onFetchExamsSuccess = (result) => {
     if (!result) return
     setExams(result.listExams.data)
+  }
+
+  const onFetchAssignedExamsSuccess = (result) => {
+    if (!result) return
+    setAssignedExams(result.listAssignedExams.data)
   }
 
   const onError = (err) => {
@@ -60,16 +69,126 @@ const StudentExamsList = (props) => {
   }
 
   // Queries and mutations
-  // const { loading: fetchingCourses } = useQuery(LIST_COURSES, { variables: {}, onCompleted: onFetchCoursesSuccess, onError })
+  const { loading: fetchingCourses } = useQuery(LIST_COURSES, { variables: {}, onCompleted: onFetchCoursesSuccess, onError })
+  const { loading: fetchingAssignedExams } = useQuery(
+    LIST_ASSIGNED_EXAMS,
+    {
+      variables: {
+        idNumber: (filters.selectedStudent || {}).value,
+        courseId: (filters.selectedCourse || {}).value
+      },
+      skip: !filters.selectedStudent && !filters.selectedCourse,
+      onCompleted: onFetchAssignedExamsSuccess,
+      onError
+    }
+  )
   const { loading: fetchingExams } = useQuery(
     LIST_EXAMS,
     {
-      variables: { idNumber: (filters.selectedStudent || {}).value },
-      skip: !filters.selectedStudent,
+      variables: {
+        idNumber: (filters.selectedStudent || {}).value,
+        courseId: (filters.selectedCourse || {}).value
+      },
+      skip: !filters.selectedStudent && !filters.selectedCourse,
       onCompleted: onFetchExamsSuccess,
       onError
     }
   )
+
+  // Other
+  const columnsExamsTranslations = {
+    idNumber: formatMessage({ id: 'student_id_number' }),
+    dateStarted: formatMessage({ id: 'date_started' }),
+    dateFinished: formatMessage({ id: 'date_finished' }),
+    courseName: formatMessage({ id: 'course_name' }),
+    examName: formatMessage({ id: 'exam_name' }),
+    action: formatMessage({ id: 'action' }),
+    goToExamDetails: formatMessage({ id: 'button.details' })
+  }
+
+  const columnsExams = [
+    {
+      Header: columnsExamsTranslations.idNumber,
+      accessor: 'idNumber',
+      Cell: ({ row }) => row.original.idNumber
+    },
+    {
+      Header: columnsExamsTranslations.dateStarted,
+      accessor: 'dateStarted',
+      Cell: ({ row }) => format(new Date(row.original.created), 'yyyy-MM-dd')
+    },
+    {
+      Header: columnsExamsTranslations.dateFinished,
+      accessor: 'dateFinished',
+      Cell: ({ row }) => {
+        return (row.original.updated && row.original.completed === true)
+          ? format(new Date(row.original.updated), 'yyyy-MM-dd')
+          : '-'
+      }
+    },
+    {
+      Header: columnsExamsTranslations.courseName,
+      accessor: 'courseName',
+      Cell: ({ row }) => 'TO DO - Get course name'
+    },
+    {
+      Header: columnsExamsTranslations.examName,
+      accessor: 'name',
+      Cell: ({ row }) => row.values.name
+    },
+    {
+      Header: columnsExamsTranslations.action,
+      Cell: ({ row }) => {
+        return (
+          <div className='d-flex justify-content-center'>
+            <Link to={`/student-exams/${row.original.id}/details`}>
+              <Button color='outline-secondary' className='m-2'>
+                {columnsExamsTranslations.goToExamDetails}
+              </Button>
+            </Link>
+          </div>
+        )
+      }
+    }
+  ]
+
+  const columnsAssignedExamsTranslations = {
+    courseName: formatMessage({ id: 'course_name' }),
+    examTemplateName: formatMessage({ id: 'exam_template_name' }),
+    action: formatMessage({ id: 'action' }),
+    finishExam: formatMessage({ id: 'button.finish' })
+  }
+
+  const columnsAssignedExams = [
+    {
+      Header: columnsAssignedExamsTranslations.courseName,
+      accessor: 'courseName',
+      Cell: ({ row }) => 'TO DO - Get course name'
+    },
+    {
+      Header: columnsAssignedExamsTranslations.examTemplateName,
+      accessor: 'examTemplateName',
+      Cell: ({ row }) => row.values.examTemplateName
+    },
+    {
+      Header: columnsAssignedExamsTranslations.action,
+      Cell: ({ row }) => (
+        <div className='d-flex justify-content-center'>
+          <Button
+            className='ml-1'
+            color='primary'
+            // disabled={disableButtons}
+            onClick={() => {
+              alert('TO DO')
+              // onStartClicked({ ...row.original })
+            }}
+          >
+            {columnsAssignedExamsTranslations.finishExam}
+          </Button>
+        </div>
+      )
+    }
+  ]
 
   useEffect(() => {
     setFetchingStudents(true)
@@ -85,14 +204,28 @@ const StudentExamsList = (props) => {
 
   return (
     <div className='student-exams-list' style={{ width: 850 + 'px' }}>
-      <Card className='mx-auto shadow mb-3 bg-white rounded'>
-        <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
-          <p className='h4'>
-            <FormattedMessage id='common_entity.exams' />
-          </p>
-        </CardHeader>
-        <CardBody className='d-flex flex-column text-center'>
-          <div className='row d-flex justify-content-center mb-4'>
+      <div className='filters border shadow p-3 mb-3 bg-white rounded d-block'>
+        <p className='text-center h4 mb-4'>
+          <FormattedMessage id='common_entity.exams' />
+        </p>
+        <div className='row d-flex justify-content-center mb-4'>
+          <div className='col-md-10 col-xs-12'>
+            <span className='text-left pl-1 pb-1'>
+              <FormattedMessage id='common_entity.course' />
+            </span>
+            <Select
+              value={filters.selectedCourse}
+              options={courses}
+              isDisabled={fetchingCourses}
+              onChange={(option) => {
+                const selected = courses.find(x => x.value === option.value)
+                setFilters({ selectedCourse: selected, selectedStudent: '' })
+                setErrors()
+              }}
+            />
+          </div>
+        </div>
+        <div className='row d-flex justify-content-center mb-4'>
             <div className='col-md-10 col-xs-12'>
               <span className='text-left pl-1 pb-1'>
                 <FormattedMessage id='common_entity.student' />
@@ -100,41 +233,48 @@ const StudentExamsList = (props) => {
               <Select
                 value={filters.selectedStudent}
                 options={students}
-                isDisabled={fetchingStudents}
+                isDisabled={fetchingStudents || !filters.selectedCourse}
                 onChange={(option) => {
                   const selected = students.find(x => x.value === option.value)
-                  setFilters({ selectedStudent: selected, selectedCourse: null })
+                  setFilters({ ...filters, selectedStudent: selected })
                   setErrors()
                 }}
               />
             </div>
           </div>
-          {/*
-          <div className='row d-flex justify-content-center mb-4'>
-            <div className='col-md-10 col-xs-12'>
-              <span className='text-left pl-1 pb-1'>
-                <FormattedMessage id='common_entity.course' />
-              </span>
-              <Select
-                value={filters.selectedCourse}
-                options={courses}
-                isDisabled={fetchingCourses}
-                onChange={(option) => {
-                  const selected = courses.find(x => x.value === option.value)
-                  setFilters({ selectedCourse: selected, selectedUnit: null })
-                  setErrors()
-                }}
-              />
-            </div>
-          </div>
-          */}
-          <TableExams
-            loading={fetchingExams}
-            exams={exams}
-          />
-        </CardBody>
-      </Card>
+      </div>
+
+      {/* Errors */}
       {errors && <TranslatableErrors errors={errors} />}
+
+      {/* Assigned exams*/}
+      <div className='exams border shadow mb-3 p-2 bg-white rounded d-block'>
+        <p className='text-center h5 mb-0'>
+          <FormattedMessage id='pending_exams' />
+        </p>
+        <div className='row'>
+          <div className='col-md-12 col-xs-12'>
+            {fetchingAssignedExams && <div className='text-center'><LoadingInline color='grey' /></div>}
+            {!fetchingAssignedExams && assignedExams.length === 0 && <NoResults />}
+            {!fetchingAssignedExams && assignedExams.length !== 0 && <Table columns={columnsAssignedExams} data={assignedExams} />}
+          </div>
+        </div>
+      </div>
+
+      {/* Exams */}
+      <div className='exams border shadow mb-3 p-2 bg-white rounded d-block'>
+        <p className='text-center h5 mb-0'>
+          <FormattedMessage id='exams_initiated_finalized' />
+        </p>
+        <div className='row'>
+          <div className='col-md-12 col-xs-12'>
+            {fetchingExams && <div className='text-center'><LoadingInline color='grey' /></div>}
+            {!fetchingExams && exams.length === 0 && <NoResults />}
+            {!fetchingExams && exams.length !== 0 && <Table columns={columnsExams} data={exams} />}
+          </div>
+        </div>
+      </div>
+
     </div>
   )
 }

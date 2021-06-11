@@ -9,8 +9,8 @@ import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { COOKIE_NAMES } from '../../common/constants'
 import { syncCacheOnCreate, syncCacheOnDeleteAssignedExam } from './cacheHelpers'
 import Cookies from 'js-cookie'
-import TableExams from './TableExams'
-import TablePendingExams from './TablePendingExams'
+import TableExams from './components/TableExams'
+import TablePendingExams from './components/TablePendingExams'
 
 const ExamsList = (props) => {
   // Props and params
