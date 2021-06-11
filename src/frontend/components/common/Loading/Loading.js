@@ -15,10 +15,13 @@ export const Loading = (props) => {
 }
 
 export const LoadingInline = (props) => {
-  const { className = '' } = props
+  const {
+    className = '',
+    color = 'white'
+  } = props
 
   return (
-    <FaSpinner style={{ color: 'white' }} className={`fa-pulse ${className}`} />
+    <FaSpinner style={{ color: color }} className={`fa-pulse ${className}`} />
   )
 }
 

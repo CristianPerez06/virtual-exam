@@ -79,12 +79,13 @@
   "button.confirm": "Confirm",
   "button.students": "Students",
   "button.assign_exam": "Assign exam",
-  "button.admin_exams": "Admin exams",
+  "button.manage_exams": "Manage exams",
   "button.exams": "Exams",
   "button.start": "Start",
+  "button.finish": "Finish",
   "button.confirm_start": "Confirm start",
   "button.go_to_exam": "Go to exam",
-  "button.go_to_exam_details": "Go to exam details",
+  "button.details": "Details",
   "button.edit_points": "Points",
 
   "course_name": "Course name",
@@ -130,7 +131,6 @@
 
   "student_id_number": "ID Number",
 
-  "assign_exam": "Assign Exam to Student",
   "assigned_exam_created": "Exam successfully assigned",
   "assigned_exams": "Assigned exams",
   "pending_exams": "Pending exams",
@@ -140,6 +140,8 @@
   "exams_finalized": "Finalized exams",
   "exams_passed": "Exam passed",
   "exams_failed": "Exam failed",
+  "exams_manage": "Manage exams",
+  "exams_manage_per_student": "Manage exams per student",
 
   "registration_completed": "Registration succesful",
   "first_name": "Name",

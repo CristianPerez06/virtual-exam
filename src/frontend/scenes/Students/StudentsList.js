@@ -20,6 +20,7 @@ const StudentsList = (props) => {
 
   // Handlers
   const onSuccess = (data) => {
+    // TO DO - Handle error when no users where returned from AWS
     const { Users } = data
     const studentsList = Users.map((user) => {
       return {
@@ -42,7 +43,7 @@ const StudentsList = (props) => {
     idNumber: formatMessage({ id: 'student_id_number' }),
     student: formatMessage({ id: 'common_entity.student' }),
     action: formatMessage({ id: 'action' }),
-    assign: formatMessage({ id: 'button.admin_exams' })
+    manage: formatMessage({ id: 'button.manage_exams' })
   }
 
   const columns = React.useMemo(
@@ -61,8 +62,8 @@ const StudentsList = (props) => {
         Header: columnTranslations.action,
         Cell: ({ row }) => (
           <div className='d-flex justify-content-center'>
-            <Link to={`/students/${row.original.idNumber}/assign-exam`}>
-              <Button color='info'>{columnTranslations.assign}</Button>
+            <Link to={`/students/manage-exams/${row.original.idNumber}`}>
+              <Button color='info'>{columnTranslations.manage}</Button>
             </Link>
           </div>
         )

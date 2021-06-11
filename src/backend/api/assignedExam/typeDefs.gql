@@ -12,7 +12,7 @@ type AssignedExams {
 }
 
 extend type Query {
-  listAssignedExams(idNumber: ID): AssignedExams
+  listAssignedExams(idNumber: ID, courseId: ID): AssignedExams
 }
 
 extend type Mutation {

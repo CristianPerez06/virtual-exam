@@ -79,12 +79,13 @@
   "button.confirm": "Confirmar",
   "button.students": "Alumnos",
   "button.assign_exam": "Asignar examen",
-  "button.admin_exams": "Administrar examenes",
+  "button.manage_exams": "Administrar examenes",
   "button.exams": "Examenes",
   "button.start": "Comenzar",
+  "button.finish": "Finalizar",
   "button.confirm_start": "Confirmar inicio",
   "button.go_to_exam": "Ir al examen",
-  "button.go_to_exam_details": "Ver detalle",
+  "button.details": "Detalles",
   "button.edit_points": "Puntaje",
 
   "course_name": "Nombre del curso",
@@ -130,7 +131,6 @@
 
   "student_id_number": "Legajo",
 
-  "assign_exam": "Asignar examen a alumno",
   "assigned_exam_created": "Examen asignado correctamente",
   "assigned_exams": "Examenes asignados",
   "pending_exams": "Examenes pendientes",
@@ -141,6 +141,7 @@
   "exam_finish_exam": "Finalizar examen",
   "exams_passed": "Exam aprobado",
   "exams_failed": "Exam reprobado",
+  "exams_manage_per_student": "Administrar examenes por alumno",
 
   "registration_completed": "Registro exitoso",
   "first_name": "Nombre",

@@ -116,6 +116,9 @@ const Header = () => {
                   <DropdownItem tag={Link} to='/students/list'>
                     <FormattedMessage id='button.list' />
                   </DropdownItem>
+                  <DropdownItem tag={Link} to='/students/manage-exams'>
+                    <FormattedMessage id='button.manage_exams' />
+                  </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
               {/* Student Exams */}

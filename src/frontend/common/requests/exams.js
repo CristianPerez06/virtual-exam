@@ -25,14 +25,15 @@ export const GET_EXAM = gql`
   }
 `
 export const LIST_EXAMS = gql`
-  query listExams($idNumber: ID!) {
-    listExams(idNumber: $idNumber) {
+  query listExams($idNumber: ID, $courseId: ID) {
+    listExams(idNumber: $idNumber, courseId: $courseId) {
       data {
         id
         name
         created
         updated
         completed
+        idNumber
       }
       count
     }

@@ -3,6 +3,7 @@ const { ObjectId } = require('bson')
 const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
+const { getAssignedExamsByIdNumberAndCourseId } = require('./aggregates')
 
 const debug = require('debug')('virtual-exam:assigned-exams-resolver')
 
@@ -27,24 +28,13 @@ const resolver = {
       debug('Running listAssignedExams query with params:', args)
 
       // Params
-      const { idNumber } = args
+      const { idNumber, courseId } = args
 
       // Collection
       const collection = context.db.collection('assigned-exams')
 
       // Aggregate
-      let aggregate = []
-
-      if (idNumber) {
-        aggregate = [
-          ...aggregate,
-          {
-            $match: {
-              idNumber: idNumber
-            }
-          }
-        ]
-      }
+      const aggregate = getAssignedExamsByIdNumberAndCourseId(idNumber, courseId)
       debug('Aggregate: ', aggregate)
 
       // Exec

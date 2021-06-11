@@ -31,8 +31,8 @@ const ViewExam = (props) => {
   const { loading: fetching } = useQuery(
     GET_EXAM,
     {
-      variables: { id: params.id },
-      skip: !params.id,
+      variables: { id: params.examId },
+      skip: !params.examId,
       fetchPolicy: 'network-only',
       onCompleted: onSuccess,
       onError
@@ -43,7 +43,7 @@ const ViewExam = (props) => {
 
   return (
     <div className='view-exam border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
-      {!fetching && exam && <ReadOnlyExam exam={exam} goBackPath='/student-exams/list' />}
+      {!fetching && exam && <ReadOnlyExam exam={exam} goBackPath='/students/manage-exams' />}
       {errors && <CustomAlert messages={errors} className='ml-3' />}
     </div>
   )

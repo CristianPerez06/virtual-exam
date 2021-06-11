@@ -89,11 +89,11 @@ const ExamTemplatesEditor = (props) => {
 
     isCreating
       ? createExamTemplate({
-        variables: { name: name, courseId: courseId },
-        update: (cache, result) => {
-          syncCacheOnCreate(cache, result.data.createExamTemplate)
-        }
-      })
+          variables: { name: name, courseId: courseId },
+          update: (cache, result) => {
+            syncCacheOnCreate(cache, result.data.createExamTemplate)
+          }
+        })
       : updateExamTemplate({
         variables: { id: params.id, name: name, courseId: courseId },
         update: (cache, result) => {
@@ -169,7 +169,7 @@ const ExamTemplatesEditor = (props) => {
 
   return (
     <div className='exams-template-editor' style={{ width: 850 + 'px' }}>
-      <div className='exam-template border shadow p-3 mb-3 bg-white rounded d-block' >
+      <div className='exam-template border shadow p-3 mb-3 bg-white rounded d-block'>
         <Form
           onSubmit={onSubmit}
           validate={validateBeforeSubmit}

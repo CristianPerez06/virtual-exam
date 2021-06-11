@@ -1,7 +1,8 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
-import AssignExamEditor from './AssignExamEditor'
+import ManageExamsEditor from './ManageExamsEditor'
 import StudentsList from './StudentsList'
+import ViewExam from './ViewExam'
 import { PageNotFound } from '../../components/common'
 
 const Index = () => {
@@ -13,9 +14,14 @@ const Index = () => {
         render={(props) => <StudentsList {...props} />}
       />
       <Route
+        name='Student Exam details'
+        path='/students/manage-exams/details/:examId'
+        render={(props) => <ViewExam {...props} />}
+      />
+      <Route
         name='Students Exam editor'
-        path='/students/:idNumber/assign-exam'
-        render={(props) => <AssignExamEditor {...props} />}
+        path='/students/manage-exams/:idNumber?'
+        render={(props) => <ManageExamsEditor {...props} />}
       />
       <Route name='Page Not Found' component={PageNotFound} />
     </Switch>

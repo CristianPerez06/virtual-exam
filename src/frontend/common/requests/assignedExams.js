@@ -2,13 +2,14 @@ import gql from 'graphql-tag'
 
 // requests
 export const LIST_ASSIGNED_EXAMS = gql`
-  query listAssignedExams($idNumber: ID!) {
-    listAssignedExams(idNumber: $idNumber) {
+  query listAssignedExams($idNumber: ID, $courseId: ID) {
+    listAssignedExams(idNumber: $idNumber, courseId: $courseId) {
       data {
         id,
         examTemplateId
         examTemplateName,
-        created
+        created,
+        idNumber
       }
       count
     }

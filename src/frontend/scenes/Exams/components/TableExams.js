@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { Loading, Table, NoResults } from '../../components/common'
+import { Loading, Table, NoResults } from '../../../components/common'
 import { Button } from 'reactstrap'
 import { format } from 'date-fns'
 
@@ -22,7 +22,7 @@ const TableExams = (props) => {
     examName: formatMessage({ id: 'exam_name' }),
     action: formatMessage({ id: 'action' }),
     goToExam: formatMessage({ id: 'button.go_to_exam' }),
-    goToExamDetails: formatMessage({ id: 'button.go_to_exam_details' })
+    goToExamDetails: formatMessage({ id: 'button.details' })
   }
 
   const columns = React.useMemo(
@@ -82,14 +82,14 @@ const TableExams = (props) => {
   )
 
   return (
-    <div className='row mt-3'>
+    <div className='row'>
       <div className='col-md-12 col-xs-12'>
         <p className='text-center h5 mb-0'>
           <FormattedMessage id='exams_initiated_finalized' />
         </p>
         {loading && <Loading />}
         {!loading && exams.length === 0 && <NoResults />}
-        {!loading && exams.length !== 0 && <Table columns={columns} data={exams} paginationEnabled={false} />}
+        {!loading && exams.length !== 0 && <Table columns={columns} data={exams} />}
       </div>
     </div>
   )
