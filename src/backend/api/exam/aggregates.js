@@ -71,16 +71,18 @@ const getExercisesAndAnswers = [
   }
 ]
 
-const getExamsByIdNumberAndCourseId = (idNumber, courseId) => {
-  let aggregate = [
+const getExamsByIdNumberAndCourseId = (idNumber, courseId, completed) => {
+  const objCourseId = courseId ? new ObjectId(courseId) : null
+
+  let aggregate = []
+
+  const byStatusCompleted = [
     {
       $match: {
         completed: true
       }
     }
   ]
-  const objCourseId = courseId ? new ObjectId(courseId) : null
-
   const byIdNumber = [
     {
       $match: {
@@ -105,6 +107,8 @@ const getExamsByIdNumberAndCourseId = (idNumber, courseId) => {
         examTemplateName: 1,
         idNumber: 1,
         created: 1,
+        updated: 1,
+        completed: 1,
         templateInfo: {
           $arrayElemAt: [
             '$examTemplate', 0
@@ -120,6 +124,8 @@ const getExamsByIdNumberAndCourseId = (idNumber, courseId) => {
         examTemplateName: 1,
         idNumber: 1,
         created: 1,
+        updated: 1,
+        completed: 1,
         courseId: '$templateInfo.courseId'
       }
     },
@@ -129,6 +135,13 @@ const getExamsByIdNumberAndCourseId = (idNumber, courseId) => {
       }
     }
   ]
+
+  if (completed) {
+    aggregate = [
+      ...aggregate,
+      ...byStatusCompleted
+    ]
+  }
 
   if (idNumber) {
     aggregate = [

@@ -36,7 +36,7 @@ input AnswerPerExercise {
 
 extend type Query {
   getExam(id: ID!): Exam
-  listExams(idNumber: ID, courseId: ID): Exams
+  listExams(idNumber: ID, courseId: ID, completed: Boolean): Exams
 }
 
 extend type Mutation {

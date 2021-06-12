@@ -61,13 +61,13 @@ const resolver = {
       debug('Running listExams query with params:', args)
 
       // Params
-      const { idNumber, courseId } = args
+      const { idNumber, courseId, completed } = args
 
       // Collection
       const collection = context.db.collection('exams')
 
       // Aggregate
-      const aggregate = getExamsByIdNumberAndCourseId(idNumber, courseId)
+      const aggregate = getExamsByIdNumberAndCourseId(idNumber, courseId, completed)
       debug('Aggregate: ', aggregate)
 
       // Exec

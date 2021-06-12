@@ -57,6 +57,10 @@ const TakeExam = (props) => {
     setAnswerPerExerciseList(list)
   }
 
+  const onFinishExamClicked = () => {
+    setFinishConfirmModalIsOpen(true)
+  }
+
   const onCancelFinishClicked = () => {
     if (finishingExam) return
     setFinishConfirmModalIsOpen(!finishConfirmModalIsOpen)
@@ -124,9 +128,7 @@ const TakeExam = (props) => {
               color='success'
               className='m-2'
               disabled={finishingExam || examCompleted || exam.completed}
-              onClick={() => {
-                setFinishConfirmModalIsOpen(true)
-              }}
+              onClick={onFinishExamClicked}
             >
               <FormattedMessage id='exam_finish_exam' />
             </Button>
