@@ -25,8 +25,8 @@ export const GET_EXAM = gql`
   }
 `
 export const LIST_EXAMS = gql`
-  query listExams($idNumber: ID, $courseId: ID) {
-    listExams(idNumber: $idNumber, courseId: $courseId) {
+  query listExams($idNumber: ID, $courseId: ID, $completed: Boolean) {
+    listExams(idNumber: $idNumber, courseId: $courseId, completed: $completed) {
       data {
         id
         name
@@ -58,6 +58,7 @@ export const FINISH_EXAM = gql`
       created
       updated
       completed
+      idNumber
     }
   }
 `

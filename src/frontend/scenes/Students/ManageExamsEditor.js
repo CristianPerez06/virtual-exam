@@ -38,7 +38,7 @@ const ManageExamsEditor = (props) => {
   const [assignedExams, setAssignedExams] = useState([])
   const [exams, setExams] = useState([])
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
-  const [assignedExamToDelete, setAssignedExamToDelete] = useState(false)
+  const [assignedExamToDelete, setAssignedExamToDelete] = useState()
 
   // Button handlers
   const onSubmit = (values) => {
@@ -66,12 +66,12 @@ const ManageExamsEditor = (props) => {
     setDeleteModalIsOpen(true)
   }
 
-  const onCancelClicked = () => {
+  const onCancelDeleteClicked = () => {
     if (deletingAssignedExam) return
     setDeleteModalIsOpen(!deleteModalIsOpen)
   }
 
-  const onDeleteConfirmClicked = () => {
+  const onConfirmDeleteClicked = () => {
     deleteAssignedExam({
       variables: { id: assignedExamToDelete.id },
       update: (cache, result) => {
@@ -159,7 +159,8 @@ const ManageExamsEditor = (props) => {
     {
       variables: {
         idNumber: (filters.selectedStudent || {}).value,
-        courseId: (filters.selectedCourse || {}).value
+        courseId: (filters.selectedCourse || {}).value,
+        completed: true
       },
       skip: !(filters.selectedStudent || {}).value,
       onCompleted: onFetchExamsSuccess,
@@ -209,6 +210,7 @@ const ManageExamsEditor = (props) => {
   }
 
   const columnsAssignedExamsTranslations = {
+    idNumber: formatMessage({ id: 'student_id_number' }),
     courseName: formatMessage({ id: 'course_name' }),
     examTemplateName: formatMessage({ id: 'exam_template_name' }),
     action: formatMessage({ id: 'action' }),
@@ -216,6 +218,11 @@ const ManageExamsEditor = (props) => {
   }
 
   const columnsAssignedExams = [
+    {
+      Header: columnsAssignedExamsTranslations.idNumber,
+      accessor: 'idNumber',
+      Cell: ({ row }) => row.original.idNumber
+    },
     {
       Header: columnsAssignedExamsTranslations.courseName,
       accessor: 'examTemplateId',
@@ -426,10 +433,11 @@ const ManageExamsEditor = (props) => {
         <DeleteModal
           modalIsOpen={deleteModalIsOpen}
           isBussy={deletingAssignedExam}
-          onCloseClick={() => onCancelClicked()}
-          onDeleteClick={() => onDeleteConfirmClicked()}
+          onCloseClick={() => onCancelDeleteClicked()}
+          onDeleteClick={() => onConfirmDeleteClicked()}
         />
       </div>
+
     </div>
   )
 }

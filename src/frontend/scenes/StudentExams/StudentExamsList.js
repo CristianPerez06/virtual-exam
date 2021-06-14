@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Select from 'react-select'
 import { Button } from 'reactstrap'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import { useAuthContext } from '../../hooks'
 import mapStudents from '../../common/utils'
-import { TranslatableErrors, LoadingInline, NoResults, Table } from '../../components/common'
+import { TranslatableErrors, LoadingInline, NoResults, Table, DeleteModal, ModalWrapper } from '../../components/common'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
-import { LIST_EXAMS } from '../../common/requests/exams'
-import { LIST_ASSIGNED_EXAMS } from '../../common/requests/assignedExams'
+import { LIST_EXAMS, FINISH_EXAM } from '../../common/requests/exams'
+import { LIST_ASSIGNED_EXAMS, DELETE_ASSIGNED_EXAM } from '../../common/requests/assignedExams'
 import { LIST_COURSES } from '../../common/requests/courses'
+import { syncCacheOnFinishExam, syncCacheOnDelete } from './cacheHelpers'
 import { format } from 'date-fns'
 
 const StudentExamsList = (props) => {
@@ -28,7 +29,62 @@ const StudentExamsList = (props) => {
   const [assignedExams, setAssignedExams] = useState([])
   const [exams, setExams] = useState([])
   const [students, setStudents] = useState([])
-  const [filters, setFilters] = useState({ selectedStudent: null, selectedCourse: null })
+  const [filters, setFilters] = useState({ selectedCourse: null, selectedStudent: null })
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
+  const [assignedExamToDelete, setAssignedExamToDelete] = useState(false)
+  const [finishConfirmModalIsOpen, setFinishConfirmModalIsOpen] = useState(false)
+  const [examToFinish, setExamToFinish] = useState()
+
+  // Button handlers
+  const onDeleteClicked = (assignedExam) => {
+    setAssignedExamToDelete(assignedExam)
+    setDeleteModalIsOpen(true)
+  }
+
+  const onCancelDeleteClicked = () => {
+    if (deletingAssignedExam) return
+    setAssignedExamToDelete()
+    setDeleteModalIsOpen(!deleteModalIsOpen)
+  }
+
+  const onConfirmDeleteClicked = () => {
+    deleteAssignedExam({
+      variables: { id: assignedExamToDelete.id },
+      update: (cache, result) => {
+        const variables = {
+          idNumber: filters.selectedStudent.value
+        }
+        const updatedAssignedExamsList = syncCacheOnDelete(cache, assignedExamToDelete, variables)
+        setAssignedExams(updatedAssignedExamsList.data)
+      }
+    })
+  }
+
+  const onFinishExamClicked = (exam) => {
+    setExamToFinish(exam)
+    setFinishConfirmModalIsOpen(true)
+  }
+
+  const onCancelFinishClicked = () => {
+    if (finishingExam) return
+    setExamToFinish()
+    setFinishConfirmModalIsOpen(!finishConfirmModalIsOpen)
+  }
+
+  const onConfirmFinishClicked = () => {
+    finishExam({
+      variables: { id: examToFinish.id, answerPerExerciseList: [] },
+      update: (cache, result) => {
+        const variables = {
+          idNumber: (filters.selectedStudent || {}).value,
+          courseId: (filters.selectedCourse || {}).value
+        }
+        const updatedExamsList = syncCacheOnFinishExam(cache, result.data.finishExam, variables)
+        setExams(updatedExamsList.data)
+      }
+    })
+    setFinishConfirmModalIsOpen(false)
+  }
 
   // Handlers
   const onFetchStudentsSuccess = (data) => {
@@ -59,6 +115,16 @@ const StudentExamsList = (props) => {
   const onFetchAssignedExamsSuccess = (result) => {
     if (!result) return
     setAssignedExams(result.listAssignedExams.data)
+  }
+
+  const onDeleteSuccess = () => {
+    setAssignedExamToDelete()
+    setErrors()
+    setDeleteModalIsOpen(false)
+  }
+
+  const onFinishSuccess = (result) => {
+    setErrors()
   }
 
   const onError = (err) => {
@@ -94,6 +160,8 @@ const StudentExamsList = (props) => {
       onError
     }
   )
+  const [deleteAssignedExam, { loading: deletingAssignedExam }] = useMutation(DELETE_ASSIGNED_EXAM, { onCompleted: onDeleteSuccess, onError })
+  const [finishExam, { loading: finishingExam }] = useMutation(FINISH_EXAM, { onCompleted: onFinishSuccess, onError })
 
   // Other
   const columnsExamsTranslations = {
@@ -103,7 +171,8 @@ const StudentExamsList = (props) => {
     courseName: formatMessage({ id: 'course_name' }),
     examName: formatMessage({ id: 'exam_name' }),
     action: formatMessage({ id: 'action' }),
-    goToExamDetails: formatMessage({ id: 'button.details' })
+    goToExamDetails: formatMessage({ id: 'button.details' }),
+    finishExam: formatMessage({ id: 'button.finish' })
   }
 
   const columnsExams = [
@@ -127,11 +196,6 @@ const StudentExamsList = (props) => {
       }
     },
     {
-      Header: columnsExamsTranslations.courseName,
-      accessor: 'courseName',
-      Cell: ({ row }) => 'TO DO - Get course name'
-    },
-    {
       Header: columnsExamsTranslations.examName,
       accessor: 'name',
       Cell: ({ row }) => row.values.name
@@ -139,13 +203,29 @@ const StudentExamsList = (props) => {
     {
       Header: columnsExamsTranslations.action,
       Cell: ({ row }) => {
+        debugger
         return (
           <div className='d-flex justify-content-center'>
-            <Link to={`/student-exams/${row.original.id}/details`}>
-              <Button color='outline-secondary' className='m-2'>
-                {columnsExamsTranslations.goToExamDetails}
-              </Button>
-            </Link>
+            {row.original.completed
+              ? (
+                <Link to={`/student-exams/${row.original.id}/details`}>
+                  <Button color='outline-secondary' className='m-2'>
+                    {columnsExamsTranslations.goToExamDetails}
+                  </Button>
+                </Link>
+              )
+              : (
+                <Button
+                  color='secondary'
+                  className='m-2'
+                  disabled={finishingExam}
+                  onClick={() => {
+                    onFinishExamClicked({ ...row.original })
+                  }}
+                >
+                  {columnsExamsTranslations.finishExam}
+                </Button>
+              )}
           </div>
         )
       }
@@ -156,7 +236,7 @@ const StudentExamsList = (props) => {
     courseName: formatMessage({ id: 'course_name' }),
     examTemplateName: formatMessage({ id: 'exam_template_name' }),
     action: formatMessage({ id: 'action' }),
-    finishExam: formatMessage({ id: 'button.finish' })
+    delete: formatMessage({ id: 'button.delete' })
   }
 
   const columnsAssignedExams = [
@@ -176,14 +256,10 @@ const StudentExamsList = (props) => {
         <div className='d-flex justify-content-center'>
           <Button
             className='ml-1'
-            color='primary'
-            // disabled={disableButtons}
-            onClick={() => {
-              alert('TO DO')
-              // onStartClicked({ ...row.original })
-            }}
+            color='danger'
+            onClick={() => onDeleteClicked({ ...row.original })}
           >
-            {columnsAssignedExamsTranslations.finishExam}
+            {columnsAssignedExamsTranslations.delete}
           </Button>
         </div>
       )
@@ -191,6 +267,9 @@ const StudentExamsList = (props) => {
   ]
 
   useEffect(() => {
+    // State cleanup
+    setFilters({ selectedCourse: '' })
+
     setFetchingStudents(true)
     const getUsers = () => {
       cognito.getUsersList()
@@ -273,6 +352,29 @@ const StudentExamsList = (props) => {
             {!fetchingExams && exams.length !== 0 && <Table columns={columnsExams} data={exams} />}
           </div>
         </div>
+      </div>
+
+      {/* Delete modal */}
+      <div id='delete-modal'>
+        <DeleteModal
+          modalIsOpen={deleteModalIsOpen}
+          isBussy={deletingAssignedExam}
+          onCloseClick={() => onCancelDeleteClicked()}
+          onDeleteClick={() => onConfirmDeleteClicked()}
+        />
+      </div>
+
+      {/* Finish eexam modal */}
+      <div id='confirm-finish-modal'>
+        <ModalWrapper
+          modalIsOpen={finishConfirmModalIsOpen}
+          headerTextId='common_title.finish_exam_confirmation'
+          bodyTextId='confirm_finish_exam'
+          buttonTextId='button.confirm'
+          buttonColor='danger'
+          onCloseClick={() => onCancelFinishClicked()}
+          onConfirmClick={() => onConfirmFinishClicked()}
+        />
       </div>
 
     </div>
