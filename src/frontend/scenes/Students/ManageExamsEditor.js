@@ -249,7 +249,7 @@ const ManageExamsEditor = (props) => {
     }
   ]
 
-  const columnsExamsTranslations = {
+  const columnsExamTranslations = {
     dateStarted: formatMessage({ id: 'date_started' }),
     dateFinished: formatMessage({ id: 'date_finished' }),
     courseName: formatMessage({ id: 'course_name' }),
@@ -258,14 +258,14 @@ const ManageExamsEditor = (props) => {
     goToExamDetails: formatMessage({ id: 'button.details' })
   }
 
-  const columnsExams = [
+  const columnsExam = [
     {
-      Header: columnsExamsTranslations.dateStarted,
+      Header: columnsExamTranslations.dateStarted,
       accessor: 'dateStarted',
       Cell: ({ row }) => format(new Date(row.original.created), 'yyyy-MM-dd')
     },
     {
-      Header: columnsExamsTranslations.dateFinished,
+      Header: columnsExamTranslations.dateFinished,
       accessor: 'dateFinished',
       Cell: ({ row }) => {
         return (row.original.updated && row.original.completed === true)
@@ -274,23 +274,23 @@ const ManageExamsEditor = (props) => {
       }
     },
     {
-      Header: columnsExamsTranslations.courseName,
+      Header: columnsExamTranslations.courseName,
       accessor: 'courseName',
       Cell: ({ row }) => 'TO DO - Get course name'
     },
     {
-      Header: columnsExamsTranslations.examName,
+      Header: columnsExamTranslations.examName,
       accessor: 'name',
       Cell: ({ row }) => row.values.name
     },
     {
-      Header: columnsExamsTranslations.action,
+      Header: columnsExamTranslations.action,
       Cell: ({ row }) => {
         return (
           <div className='d-flex justify-content-center'>
             <Link to={`/students/manage-exams/details/${row.original.id}`}>
               <Button color='outline-secondary' className='m-2'>
-                {columnsExamsTranslations.goToExamDetails}
+                {columnsExamTranslations.goToExamDetails}
               </Button>
             </Link>
           </div>
@@ -423,7 +423,7 @@ const ManageExamsEditor = (props) => {
           <div className='col-md-12 col-xs-12'>
             {fetchingExams && <div className='text-center'><LoadingInline color='grey' /></div>}
             {!fetchingExams && exams.length === 0 && <NoResults />}
-            {!fetchingExams && exams.length !== 0 && <Table columns={columnsExams} data={exams} />}
+            {!fetchingExams && exams.length !== 0 && <Table columns={columnsExam} data={exams} />}
           </div>
         </div>
       </div>

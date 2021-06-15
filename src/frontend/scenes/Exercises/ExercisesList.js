@@ -6,7 +6,7 @@ import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS } from '../../common/requests/units'
 import { LIST_EXERCISES, DISABLE_EXERCISE } from '../../common/requests/exercises'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Loading, CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable } from '../../components/common'
+import { CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
@@ -171,7 +171,7 @@ const ExercisesList = (props) => {
             </div>
           </div>
 
-          {fetching && <Loading />}
+          {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
           {!fetching && filters.selectedCourse && filters.selectedUnit && (
             <TwoColumnsTable
               entityName='exercise'

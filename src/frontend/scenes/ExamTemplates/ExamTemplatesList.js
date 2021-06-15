@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_EXAM_TEMPLATES, DISABLE_EXAM_TEMPLATE } from '../../common/requests/templates'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Loading, CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable } from '../../components/common'
+import { CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
@@ -68,8 +68,6 @@ const ExamTemplatesList = (props) => {
 
   return (
     <div className='exam-templates-list shadow mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
-      {fetching && <Loading />}
-      {!fetching &&
         <Card className='mx-auto'>
           <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
             <p className='h4'>
@@ -77,14 +75,17 @@ const ExamTemplatesList = (props) => {
             </p>
           </CardHeader>
           <CardBody className='d-flex flex-column text-center'>
-            <TwoColumnsTable
-              entityName='exam_template'
-              entitiesPath='exam-templates'
-              items={templates}
-              canEdit
-              canDelete
-              onDeleteClicked={onDeleteClicked}
-            />
+            {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
+            {!fetching && (
+              <TwoColumnsTable
+                entityName='exam_template'
+                entitiesPath='exam-templates'
+                items={templates}
+                canEdit
+                canDelete
+                onDeleteClicked={onDeleteClicked}
+              />
+            )}
 
             {/* Delete modal */}
             <div id='delete-modal'>
@@ -96,10 +97,11 @@ const ExamTemplatesList = (props) => {
               />
             </div>
 
-            {/* Alerts */}
-            {!deleting && templateDeleted && <CustomAlert messages={{ id: 'exercise_deleted', message: `${formatMessage({ id: 'exercise_deleted' })}: ${templateToDelete.name}` }} color='success' />}
           </CardBody>
-        </Card>}
+        </Card>
+
+      {/* Alerts */}
+      {!deleting && templateDeleted && <CustomAlert messages={{ id: 'exercise_deleted', message: `${formatMessage({ id: 'exercise_deleted' })}: ${templateToDelete.name}` }} color='success' />}
       {errors && <TranslatableErrors errors={errors} />}
     </div>
   )

@@ -5,7 +5,7 @@ import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS, DISABLE_UNIT } from '../../common/requests/units'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import Select from 'react-select'
-import { Loading, CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable } from '../../components/common'
+import { CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
@@ -94,33 +94,33 @@ const UnitsList = (props) => {
 
   return (
     <div className='units-list' style={{ width: 850 + 'px' }}>
-      {fetching && <Loading />}
-      {!fetching &&
-        <Card className='mx-auto shadow mb-3 bg-white rounded'>
-          <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
-            <p className='h4'>
-              <FormattedMessage id='common_entity.units' />
-            </p>
-          </CardHeader>
-          <CardBody className='d-flex flex-column text-center'>
-            <div className='row d-flex justify-content-center mb-4'>
-              <div className='col-md-10 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='common_entity.course' />
-                </span>
-                <Select
-                  value={filters.selectedCourse}
-                  options={courses}
-                  isDisabled={fetchingCourses}
-                  onChange={(option) => {
-                    const selected = courses.find(x => x.value === option.value)
-                    setFilters({ selectedCourse: selected })
-                    setErrors()
-                  }}
-                />
-              </div>
+      <Card className='mx-auto shadow mb-3 bg-white rounded'>
+        <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
+          <p className='h4'>
+            <FormattedMessage id='common_entity.units' />
+          </p>
+        </CardHeader>
+        <CardBody className='d-flex flex-column text-center'>
+          <div className='row d-flex justify-content-center mb-4'>
+            <div className='col-md-10 col-xs-12'>
+              <span className='text-left pl-1 pb-1'>
+                <FormattedMessage id='common_entity.course' />
+              </span>
+              <Select
+                value={filters.selectedCourse}
+                options={courses}
+                isDisabled={fetchingCourses}
+                onChange={(option) => {
+                  const selected = courses.find(x => x.value === option.value)
+                  setFilters({ selectedCourse: selected })
+                  setErrors()
+                }}
+              />
             </div>
+          </div>
 
+          {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
+          {!fetching && (
             <TwoColumnsTable
               entityName='unit'
               entitiesPath='units'
@@ -129,22 +129,24 @@ const UnitsList = (props) => {
               canDelete
               onDeleteClicked={onDeleteClicked}
             />
+          )}
 
-            {/* Delete dodal */}
-            <div id='delete-modal'>
-              <DeleteModal
-                modalIsOpen={deleteModalIsOpen}
-                additionalInfo='unit_delete_related_entities'
-                isBussy={deleting}
-                onCloseClick={() => onCancelClicked()}
-                onDeleteClick={() => onDeleteConfirmClicked()}
-              />
-            </div>
+          {/* Delete dodal */}
+          <div id='delete-modal'>
+            <DeleteModal
+              modalIsOpen={deleteModalIsOpen}
+              additionalInfo='unit_delete_related_entities'
+              isBussy={deleting}
+              onCloseClick={() => onCancelClicked()}
+              onDeleteClick={() => onDeleteConfirmClicked()}
+            />
+          </div>
 
-            {/* Alerts */}
-            {!deleting && unitDeleted && <CustomAlert messages={{ id: 'unit_deleted', message: `${formatMessage({ id: 'unit_deleted' })}: ${unitToDelete.name}` }} color='success' />}
-          </CardBody>
-        </Card>}
+        </CardBody>
+      </Card>
+
+      {/* Alerts */}
+      {!deleting && unitDeleted && <CustomAlert messages={{ id: 'unit_deleted', message: `${formatMessage({ id: 'unit_deleted' })}: ${unitToDelete.name}` }} color='success' />}
       {errors && <TranslatableErrors errors={errors} />}
     </div>
   )

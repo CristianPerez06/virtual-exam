@@ -13,7 +13,8 @@ import {
   TranslatableTitle,
   ButtonSubmit,
   ButtonGoTo,
-  NoResults
+  NoResults,
+  LoadingInline
 } from '../../components/common'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
@@ -361,18 +362,17 @@ const ExercisesEditor = (props) => {
           )}
         />
       </div>
+
       {/* Answers */}
-      {!fetchingAnswers && (
-        <div className='answers-list border shadow p-3 mb-3 bg-white rounded'>
-          <p className='text-center h5 mb-0'>
-            <FormattedMessage id='common_entity.answers' />
-          </p>
-          {answers.length === 0
-            ? <NoResults />
-            : <Table columns={columns} data={answers} />}
-          {alerts && <CustomAlert messages={alerts} color='warning' />}
-        </div>
-      )}
+      <div className='answers-list border shadow p-3 mb-3 bg-white rounded'>
+        <p className='text-center h5 mb-0'>
+          <FormattedMessage id='common_entity.answers' />
+        </p>
+        {fetchingAnswers && <div className='text-center'><LoadingInline color='grey' /></div>}
+        {!fetchingAnswers && answers.length === 0 && <NoResults />}
+        {!fetchingAnswers && answers.length !== 0 && <Table columns={columns} data={answers} />}
+        {alerts && <CustomAlert messages={alerts} color='warning' />}
+      </div>
     </div>
   )
 }
