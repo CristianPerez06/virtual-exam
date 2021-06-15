@@ -13,6 +13,7 @@ type ExamTemplateExercise {
   id: ID!
   name: String!
   points: Float
+  unitName: String!
 }
 
 type ExamTemplateExercises {
