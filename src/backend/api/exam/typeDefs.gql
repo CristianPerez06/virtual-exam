@@ -22,6 +22,8 @@ type Exam {
   updated: String
   completed: Boolean
   idNumber: String!
+  courseId: ID!
+  courseName: String!
 }
 
 type Exams {

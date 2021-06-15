@@ -164,6 +164,7 @@
   "date": "Date",
   "date_started": "Date started",
   "date_finished": "Date finished",
+  "date_assigned": "Date assigned",
   "welcome_virtual_exam": "Welcome to Virtual Exam",
   "points": "Points",
   "total_score": "Score",

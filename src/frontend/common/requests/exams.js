@@ -34,6 +34,7 @@ export const LIST_EXAMS = gql`
         updated
         completed
         idNumber
+        courseName
       }
       count
     }

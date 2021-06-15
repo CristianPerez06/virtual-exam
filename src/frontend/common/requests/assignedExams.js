@@ -7,9 +7,10 @@ export const LIST_ASSIGNED_EXAMS = gql`
       data {
         id,
         examTemplateId
-        examTemplateName,
-        created,
+        examTemplateName
+        created
         idNumber
+        courseName
       }
       count
     }
@@ -19,9 +20,9 @@ export const CREATE_ASSIGNED_EXAM = gql`
   mutation createAssignedExam($examTemplateId: ID!, $idNumber: ID!) {
     createAssignedExam(examTemplateId: $examTemplateId, idNumber: $idNumber){
       id
-      idNumber,
-      examTemplateId,
-      examTemplateName,
+      idNumber
+      examTemplateId
+      examTemplateName
       created
     }
   }
