@@ -1,19 +1,21 @@
 import React, { useState } from 'react'
-import { Card, CardBody, CardHeader } from 'reactstrap'
+import { Card, CardBody, CardHeader, Button } from 'reactstrap'
+import { Link } from 'react-router-dom'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_ASSIGNED_EXAMS } from '../../common/requests/assignedExams'
 import { CREATE_EXAM, LIST_EXAMS } from '../../common/requests/exams'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { ModalWrapper, TranslatableErrors } from '../../components/common'
+import { ModalWrapper, TranslatableErrors, LoadingInline, Table, NoResults } from '../../components/common'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { COOKIE_NAMES } from '../../common/constants'
 import { syncCacheOnCreate, syncCacheOnDeleteAssignedExam } from './cacheHelpers'
 import Cookies from 'js-cookie'
-import TableExams from './components/TableExams'
-import TablePendingExams from './components/TablePendingExams'
+import { format } from 'date-fns'
 
 const ExamsList = (props) => {
   // Props and params
+  const { intl } = props
+  const { formatMessage } = intl
   const idNumber = Cookies.get(COOKIE_NAMES.USER)
 
   // State
@@ -96,7 +98,106 @@ const ExamsList = (props) => {
       onError
     }
   )
-  const [createExam, { loading: creating }] = useMutation(CREATE_EXAM, { onCompleted: onSuccess, onError })
+  const [createExam, { loading: creatingExam }] = useMutation(CREATE_EXAM, { onCompleted: onSuccess, onError })
+
+  // Other
+  const columnsAssignedExamTranslations = {
+    courseName: formatMessage({ id: 'course_name' }),
+    examTemplateName: formatMessage({ id: 'exam_template_name' }),
+    action: formatMessage({ id: 'action' }),
+    start: formatMessage({ id: 'button.start' })
+  }
+
+  const columnsAssignedExam = [
+    {
+      Header: columnsAssignedExamTranslations.courseName,
+      accessor: 'courseName',
+      Cell: ({ row }) => 'TO DO - Get course name'
+    },
+    {
+      Header: columnsAssignedExamTranslations.examTemplateName,
+      accessor: 'examTemplateName',
+      Cell: ({ row }) => row.values.examTemplateName
+    },
+    {
+      Header: columnsAssignedExamTranslations.action,
+      Cell: ({ row }) => (
+        <div className='d-flex justify-content-center'>
+          <Button
+            className='ml-1'
+            color='primary'
+            disabled={creatingExam}
+            onClick={() => {
+              onStartClicked({ ...row.original })
+            }}
+          >
+            {columnsAssignedExamTranslations.start}
+          </Button>
+        </div>
+      )
+    }
+  ]
+
+  const columnsExamTranslations = {
+    dateStarted: formatMessage({ id: 'date_started' }),
+    dateFinished: formatMessage({ id: 'date_finished' }),
+    courseName: formatMessage({ id: 'course_name' }),
+    examName: formatMessage({ id: 'exam_name' }),
+    action: formatMessage({ id: 'action' }),
+    goToExam: formatMessage({ id: 'button.go_to_exam' }),
+    goToExamDetails: formatMessage({ id: 'button.details' })
+  }
+
+  const columnsExam = [
+    {
+      Header: columnsExamTranslations.dateStarted,
+      accessor: 'dateStarted',
+      Cell: ({ row }) => format(new Date(row.original.created), 'yyyy-MM-dd')
+    },
+    {
+      Header: columnsExamTranslations.dateFinished,
+      accessor: 'dateFinished',
+      Cell: ({ row }) => {
+        return (row.original.updated && row.original.completed === true)
+          ? format(new Date(row.original.updated), 'yyyy-MM-dd')
+          : '-'
+      }
+    },
+    {
+      Header: columnsExamTranslations.courseName,
+      accessor: 'courseName',
+      Cell: ({ row }) => 'TO DO - Get course name'
+    },
+    {
+      Header: columnsExamTranslations.examName,
+      accessor: 'name',
+      Cell: ({ row }) => row.values.name
+    },
+    {
+      Header: columnsExamTranslations.action,
+      Cell: ({ row }) => {
+        return (
+          <div className='d-flex justify-content-center'>
+            {row.original.updated && row.original.completed === true
+              ? (
+                <Link to={`/exams/${row.original.id}/details`}>
+                  <Button color='outline-secondary' className='m-2' disabled={creatingExam}>
+                    {columnsExamTranslations.goToExamDetails}
+                  </Button>
+                </Link>
+                )
+              : (
+                <Link to={`/exams/${row.original.id}`}>
+                  <Button color='secondary' className='m-2' disabled={creatingExam}>
+                    {columnsExamTranslations.goToExam}
+                  </Button>
+                </Link>
+                )}
+          </div>
+        )
+      }
+    }
+  ]
 
   return (
     <div className='exams-list' style={{ width: 850 + 'px' }}>
@@ -107,18 +208,30 @@ const ExamsList = (props) => {
           </p>
         </CardHeader>
         <CardBody className='d-flex flex-column'>
-          {/* Tables */}
-          <TablePendingExams
-            loading={fetchingAssignedExams}
-            assignedExams={assignedExams}
-            disableButtons={creating}
-            onStartClicked={onStartClicked}
-          />
-          <TableExams
-            loading={fetchingExams}
-            exams={exams}
-            disableButtons={creating}
-          />
+
+          {/* Pending exams */}
+          <div className='row mb-3'>
+            <div className='col-md-12 col-xs-12'>
+              <p className='text-center h5 mb-0'>
+                <FormattedMessage id='pending_exams' />
+              </p>
+              {fetchingAssignedExams && <div className='mt-2 mb-3 text-center'><LoadingInline color='grey' /></div>}
+              {!fetchingAssignedExams && assignedExams.length === 0 && <NoResults />}
+              {!fetchingAssignedExams && assignedExams.length !== 0 && <Table columns={columnsAssignedExam} data={assignedExams} />}
+            </div>
+          </div>
+
+          {/* Exams */}
+          <div className='row'>
+            <div className='col-md-12 col-xs-12'>
+              <p className='text-center h5 mb-0'>
+                <FormattedMessage id='exams_initiated_finalized' />
+              </p>
+              {fetchingExams && <div className='mt-2 mb-3 text-center'><LoadingInline color='grey' /></div>}
+              {!fetchingExams && exams.length === 0 && <NoResults />}
+              {!fetchingExams && exams.length !== 0 && <Table columns={columnsExam} data={exams} />}
+            </div>
+          </div>
 
           {/* Delete modal */}
           <div id='delete-modal'>
@@ -132,6 +245,7 @@ const ExamsList = (props) => {
               onConfirmClick={() => onConfirmStartClicked()}
             />
           </div>
+
         </CardBody>
       </Card>
       <div id='info' className='d-flex justify-content-around mt-2 w-100'>

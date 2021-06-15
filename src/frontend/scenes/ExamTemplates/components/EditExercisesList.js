@@ -3,7 +3,7 @@ import { Button } from 'reactstrap'
 import { injectIntl } from 'react-intl'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LIST_EXAM_TEMPLATE_EXERCISES, REMOVE_EXERCISE_FROM_EXAM_TEMPLATE, UPDATE_EXERCISE_NOTE } from '../../../common/requests/templates'
-import { DeleteModal, Table, NoResults, CustomAlert } from '../../../components/common'
+import { DeleteModal, Table, NoResults, CustomAlert, LoadingInline } from '../../../components/common'
 import { syncCacheOnUpdateTemplateExercise, syncCacheOnRemoveTemplateExercise } from '../cacheHelpers'
 import EditPointsModal from './EditPointsModal'
 import { BigNumber } from 'bignumber.js'
@@ -204,11 +204,12 @@ const EditExercisesList = (props) => {
     <div className='edit-exercises-list'>
       <div className='row'>
         <div className='col-md-12 col-xs-12 text-right'>
-          {templateExercises.length === 0
-            ? <NoResults />
-            : <Table columns={columns} data={templateExercises} />}
+          {fetchingTemplateExercises && <div className='text-center mt-2'><LoadingInline color='grey' /></div>}
+          {!fetchingTemplateExercises && templateExercises.length === 0 && <NoResults />}
+          {!fetchingTemplateExercises && templateExercises.length !== 0 && <Table columns={columns} data={templateExercises} />}
         </div>
       </div>
+
       {/* Alerts */}
       <div className='row'>
         {alerts && <CustomAlert messages={alerts} color='warning' />}
@@ -223,6 +224,7 @@ const EditExercisesList = (props) => {
           onDeleteClick={onConfirmDeleteClicked}
         />
       </div>
+
       {/* Edit points modal */}
       <div id='edit-points-modal'>
         <EditPointsModal

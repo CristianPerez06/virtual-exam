@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_COURSES, DISABLE_COURSE } from '../../common/requests/courses'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Loading, CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable } from '../../components/common'
+import { CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
@@ -68,8 +68,6 @@ const CoursesList = (props) => {
 
   return (
     <div className='courses-list' style={{ width: 850 + 'px' }}>
-      {fetching && <Loading />}
-      {!fetching &&
         <Card className='mx-auto shadow mb-3 bg-white rounded'>
           <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
             <p className='h4'>
@@ -77,14 +75,17 @@ const CoursesList = (props) => {
             </p>
           </CardHeader>
           <CardBody className='d-flex flex-column'>
-            <TwoColumnsTable
-              entityName='course'
-              entitiesPath='courses'
-              items={courses}
-              canEdit
-              canDelete
-              onDeleteClicked={onDeleteClicked}
-            />
+            {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
+            {!fetching && (
+              <TwoColumnsTable
+                entityName='course'
+                entitiesPath='courses'
+                items={courses}
+                canEdit
+                canDelete
+                onDeleteClicked={onDeleteClicked}
+              />
+            )}
 
             {/* Delete modal */}
             <div id='delete-modal'>
@@ -96,11 +97,11 @@ const CoursesList = (props) => {
                 onDeleteClick={() => onDeleteConfirmClicked()}
               />
             </div>
-
-            {/* Alerts */}
-            {!deleting && courseDeleted && <CustomAlert messages={{ id: 'course_deleted', message: `${formatMessage({ id: 'course_deleted' })}: ${courseToDelete.name}` }} color='success' />}
           </CardBody>
-        </Card>}
+        </Card>
+
+      {/* Alerts */}
+      {!deleting && courseDeleted && <CustomAlert messages={{ id: 'course_deleted', message: `${formatMessage({ id: 'course_deleted' })}: ${courseToDelete.name}` }} color='success' />}  
       {errors && <TranslatableErrors errors={errors} />}
     </div>
   )

@@ -164,7 +164,7 @@ const StudentExamsList = (props) => {
   const [finishExam, { loading: finishingExam }] = useMutation(FINISH_EXAM, { onCompleted: onFinishSuccess, onError })
 
   // Other
-  const columnsExamsTranslations = {
+  const columnsExamTranslations = {
     idNumber: formatMessage({ id: 'student_id_number' }),
     dateStarted: formatMessage({ id: 'date_started' }),
     dateFinished: formatMessage({ id: 'date_finished' }),
@@ -175,19 +175,19 @@ const StudentExamsList = (props) => {
     finishExam: formatMessage({ id: 'button.finish' })
   }
 
-  const columnsExams = [
+  const columnsExam = [
     {
-      Header: columnsExamsTranslations.idNumber,
+      Header: columnsExamTranslations.idNumber,
       accessor: 'idNumber',
       Cell: ({ row }) => row.original.idNumber
     },
     {
-      Header: columnsExamsTranslations.dateStarted,
+      Header: columnsExamTranslations.dateStarted,
       accessor: 'dateStarted',
       Cell: ({ row }) => format(new Date(row.original.created), 'yyyy-MM-dd')
     },
     {
-      Header: columnsExamsTranslations.dateFinished,
+      Header: columnsExamTranslations.dateFinished,
       accessor: 'dateFinished',
       Cell: ({ row }) => {
         return (row.original.updated && row.original.completed === true)
@@ -196,12 +196,12 @@ const StudentExamsList = (props) => {
       }
     },
     {
-      Header: columnsExamsTranslations.examName,
+      Header: columnsExamTranslations.examName,
       accessor: 'name',
       Cell: ({ row }) => row.values.name
     },
     {
-      Header: columnsExamsTranslations.action,
+      Header: columnsExamTranslations.action,
       Cell: ({ row }) => {
         debugger
         return (
@@ -210,7 +210,7 @@ const StudentExamsList = (props) => {
               ? (
                 <Link to={`/student-exams/${row.original.id}/details`}>
                   <Button color='outline-secondary' className='m-2'>
-                    {columnsExamsTranslations.goToExamDetails}
+                    {columnsExamTranslations.goToExamDetails}
                   </Button>
                 </Link>
               )
@@ -223,7 +223,7 @@ const StudentExamsList = (props) => {
                     onFinishExamClicked({ ...row.original })
                   }}
                 >
-                  {columnsExamsTranslations.finishExam}
+                  {columnsExamTranslations.finishExam}
                 </Button>
               )}
           </div>
@@ -349,7 +349,7 @@ const StudentExamsList = (props) => {
           <div className='col-md-12 col-xs-12'>
             {fetchingExams && <div className='text-center'><LoadingInline color='grey' /></div>}
             {!fetchingExams && exams.length === 0 && <NoResults />}
-            {!fetchingExams && exams.length !== 0 && <Table columns={columnsExams} data={exams} />}
+            {!fetchingExams && exams.length !== 0 && <Table columns={columnsExam} data={exams} />}
           </div>
         </div>
       </div>
