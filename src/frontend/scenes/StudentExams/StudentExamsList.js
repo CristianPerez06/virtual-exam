@@ -203,7 +203,6 @@ const StudentExamsList = (props) => {
     {
       Header: columnsExamTranslations.action,
       Cell: ({ row }) => {
-        debugger
         return (
           <div className='d-flex justify-content-center'>
             {row.original.completed
@@ -232,8 +231,8 @@ const StudentExamsList = (props) => {
     }
   ]
 
-  const columnsAssignedExamsTranslations = {
-    courseName: formatMessage({ id: 'course_name' }),
+  const columnsAssignedExamTranslations = {
+    dateAssigned: formatMessage({ id: 'date_assigned' }),
     examTemplateName: formatMessage({ id: 'exam_template_name' }),
     action: formatMessage({ id: 'action' }),
     delete: formatMessage({ id: 'button.delete' })
@@ -241,17 +240,17 @@ const StudentExamsList = (props) => {
 
   const columnsAssignedExams = [
     {
-      Header: columnsAssignedExamsTranslations.courseName,
-      accessor: 'courseName',
-      Cell: ({ row }) => 'TO DO - Get course name'
+      Header: columnsAssignedExamTranslations.dateAssigned,
+      accessor: 'created',
+      Cell: ({ row }) => format(new Date(row.original.created), 'yyyy-MM-dd')
     },
     {
-      Header: columnsAssignedExamsTranslations.examTemplateName,
+      Header: columnsAssignedExamTranslations.examTemplateName,
       accessor: 'examTemplateName',
-      Cell: ({ row }) => row.values.examTemplateName
+      Cell: ({ row }) => row.original.examTemplateName
     },
     {
-      Header: columnsAssignedExamsTranslations.action,
+      Header: columnsAssignedExamTranslations.action,
       Cell: ({ row }) => (
         <div className='d-flex justify-content-center'>
           <Button
@@ -259,7 +258,7 @@ const StudentExamsList = (props) => {
             color='danger'
             onClick={() => onDeleteClicked({ ...row.original })}
           >
-            {columnsAssignedExamsTranslations.delete}
+            {columnsAssignedExamTranslations.delete}
           </Button>
         </div>
       )

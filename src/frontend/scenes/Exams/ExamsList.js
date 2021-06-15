@@ -102,6 +102,7 @@ const ExamsList = (props) => {
 
   // Other
   const columnsAssignedExamTranslations = {
+    dateAssigned: formatMessage({ id: 'date_assigned' }),
     courseName: formatMessage({ id: 'course_name' }),
     examTemplateName: formatMessage({ id: 'exam_template_name' }),
     action: formatMessage({ id: 'action' }),
@@ -110,9 +111,14 @@ const ExamsList = (props) => {
 
   const columnsAssignedExam = [
     {
+      Header: columnsAssignedExamTranslations.dateAssigned,
+      accessor: 'created',
+      Cell: ({ row }) => format(new Date(row.original.created), 'yyyy-MM-dd')
+    },
+    {
       Header: columnsAssignedExamTranslations.courseName,
       accessor: 'courseName',
-      Cell: ({ row }) => 'TO DO - Get course name'
+      Cell: ({ row }) => row.values.courseName
     },
     {
       Header: columnsAssignedExamTranslations.examTemplateName,
@@ -166,12 +172,12 @@ const ExamsList = (props) => {
     {
       Header: columnsExamTranslations.courseName,
       accessor: 'courseName',
-      Cell: ({ row }) => 'TO DO - Get course name'
+      Cell: ({ row }) => row.original.courseName
     },
     {
       Header: columnsExamTranslations.examName,
       accessor: 'name',
-      Cell: ({ row }) => row.values.name
+      Cell: ({ row }) => row.original.name
     },
     {
       Header: columnsExamTranslations.action,

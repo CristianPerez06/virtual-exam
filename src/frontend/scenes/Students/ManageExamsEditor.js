@@ -225,8 +225,8 @@ const ManageExamsEditor = (props) => {
     },
     {
       Header: columnsAssignedExamsTranslations.courseName,
-      accessor: 'examTemplateId',
-      Cell: ({ row }) => 'TO DO - GET COURSE'
+      accessor: 'courseName',
+      Cell: ({ row }) => row.original.courseName
     },
     {
       Header: columnsAssignedExamsTranslations.examTemplateName,
@@ -276,12 +276,12 @@ const ManageExamsEditor = (props) => {
     {
       Header: columnsExamTranslations.courseName,
       accessor: 'courseName',
-      Cell: ({ row }) => 'TO DO - Get course name'
+      Cell: ({ row }) => row.original.courseName
     },
     {
       Header: columnsExamTranslations.examName,
       accessor: 'name',
-      Cell: ({ row }) => row.values.name
+      Cell: ({ row }) => row.original.name
     },
     {
       Header: columnsExamTranslations.action,

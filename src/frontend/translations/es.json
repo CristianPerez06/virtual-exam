@@ -164,6 +164,7 @@
   "date": "Fecha",
   "date_started": "Fecha inicio",
   "date_finished": "Fecha fin",
+  "date_assigned": "Fecha asignación",
   "welcome_virtual_exam": "Bienvenido a Virtual Exam",
   "points": "Puntaje",
   "total_score": "Nota final",

@@ -4,6 +4,8 @@ type AssignedExam {
   examTemplateId: ID!
   examTemplateName: String!
   created: String!
+  courseId: ID!
+  courseName: String!
 }
 
 type AssignedExams {
