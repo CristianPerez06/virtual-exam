@@ -69,6 +69,7 @@ export const LIST_EXAM_TEMPLATE_EXERCISES = gql`
         id
         name
         points
+        unitName
       }
       count
     }

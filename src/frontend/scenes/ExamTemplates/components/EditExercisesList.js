@@ -162,8 +162,8 @@ const EditExercisesList = (props) => {
   const columns = [
     {
       Header: columnTranslations.unitName,
-      // accessor: 'unitName',
-      Cell: ({ row }) => 'TO DO - GET UNIT NAME'
+      accessor: 'unitName',
+      Cell: ({ row }) => row.original.unitName
     },
     {
       Header: columnTranslations.exerciseName,
