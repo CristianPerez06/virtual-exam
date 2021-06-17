@@ -128,9 +128,8 @@ const CourseEditor = (props) => {
                 isDisabled={creating || updating || fetching}
               />
             </div>
-
             {(errors || courseCreated || courseUpdated) && (
-              <div id='info' className='d-flex justify-content-around mt-4'>
+              <div id='info' className='d-flex justify-content-around mt-3  '>
                 {errors && <CustomAlert messages={errors} className='ml-3' />}
                 {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage({ id: 'course_created' }) }} color='success' />}
                 {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage({ id: 'course_updated' }) }} color='success' />}

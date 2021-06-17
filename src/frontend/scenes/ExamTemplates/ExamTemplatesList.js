@@ -75,6 +75,30 @@ const ExamTemplatesList = (props) => {
             </p>
           </CardHeader>
           <CardBody className='d-flex flex-column text-center'>
+            <div className='row d-flex justify-content-center mb-4'>
+              <div className='col-md-10 col-xs-12'>
+                <span className='text-left pl-1 pb-1'>
+                  <FormattedMessage id='common_entity.course' />
+                </span>
+                <span className='d-block'>
+                  TO DO - Add select list to filter by Course
+                </span>
+                {/*
+                <Select
+                  value={filters.selectedUnit}
+                  options={units}
+                  isDisabled={fetchingUnits}
+                  onChange={(option) => {
+                    const selected = units.find(x => x.value === option.value)
+                    setFilters({ ...filters, selectedUnit: selected })
+                    setExerciseDeleted()
+                    setErrors()
+                  }}
+                />
+                */}
+              </div>
+            </div>
+
             {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
             {!fetching && (
               <TwoColumnsTable

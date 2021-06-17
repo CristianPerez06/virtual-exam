@@ -13,6 +13,7 @@ type Exercises {
 extend type Query {
   getExercise(id: ID!): Exercise
   listExercises(courseId: ID, unitId: ID): Exercises
+  listValidExercises(courseId: ID!): Exercises
 }
 
 extend type Mutation {

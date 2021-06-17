@@ -22,6 +22,18 @@ export const LIST_EXAM_TEMPLATES = gql`
     }
   }
 `
+export const LIST_VALID_EXAM_TEMPLATES = gql`
+  query listValidExamTemplates($name: String, $courseId: ID) {
+    listValidExamTemplates(name: $name, courseId: $courseId) {
+      data {
+        id
+        name
+        courseId
+      }
+      count
+    }
+  }
+`
 export const CREATE_EXAM_TEMPLATE = gql`
   mutation createExamTemplate($name: String!, $courseId: ID!) {
     createExamTemplate(name: $name, courseId: $courseId){
@@ -80,7 +92,8 @@ export const ADD_EXERCISE_TO_EXAM_TEMPLATE = gql`
     addExerciseToExamTemplate(templateId: $templateId, exerciseId: $exerciseId){
       id,
       name,
-      points
+      points,
+      unitName
     }
   }
 `

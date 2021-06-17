@@ -11,7 +11,7 @@ import { ButtonGoTo, SelectWrapper, TranslatableErrors, Table, DeleteModal, Load
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LIST_COURSES } from '../../common/requests/courses'
-import { LIST_EXAM_TEMPLATES } from '../../common/requests/templates'
+import { LIST_VALID_EXAM_TEMPLATES } from '../../common/requests/templates'
 import { LIST_EXAMS } from '../../common/requests/exams'
 import { LIST_ASSIGNED_EXAMS, CREATE_ASSIGNED_EXAM, DELETE_ASSIGNED_EXAM } from '../../common/requests/assignedExams'
 import { syncCacheOnCreate, syncCacheOnDelete } from './cacheHelpers'
@@ -34,7 +34,7 @@ const ManageExamsEditor = (props) => {
   const [filters, setFilters] = useState({})
   const [errors, setErrors] = useState()
   const [courses, setCourses] = useState([])
-  const [examTemplates, setExamTemplates] = useState([])
+  const [validExamTemplates, setValidExamTemplates] = useState([])
   const [assignedExams, setAssignedExams] = useState([])
   const [exams, setExams] = useState([])
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
@@ -96,9 +96,9 @@ const ManageExamsEditor = (props) => {
     setCourses(result.listCourses.data)
   }
 
-  const onFetchExamTemplatesSuccess = (result) => {
+  const onFetchValidExamTemplatesSuccess = (result) => {
     if (!result) return
-    setExamTemplates(result.listExamTemplates.data)
+    setValidExamTemplates(result.listValidExamTemplates.data)
   }
 
   const onError = (err) => {
@@ -133,12 +133,12 @@ const ManageExamsEditor = (props) => {
       onError
     }
   )
-  const { loading: fetchingExamTemplates } = useQuery(
-    LIST_EXAM_TEMPLATES,
+  const { loading: fetchingValidExamTemplates } = useQuery(
+    LIST_VALID_EXAM_TEMPLATES,
     {
       variables: { courseId: (filters.selectedCourse || {}).value },
       skip: !(filters.selectedCourse || {}).value,
-      onCompleted: onFetchExamTemplatesSuccess,
+      onCompleted: onFetchValidExamTemplatesSuccess,
       onError
     }
   )
@@ -369,8 +369,8 @@ const ManageExamsEditor = (props) => {
                   </span>
                   <SelectWrapper
                     fieldName='examTemplateId'
-                    isDisabled={fetchingExamTemplates || !(filters.selectedCourse || {}).value}
-                    options={examTemplates}
+                    isDisabled={fetchingValidExamTemplates || !(filters.selectedCourse || {}).value}
+                    options={validExamTemplates}
                     validations={required}
                     selectedValue={filters.selectedExamTemplate}
                     handleOnChange={(option) => {
@@ -382,7 +382,7 @@ const ManageExamsEditor = (props) => {
                   <Button
                     color='primary'
                     type='submit'
-                    disabled={creating || fetchingCourses || fetchingExamTemplates || pristine}
+                    disabled={creating || fetchingCourses || fetchingValidExamTemplates || pristine}
                   >
                     <FormattedMessage id='button.assign_exam' />
                     {creating && <LoadingInline className='ml-3' />}
@@ -396,7 +396,7 @@ const ManageExamsEditor = (props) => {
       />
 
       {/* Errors */}
-      <div id='info' className='d-flex justify-content-around mt-2'>
+      <div id='info' className='d-flex justify-content-around mt-3'>
         {errors && <TranslatableErrors errors={errors} className='ml-3' />}
       </div>
 

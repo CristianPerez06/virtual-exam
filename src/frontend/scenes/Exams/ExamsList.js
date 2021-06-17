@@ -254,7 +254,7 @@ const ExamsList = (props) => {
 
         </CardBody>
       </Card>
-      <div id='info' className='d-flex justify-content-around mt-2 w-100'>
+      <div id='info' className='d-flex justify-content-around mt-3 w-100'>
         {errors && <TranslatableErrors errors={errors} className='ml-3' />}
       </div>
     </div>

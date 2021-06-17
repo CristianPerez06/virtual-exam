@@ -9,7 +9,7 @@ const CustomAlert = (props) => {
   const messageList = Array.isArray(messages) && messages.length > 0 ? messages : [{ ...messages }]
 
   return (
-    <div className='d-flex justify-content-center mt-2 w-100'>
+    <div className='d-flex justify-content-center mt-4 w-100'>
       <Alert color={color} style={{ maxWidth: 500 + 'px' }}>
         <ul className='text-left mb-0'>
           {messageList.map((value, index) => {

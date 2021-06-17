@@ -4,7 +4,7 @@ const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { addItemToList, removeItemFromList } = require('../../utilities/arrayHelpers')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
-const { getExercises } = require('./aggregates')
+const { getExamTemplates, getExercises } = require('./aggregates')
 
 const debug = require('debug')('virtual-exam:exam-templates-resolver')
 
@@ -57,32 +57,27 @@ const resolver = {
       const collection = context.db.collection('exam-templates')
 
       // Aggregate
-      let aggregate = [{
-        $match: {
-          disabled: { $not: { $eq: true } }
-        }
-      }]
+      const aggregate = getExamTemplates(name, courseId)
+      debug('Aggregate: ', aggregate)
 
-      if (name) {
-        aggregate = [
-          ...aggregate,
-          {
-            $match: {
-              name: name
-            }
-          }
-        ]
-      }
-      if (courseId) {
-        aggregate = [
-          ...aggregate,
-          {
-            $match: {
-              courseId: new ObjectId(courseId)
-            }
-          }
-        ]
-      }
+      // Exec
+      const docs = await collection.aggregate(aggregate).toArray()
+
+      // Results
+      return prepMultipleResultsForUser(docs)
+    },
+    listValidExamTemplates: async (parent, args, context) => {
+      debug('Running listExamTemplates query with params:', args)
+
+      // Params
+      const { name, courseId } = args
+
+      // Collection
+      const collection = context.db.collection('exam-templates')
+
+      // Aggregate
+      const withExerciseValidations = true
+      const aggregate = getExamTemplates(name, courseId, withExerciseValidations)
       debug('Aggregate: ', aggregate)
 
       // Exec
@@ -121,6 +116,7 @@ const resolver = {
       return { id: id, data: data, count: data.length }
     }
   },
+  
   Mutation: {
     createExamTemplate: async (parent, args, context) => {
       debug('Running createExamTemplate mutation with params:', args)
@@ -306,6 +302,9 @@ const resolver = {
       const exercisesCollection = context.db.collection('exercises')
       const currentExercise = await exercisesCollection.findOne({ _id: objExercId })
 
+      const unitsCollection = context.db.collection('units')
+      const currentUnit = await unitsCollection.findOne({ _id: currentExercise.unitId })
+
       // Look up for duplicates
       const dupExercise = examTemplateExercises.find(x => x._id.toString() === objExercId.toString())
       if (dupExercise) {
@@ -331,7 +330,7 @@ const resolver = {
         throw new Error(response.lastErrorObject)
       }
 
-      const exerciseWithPoints = { ...currentExercise, points: 0 }
+      const exerciseWithPoints = { ...currentExercise, unitName: currentUnit.name, points: 0 }
       return prepSingleResultForUser(exerciseWithPoints)
     },
     removeExerciseFromExamTemplate: async (parent, args, context) => {
