@@ -55,6 +55,7 @@ const resolver = {
       // Collection
       const collection = context.db.collection('assigned-exams')
       const examTemplatesCollection = context.db.collection('exam-templates')
+      const coursesCollection = context.db.collection('courses')
 
       // Look up for duplicates
       const dup = await collection.findOne({ examTemplateId: objExamTemplateId, idNumber: idNumber })
@@ -64,11 +65,14 @@ const resolver = {
 
       // Query
       const examTemplate = await examTemplatesCollection.findOne({ _id: objExamTemplateId })
+      const currentCourse = await coursesCollection.findOne({ _id: examTemplate.courseId })
 
       const newItem = {
         _id: new ObjectId(),
         examTemplateId: objExamTemplateId,
         examTemplateName: examTemplate.name,
+        courseId: currentCourse._id,
+        courseName: currentCourse.name,
         idNumber,
         created: new Date().toISOString()
       }
