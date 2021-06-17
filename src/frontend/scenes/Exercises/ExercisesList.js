@@ -172,7 +172,7 @@ const ExercisesList = (props) => {
           </div>
 
           {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
-          {!fetching && filters.selectedCourse && filters.selectedUnit && (
+          {!fetching && (
             <TwoColumnsTable
               entityName='exercise'
               entitiesPath='exercises'
