@@ -91,6 +91,7 @@ const resolver = {
       const collection = context.db.collection('exams')
       const templatesCollection = context.db.collection('exam-templates')
       const assignedExamsCollection = context.db.collection('assigned-exams')
+      const coursesCollection = context.db.collection('courses')
 
       // Look up for duplicates
       const dup = await collection.findOne({ idNumber: idNumber, examTemplateId: objExamTemplateId, completed: false })
@@ -100,6 +101,8 @@ const resolver = {
 
       // Get exam template
       const examTemplate = await templatesCollection.findOne({ _id: objExamTemplateId })
+      // Get Course
+      const currentCourse = await coursesCollection.findOne({ _id: examTemplate.courseId })
 
       // Aggregate
       const aggregate = [
@@ -114,19 +117,22 @@ const resolver = {
         name: examTemplate.name,
         idNumber,
         examTemplateId: objExamTemplateId,
+        courseId: currentCourse._id,
+        courseName: currentCourse.name,
         exercises: [...exercisesAndAnswers],
         created: new Date().toISOString()
       }
       const responseCreate = await collection.insertOne(newItem, { writeConcern: { w: 'majority' } })
 
       // Delete assigned exam
-      await assignedExamsCollection.deleteOne({ _id: objAssignedExamId }, { w: 'majority' })
+      // await assignedExamsCollection.deleteOne({ _id: objAssignedExamId }, { w: 'majority' })
 
       // Results
       if (responseCreate.result.ok !== 1) {
         debug('createExam error:', responseCreate.error.message)
         throw new Error(responseCreate.error.message)
       }
+
       return prepSingleResultForUser(responseCreate.ops[0])
     },
     finishExam: async (parent, args, context) => {

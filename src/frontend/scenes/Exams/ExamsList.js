@@ -138,6 +138,7 @@ const ExamsList = (props) => {
             }}
           >
             {columnsAssignedExamTranslations.start}
+            {creatingExam && <LoadingInline className='ml-3' />}
           </Button>
         </div>
       )
@@ -228,7 +229,7 @@ const ExamsList = (props) => {
           </div>
 
           {/* Exams */}
-          <div className='row'>
+          <div className='row mt-4'>
             <div className='col-md-12 col-xs-12'>
               <p className='text-center h5 mb-0'>
                 <FormattedMessage id='exams_initiated_finalized' />

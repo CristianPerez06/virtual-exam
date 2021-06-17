@@ -52,7 +52,8 @@ const StudentExamsList = (props) => {
       variables: { id: assignedExamToDelete.id },
       update: (cache, result) => {
         const variables = {
-          idNumber: filters.selectedStudent.value
+          idNumber: (filters.selectedStudent || {}).value,
+          courseId: (filters.selectedCourse || {}).value
         }
         const updatedAssignedExamsList = syncCacheOnDelete(cache, assignedExamToDelete, variables)
         setAssignedExams(updatedAssignedExamsList.data)
@@ -143,6 +144,7 @@ const StudentExamsList = (props) => {
         idNumber: (filters.selectedStudent || {}).value,
         courseId: (filters.selectedCourse || {}).value
       },
+      fetchPolicy: 'network-only',
       skip: !filters.selectedStudent && !filters.selectedCourse,
       onCompleted: onFetchAssignedExamsSuccess,
       onError
@@ -156,6 +158,7 @@ const StudentExamsList = (props) => {
         courseId: (filters.selectedCourse || {}).value
       },
       skip: !filters.selectedStudent && !filters.selectedCourse,
+      fetchPolicy: 'network-only',
       onCompleted: onFetchExamsSuccess,
       onError
     }
@@ -211,8 +214,7 @@ const StudentExamsList = (props) => {
                   <Button color='outline-secondary' className='m-2'>
                     {columnsExamTranslations.goToExamDetails}
                   </Button>
-                </Link>
-              )
+                </Link>)
               : (
                 <Button
                   color='secondary'
@@ -223,8 +225,8 @@ const StudentExamsList = (props) => {
                   }}
                 >
                   {columnsExamTranslations.finishExam}
-                </Button>
-              )}
+                  {finishingExam && <LoadingInline className='ml-3' />}
+                </Button>)}
           </div>
         )
       }
@@ -232,6 +234,7 @@ const StudentExamsList = (props) => {
   ]
 
   const columnsAssignedExamTranslations = {
+    idNumber: formatMessage({ id: 'student_id_number' }),
     dateAssigned: formatMessage({ id: 'date_assigned' }),
     examTemplateName: formatMessage({ id: 'exam_template_name' }),
     action: formatMessage({ id: 'action' }),
@@ -239,6 +242,11 @@ const StudentExamsList = (props) => {
   }
 
   const columnsAssignedExams = [
+    {
+      Header: columnsAssignedExamTranslations.idNumber,
+      accessor: 'idNumber',
+      Cell: ({ row }) => row.original.idNumber
+    },
     {
       Header: columnsAssignedExamTranslations.dateAssigned,
       accessor: 'created',
@@ -256,6 +264,7 @@ const StudentExamsList = (props) => {
           <Button
             className='ml-1'
             color='danger'
+            disabled={deletingAssignedExam}
             onClick={() => onDeleteClicked({ ...row.original })}
           >
             {columnsAssignedExamTranslations.delete}
@@ -304,28 +313,28 @@ const StudentExamsList = (props) => {
           </div>
         </div>
         <div className='row d-flex justify-content-center mb-4'>
-            <div className='col-md-10 col-xs-12'>
-              <span className='text-left pl-1 pb-1'>
-                <FormattedMessage id='common_entity.student' />
-              </span>
-              <Select
-                value={filters.selectedStudent}
-                options={students}
-                isDisabled={fetchingStudents || !filters.selectedCourse}
-                onChange={(option) => {
-                  const selected = students.find(x => x.value === option.value)
-                  setFilters({ ...filters, selectedStudent: selected })
-                  setErrors()
-                }}
-              />
-            </div>
+          <div className='col-md-10 col-xs-12'>
+            <span className='text-left pl-1 pb-1'>
+              <FormattedMessage id='common_entity.student' />
+            </span>
+            <Select
+              value={filters.selectedStudent}
+              options={students}
+              isDisabled={fetchingStudents || !filters.selectedCourse}
+              onChange={(option) => {
+                const selected = students.find(x => x.value === option.value)
+                setFilters({ ...filters, selectedStudent: selected })
+                setErrors()
+              }}
+            />
           </div>
+        </div>
       </div>
 
       {/* Errors */}
       {errors && <TranslatableErrors errors={errors} />}
 
-      {/* Assigned exams*/}
+      {/* Assigned exams */}
       <div className='exams border shadow mb-3 p-2 bg-white rounded d-block'>
         <p className='text-center h5 mb-0'>
           <FormattedMessage id='pending_exams' />

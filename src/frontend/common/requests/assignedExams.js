@@ -19,11 +19,12 @@ export const LIST_ASSIGNED_EXAMS = gql`
 export const CREATE_ASSIGNED_EXAM = gql`
   mutation createAssignedExam($examTemplateId: ID!, $idNumber: ID!) {
     createAssignedExam(examTemplateId: $examTemplateId, idNumber: $idNumber){
-      id
-      idNumber
+      id,
       examTemplateId
       examTemplateName
       created
+      idNumber
+      courseName
     }
   }
 `
