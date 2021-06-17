@@ -24,6 +24,19 @@ export const LIST_EXERCISES = gql`
     }
   }
 `
+export const LIST_VALID_EXERCISES = gql`
+  query listValidExercises($courseId: ID!) {
+    listValidExercises(courseId: $courseId) {
+      data {
+        id
+        name,
+        courseId,
+        unitId
+      }
+      count
+    }
+  }
+`
 export const CREATE_EXERCISE = gql`
   mutation createExercise($name: String!, $courseId: ID!, $unitId: ID!) {
     createExercise(name: $name, courseId: $courseId, unitId: $unitId){

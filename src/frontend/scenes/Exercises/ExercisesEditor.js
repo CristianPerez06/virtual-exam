@@ -350,7 +350,7 @@ const ExercisesEditor = (props) => {
 
               {/* Info */}
               {(errors || exerciseCreated || exerciseUpdated || answerDeleted) && (
-                <div id='info' className='d-flex justify-content-around mt-4'>
+                <div id='info' className='d-flex justify-content-around mt-3'>
                   {errors && <TranslatableErrors errors={errors} className='ml-3' />}
                   {!creating && exerciseCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'exercise_created' }) }} color='success' />}
                   {!updating && exerciseUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'exercise_updated' }) }} color='success' />}

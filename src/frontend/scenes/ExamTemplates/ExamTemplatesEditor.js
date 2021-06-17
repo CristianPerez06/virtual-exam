@@ -20,13 +20,11 @@ const ExamTemplatesEditor = (props) => {
   const history = useHistory()
 
   // State
-  // const [templateCreated, setTemplateCreated] = useState(false)
-  // const [templateUpdated, setTemplateUpdated] = useState(false)
   const [courses, setCourses] = useState([])
   const [initialValues, setInitialValues] = useState({})
   const [filters, setFilters] = useState({})
   const [errors, setErrors] = useState()
-  const [editableCourse, setEditableCourse] = useState(isCreating)
+  const [editableCourse, setEditableCourse] = useState(false)
   const [editConfirmModalIsOpen, setEditConfirmModalIsOpen] = useState(false)
 
   // Handlers
@@ -75,9 +73,6 @@ const ExamTemplatesEditor = (props) => {
   }
 
   const onError = (err) => {
-    // setTemplateCreated(false)
-    // setTemplateUpdated(false)
-
     const { graphQLErrors } = err
     const translatableErrors = getTranslatableErrors(graphQLErrors)
     setErrors(translatableErrors)
@@ -161,8 +156,8 @@ const ExamTemplatesEditor = (props) => {
   useEffect(() => {
     // State cleanup in case user was editing and now wants to create
     if (isCreating) {
-      // setTemplateUpdated(false)
       setInitialValues({})
+      setEditableCourse(true)
       setFilters({ selectedCourse: '' })
     }
   }, [isCreating])
@@ -246,12 +241,8 @@ const ExamTemplatesEditor = (props) => {
                 />
               </div>
 
-              <div id='info' className='d-flex justify-content-around mt-2'>
+              <div id='info' className='d-flex justify-content-around mt-3'>
                 {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-                {/*
-                {!creating && templateCreated && <CustomAlert messages={{ id: 'exam_template_created', message: formatMessage({ id: 'exam_template_created' }) }} color='success' />}
-                {!updating && templateUpdated && <CustomAlert messages={{ id: 'exam_template_updated', message: formatMessage({ id: 'exam_template_updated' }) }} color='success' />}
-                */}
               </div>
 
             </form>

@@ -3,7 +3,7 @@ import { Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import Select from 'react-select'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { LIST_EXERCISES } from '../../../common/requests/exercises'
+import { LIST_VALID_EXERCISES } from '../../../common/requests/exercises'
 import { ADD_EXERCISE_TO_EXAM_TEMPLATE } from '../../../common/requests/templates'
 import { syncCacheOnAddTemplateExercise } from '../cacheHelpers'
 
@@ -32,7 +32,7 @@ const AddExerciseSelector = (props) => {
 
   const onFetchExercisesSuccess = (res) => {
     if (!res) return
-    const mappedExercises = res.listExercises.data.map((exercise) => {
+    const mappedExercises = res.listValidExercises.data.map((exercise) => {
       return {
         value: exercise.id,
         label: exercise.name
@@ -54,10 +54,11 @@ const AddExerciseSelector = (props) => {
   }
 
   // Queries and mutations
-  const { loading: fetchingExercises } = useQuery(
-    LIST_EXERCISES,
+  const { loading: fetchingValidExercises } = useQuery(
+    LIST_VALID_EXERCISES,
     {
       variables: { courseId: courseId },
+      fetchPolicy: 'network-only',
       onCompleted: onFetchExercisesSuccess,
       onError
     }
@@ -78,8 +79,7 @@ const AddExerciseSelector = (props) => {
           <Select
             value={selectedExercise}
             options={exercises}
-            // isDisabled={fetchingExercises || addingExerciseToTemplate || removingExerciseFromTemplate}
-            isDisabled={fetchingExercises || addingExerciseToTemplate}
+            isDisabled={fetchingValidExercises || addingExerciseToTemplate}
             onChange={(option) => {
               const selected = exercises.find(x => x.value === option.value)
               setSelectedExercise(selected)
@@ -89,8 +89,7 @@ const AddExerciseSelector = (props) => {
         <div className='col-md-3 col-xs-12 text-right'>
           <Button
             color='info'
-            // disabled={fetchingExercises || addingExerciseToTemplate || fetchingTemplateExercises || !selectedExercise}
-            disabled={fetchingExercises || addingExerciseToTemplate}
+            disabled={fetchingValidExercises || addingExerciseToTemplate || !selectedExercise}
             onClick={() => {
               onAddExerciseClicked()
             }}

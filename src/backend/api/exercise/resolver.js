@@ -3,6 +3,7 @@ const { ObjectId } = require('bson')
 const { BACKEND_ERRORS } = require('../../utilities/constants')
 const { prepSingleResultForUser, prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { maintainIndex } = require('../../indexer')
+const { getValidExercises } = require('./aggregates')
 
 const debug = require('debug')('virtual-exam:exercises-resolver')
 
@@ -81,6 +82,26 @@ const resolver = {
           }
         ]
       }
+      debug('Aggregate: ', aggregate)
+
+      // Exec
+      const docs = await collection.aggregate(aggregate).toArray()
+
+      // Results
+      return prepMultipleResultsForUser(docs)
+    },
+    listValidExercises: async (parent, args, context) => {
+      debug('Running listExercises query with params:', args)
+
+      // Params
+      const { courseId } = args
+      const objCourseId = new ObjectId(courseId)
+
+      // Collection
+      const collection = context.db.collection('exercises')
+
+      // Aggregate
+      const aggregate = getValidExercises(objCourseId)
       debug('Aggregate: ', aggregate)
 
       // Exec

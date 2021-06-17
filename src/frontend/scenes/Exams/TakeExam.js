@@ -141,7 +141,7 @@ const TakeExam = (props) => {
           </div>
 
           {(errors) && (
-            <div id='info' className='d-flex justify-content-around mt-4'>
+            <div id='info' className='d-flex justify-content-around mt-3'>
               {errors && <CustomAlert messages={errors} className='ml-3' />}
             </div>
           )}
