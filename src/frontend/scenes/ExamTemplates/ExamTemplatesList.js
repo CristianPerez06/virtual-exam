@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { Card, CardBody, CardHeader } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
+import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_EXAM_TEMPLATES, DISABLE_EXAM_TEMPLATE } from '../../common/requests/templates'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
+import Select from 'react-select'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
@@ -14,7 +16,9 @@ const ExamTemplatesList = (props) => {
 
   // State
   const [templates, setTemplates] = useState([])
+  const [courses, setCourses] = useState([])
   const [errors, setErrors] = useState()
+  const [filters, setFilters] = useState({ selectedCourse: null })
   const [templateToDelete, setTemplateToDelete] = useState()
   const [templateDeleted, setTemplateDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
@@ -23,6 +27,17 @@ const ExamTemplatesList = (props) => {
   const onCompleted = (res) => {
     if (!res) return
     setTemplates(res.listExamTemplates.data)
+  }
+
+  const onFetchCoursesSuccess = (result) => {
+    if (!result) return
+    const mappedCourses = result.listCourses.data.map((course) => {
+      return {
+        value: course.id,
+        label: course.name
+      }
+    })
+    setCourses(mappedCourses)
   }
 
   const onError = (err) => {
@@ -63,7 +78,16 @@ const ExamTemplatesList = (props) => {
   }
 
   // Queries and mutations
-  const { loading: fetching } = useQuery(LIST_EXAM_TEMPLATES, { variables: {}, onCompleted, onError })
+  const { loading: fetchingCourses } = useQuery(LIST_COURSES, { variables: {}, onCompleted: onFetchCoursesSuccess, onError })
+  const { loading: fetching } = useQuery(
+    LIST_EXAM_TEMPLATES,
+    {
+      variables: { courseId: (filters.selectedCourse || {}).value },
+      skip: !filters.selectedCourse,
+      onCompleted,
+      onError
+    }
+  )
   const [disableExamTemplate, { loading: deleting }] = useMutation(DISABLE_EXAM_TEMPLATE, { onCompleted: stateCleanupOnDelete, onError })
 
   return (
@@ -80,22 +104,16 @@ const ExamTemplatesList = (props) => {
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='common_entity.course' />
                 </span>
-                <span className='d-block'>
-                  TO DO - Add select list to filter by Course
-                </span>
-                {/*
                 <Select
-                  value={filters.selectedUnit}
-                  options={units}
-                  isDisabled={fetchingUnits}
+                  value={filters.selectedCourse}
+                  options={courses}
+                  isDisabled={fetchingCourses}
                   onChange={(option) => {
-                    const selected = units.find(x => x.value === option.value)
-                    setFilters({ ...filters, selectedUnit: selected })
-                    setExerciseDeleted()
+                    const selected = courses.find(x => x.value === option.value)
+                    setFilters({ selectedCourse: selected })
                     setErrors()
                   }}
                 />
-                */}
               </div>
             </div>
 
