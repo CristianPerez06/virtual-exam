@@ -194,6 +194,7 @@ const EditExercisesList = (props) => {
             onClick={() => onDeleteClicked({ ...row.original })}
           >
             {columnTranslations.delete}
+            {(templateExerciseToDelete || {}).id === row.original.id && removingExerciseFromTemplate && <LoadingInline className='ml-3' />}
           </Button>
         </div>
       )

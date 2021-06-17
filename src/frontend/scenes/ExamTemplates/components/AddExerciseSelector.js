@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from 'reactstrap'
+import { LoadingInline } from '../../../components/common'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import Select from 'react-select'
 import { useQuery, useMutation } from '@apollo/react-hooks'
@@ -95,6 +96,7 @@ const AddExerciseSelector = (props) => {
             }}
           >
             <FormattedMessage id='button.add_exercise' />
+            {addingExerciseToTemplate && <LoadingInline className='ml-3' />}
           </Button>
         </div>
       </div>

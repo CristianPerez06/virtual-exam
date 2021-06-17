@@ -17,7 +17,6 @@ import { LIST_ASSIGNED_EXAMS, CREATE_ASSIGNED_EXAM, DELETE_ASSIGNED_EXAM } from 
 import { syncCacheOnCreate, syncCacheOnDelete } from './cacheHelpers'
 import { useAuthContext } from '../../hooks'
 
-
 const ManageExamsEditor = (props) => {
   // Props
   const { intl } = props
@@ -76,7 +75,8 @@ const ManageExamsEditor = (props) => {
       variables: { id: assignedExamToDelete.id },
       update: (cache, result) => {
         const variables = {
-          idNumber: filters.selectedStudent.value
+          idNumber: (filters.selectedStudent || {}).value,
+          courseId: (filters.selectedCourse || {}).value
         }
         const updatedAssignedExamsList = syncCacheOnDelete(cache, assignedExamToDelete, variables)
         setAssignedExams(updatedAssignedExamsList.data)
@@ -149,6 +149,7 @@ const ManageExamsEditor = (props) => {
         idNumber: (filters.selectedStudent || {}).value,
         courseId: (filters.selectedCourse || {}).value
       },
+      fetchPolicy: 'network-only',
       skip: !(filters.selectedStudent || {}).value,
       onCompleted: onFetchAssignedExamsSuccess,
       onError
@@ -163,6 +164,7 @@ const ManageExamsEditor = (props) => {
         completed: true
       },
       skip: !(filters.selectedStudent || {}).value,
+      fetchPolicy: 'network-only',
       onCompleted: onFetchExamsSuccess,
       onError
     }
@@ -210,7 +212,6 @@ const ManageExamsEditor = (props) => {
   }
 
   const columnsAssignedExamsTranslations = {
-    idNumber: formatMessage({ id: 'student_id_number' }),
     courseName: formatMessage({ id: 'course_name' }),
     examTemplateName: formatMessage({ id: 'exam_template_name' }),
     action: formatMessage({ id: 'action' }),
@@ -218,11 +219,6 @@ const ManageExamsEditor = (props) => {
   }
 
   const columnsAssignedExams = [
-    {
-      Header: columnsAssignedExamsTranslations.idNumber,
-      accessor: 'idNumber',
-      Cell: ({ row }) => row.original.idNumber
-    },
     {
       Header: columnsAssignedExamsTranslations.courseName,
       accessor: 'courseName',
@@ -240,6 +236,7 @@ const ManageExamsEditor = (props) => {
           <Button
             className='ml-1'
             color='danger'
+            disabled={deletingAssignedExam}
             onClick={() => onDeleteClicked({ ...row.original })}
           >
             {columnsAssignedExamsTranslations.delete}

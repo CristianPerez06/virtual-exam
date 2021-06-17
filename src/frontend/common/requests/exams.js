@@ -45,9 +45,11 @@ export const CREATE_EXAM = gql`
     createExam(assignedExamId: $assignedExamId, examTemplateId: $examTemplateId, idNumber: $idNumber){
       id
       name
-      examTemplateId
-      created,
+      created
+      updated
       completed
+      idNumber
+      courseName
     }
   }
 `
@@ -60,6 +62,7 @@ export const FINISH_EXAM = gql`
       updated
       completed
       idNumber
+      courseName
     }
   }
 `

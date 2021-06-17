@@ -1,5 +1,3 @@
-const { ObjectId } = require('bson')
-
 const getExercisesAndAnswers = [
   {
     $project: {
@@ -113,9 +111,9 @@ const getExamsByCustomParameters = (idNumber, courseId, completed) => {
     },
     {
       $lookup: {
-        from: 'courses', 
-        localField: 'courseId', 
-        foreignField: '_id', 
+        from: 'courses',
+        localField: 'courseId',
+        foreignField: '_id',
         as: 'course'
       }
     },
@@ -129,9 +127,7 @@ const getExamsByCustomParameters = (idNumber, courseId, completed) => {
         updated: 1,
         completed: 1,
         course: {
-          '$arrayElemAt': [
-            '$course', 0
-          ]
+          $arrayElemAt: ['$course', 0]
         }
       }
     },
@@ -146,7 +142,7 @@ const getExamsByCustomParameters = (idNumber, courseId, completed) => {
         completed: 1,
         courseId: {
           $convert: {
-            input: '$course._id', to: "string"
+            input: '$course._id', to: 'string'
           }
         },
         courseName: '$course.name'
