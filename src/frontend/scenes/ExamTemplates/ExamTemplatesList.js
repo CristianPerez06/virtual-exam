@@ -10,10 +10,6 @@ import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
 const ExamTemplatesList = (props) => {
-  // Props and params
-  const { intl } = props
-  const { formatMessage } = intl
-
   // State
   const [templates, setTemplates] = useState([])
   const [courses, setCourses] = useState([])
@@ -59,7 +55,8 @@ const ExamTemplatesList = (props) => {
     disableExamTemplate({
       variables: { id: templateToDelete.id },
       update: (cache, result) => {
-        const updatedTemplatesList = syncCacheOnDelete(cache, templateToDelete)
+        const variables = { courseId: filters.selectedCourse.value }
+        const updatedTemplatesList = syncCacheOnDelete(cache, templateToDelete, variables)
         setTemplates(updatedTemplatesList.data)
       }
     })
@@ -92,58 +89,59 @@ const ExamTemplatesList = (props) => {
 
   return (
     <div className='exam-templates-list shadow mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
-        <Card className='mx-auto'>
-          <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
-            <p className='h4'>
-              <FormattedMessage id='common_entity.exam_templates' />
-            </p>
-          </CardHeader>
-          <CardBody className='d-flex flex-column text-center'>
-            <div className='row d-flex justify-content-center mb-4'>
-              <div className='col-md-10 col-xs-12'>
-                <span className='text-left pl-1 pb-1'>
-                  <FormattedMessage id='common_entity.course' />
-                </span>
-                <Select
-                  value={filters.selectedCourse}
-                  options={courses}
-                  isDisabled={fetchingCourses}
-                  onChange={(option) => {
-                    const selected = courses.find(x => x.value === option.value)
-                    setFilters({ selectedCourse: selected })
-                    setErrors()
-                  }}
-                />
-              </div>
-            </div>
-
-            {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
-            {!fetching && (
-              <TwoColumnsTable
-                entityName='exam_template'
-                entitiesPath='exam-templates'
-                items={templates}
-                canEdit
-                canDelete
-                onDeleteClicked={onDeleteClicked}
-              />
-            )}
-
-            {/* Delete modal */}
-            <div id='delete-modal'>
-              <DeleteModal
-                modalIsOpen={deleteModalIsOpen}
-                isBussy={deleting}
-                onCloseClick={() => onCancelClicked()}
-                onDeleteClick={() => onDeleteConfirmClicked()}
+      <Card className='mx-auto'>
+        <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
+          <p className='h4'>
+            <FormattedMessage id='common_entity.exam_templates' />
+          </p>
+        </CardHeader>
+        <CardBody className='d-flex flex-column text-center'>
+          <div className='row d-flex justify-content-center mb-4'>
+            <div className='col-md-10 col-xs-12'>
+              <span className='text-left pl-1 pb-1'>
+                <FormattedMessage id='common_entity.course' />
+              </span>
+              <Select
+                value={filters.selectedCourse}
+                options={courses}
+                isDisabled={fetchingCourses}
+                onChange={(option) => {
+                  const selected = courses.find(x => x.value === option.value)
+                  setTemplateDeleted()
+                  setFilters({ selectedCourse: selected })
+                  setErrors()
+                }}
               />
             </div>
+          </div>
 
-          </CardBody>
-        </Card>
+          {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
+          {!fetching && (
+            <TwoColumnsTable
+              entityName='exam_template'
+              entitiesPath='exam-templates'
+              items={templates}
+              canEdit
+              canDelete
+              onDeleteClicked={onDeleteClicked}
+            />
+          )}
+
+          {/* Delete modal */}
+          <div id='delete-modal'>
+            <DeleteModal
+              modalIsOpen={deleteModalIsOpen}
+              isBussy={deleting}
+              onCloseClick={() => onCancelClicked()}
+              onDeleteClick={() => onDeleteConfirmClicked()}
+            />
+          </div>
+
+        </CardBody>
+      </Card>
 
       {/* Alerts */}
-      {!deleting && templateDeleted && <CustomAlert messages={{ id: 'exercise_deleted', message: `${formatMessage({ id: 'exercise_deleted' })}: ${templateToDelete.name}` }} color='success' />}
+      {!deleting && templateDeleted && <CustomAlert messages={{ id: 'exercise_deleted' }} color='success' />}
       {errors && <TranslatableErrors errors={errors} />}
     </div>
   )

@@ -14,6 +14,7 @@
   "cognito_error.invalid_parameter_exception": "Invalid parameter",
   "cognito_error.code_mismatch_exception": "Invalid recovery code",
   "cognito_error.invalid_password_exception": "Invalid password",
+  "cognito_error.expired_code": "Expired code",
 
   "common_error.internal_server_error": "Internal server error",
   "common_error.duplicated_entity": "An entity with the same name already exist",
@@ -152,6 +153,7 @@
   "confirm_password": "Confirm password",
   "confirm_new_password": "Confirm new password",
   "recovery_code_sent": "Recovery code sent",
+  "password_updated": "Password updated",
   "recovery_code": "Recovery code",
   "change_language": "Change language",
   "settings": "Settings",

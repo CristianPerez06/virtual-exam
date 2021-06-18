@@ -10,10 +10,6 @@ import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
 const UnitsList = (props) => {
-  // Props and params
-  const { intl } = props
-  const { formatMessage } = intl
-
   // State
   const [courses, setCourses] = useState([])
   const [units, setUnits] = useState([])
@@ -146,7 +142,7 @@ const UnitsList = (props) => {
       </Card>
 
       {/* Alerts */}
-      {!deleting && unitDeleted && <CustomAlert messages={{ id: 'unit_deleted', message: `${formatMessage({ id: 'unit_deleted' })}: ${unitToDelete.name}` }} color='success' />}
+      {!deleting && unitDeleted && <CustomAlert color='success' messages={{ id: 'unit_deleted' }} />}
       {errors && <TranslatableErrors errors={errors} />}
     </div>
   )

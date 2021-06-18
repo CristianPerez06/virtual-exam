@@ -8,10 +8,6 @@ import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
 const CoursesList = (props) => {
-  // Props and params
-  const { intl } = props
-  const { formatMessage } = intl
-
   // State
   const [courses, setCourses] = useState([])
   const [errors, setErrors] = useState()
@@ -68,40 +64,40 @@ const CoursesList = (props) => {
 
   return (
     <div className='courses-list' style={{ width: 850 + 'px' }}>
-        <Card className='mx-auto shadow mb-3 bg-white rounded'>
-          <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
-            <p className='h4'>
-              <FormattedMessage id='common_entity.courses' />
-            </p>
-          </CardHeader>
-          <CardBody className='d-flex flex-column'>
-            {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
-            {!fetching && (
-              <TwoColumnsTable
-                entityName='course'
-                entitiesPath='courses'
-                items={courses}
-                canEdit
-                canDelete
-                onDeleteClicked={onDeleteClicked}
-              />
-            )}
+      <Card className='mx-auto shadow mb-3 bg-white rounded'>
+        <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
+          <p className='h4'>
+            <FormattedMessage id='common_entity.courses' />
+          </p>
+        </CardHeader>
+        <CardBody className='d-flex flex-column'>
+          {fetching && <div className='text-center'><LoadingInline color='grey' /></div>}
+          {!fetching && (
+            <TwoColumnsTable
+              entityName='course'
+              entitiesPath='courses'
+              items={courses}
+              canEdit
+              canDelete
+              onDeleteClicked={onDeleteClicked}
+            />
+          )}
 
-            {/* Delete modal */}
-            <div id='delete-modal'>
-              <DeleteModal
-                modalIsOpen={deleteModalIsOpen}
-                additionalInfo='course_delete_related_entities'
-                isBussy={deleting}
-                onCloseClick={() => onCancelClicked()}
-                onDeleteClick={() => onDeleteConfirmClicked()}
-              />
-            </div>
-          </CardBody>
-        </Card>
+          {/* Delete modal */}
+          <div id='delete-modal'>
+            <DeleteModal
+              modalIsOpen={deleteModalIsOpen}
+              additionalInfo='course_delete_related_entities'
+              isBussy={deleting}
+              onCloseClick={() => onCancelClicked()}
+              onDeleteClick={() => onDeleteConfirmClicked()}
+            />
+          </div>
+        </CardBody>
+      </Card>
 
       {/* Alerts */}
-      {!deleting && courseDeleted && <CustomAlert messages={{ id: 'course_deleted', message: `${formatMessage({ id: 'course_deleted' })}: ${courseToDelete.name}` }} color='success' />}  
+      {!deleting && courseDeleted && <CustomAlert messages={{ id: 'course_deleted' }} color='success' />}
       {errors && <TranslatableErrors errors={errors} />}
     </div>
   )

@@ -86,13 +86,15 @@ const ExamTemplatesEditor = (props) => {
       ? createExamTemplate({
           variables: { name: name, courseId: courseId },
           update: (cache, result) => {
-            syncCacheOnCreate(cache, result.data.createExamTemplate)
+            const variables = { courseId: filters.selectedCourse.value }
+            syncCacheOnCreate(cache, result.data.createExamTemplate, variables)
           }
         })
       : updateExamTemplate({
         variables: { id: params.id, name: name, courseId: courseId },
         update: (cache, result) => {
-          syncCacheOnUpdate(cache, result.data.updateExamTemplate)
+          const variables = { courseId: filters.selectedCourse.value }
+          syncCacheOnUpdate(cache, result.data.updateExamTemplate, variables)
         }
       })
   }

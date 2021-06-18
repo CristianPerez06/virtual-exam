@@ -14,6 +14,7 @@
   "cognito_error.invalid_parameter_exception": "Alguno de los valores ingresados no cumple con los requisitos",
   "cognito_error.code_mismatch_exception": "El codigo de verificación no es valido",
   "cognito_error.invalid_password_exception": "La contraseña no cumple alguno de los requisitos",
+  "cognito_error.expired_code": "Codigo invalido",
 
   "common_error.internal_server_error": "Ocurrio un error en el servidor",
   "common_error.duplicated_entity": "Ya existe una entidad con el mismo nombre",
@@ -152,6 +153,7 @@
   "confirm_password": "Confirmar contraseña",
   "confirm_new_password": "Confirmar nueva contraseña",
   "recovery_code_sent": "Codigo de recuperación enviado",
+  "password_updated": "Contraseña actualizada",
   "recovery_code": "Codigo de recuperación",
   "change_language": "Seleccionar idioma",
   "settings": "Configuración",

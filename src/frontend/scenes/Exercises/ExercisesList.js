@@ -11,10 +11,6 @@ import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 
 const ExercisesList = (props) => {
-  // Props and params
-  const { intl } = props
-  const { formatMessage } = intl
-
   // State
   const [courses, setCourses] = useState([])
   const [units, setUnits] = useState([])
@@ -195,7 +191,7 @@ const ExercisesList = (props) => {
           </div>
 
           {/* Alerts */}
-          {!deleting && exerciseDeleted && <CustomAlert messages={{ id: 'exercise_deleted', message: `${formatMessage({ id: 'exercise_deleted' })}: ${exerciseToDelete.name}` }} color='success' />}
+          {!deleting && exerciseDeleted && <CustomAlert color='success' messages={{ id: 'exercise_deleted' }} />}
         </CardBody>
       </Card>
       {errors && <TranslatableErrors errors={errors} />}

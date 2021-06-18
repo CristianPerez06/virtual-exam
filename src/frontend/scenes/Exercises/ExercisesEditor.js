@@ -352,9 +352,9 @@ const ExercisesEditor = (props) => {
               {(errors || exerciseCreated || exerciseUpdated || answerDeleted) && (
                 <div id='info' className='d-flex justify-content-around mt-3'>
                   {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-                  {!creating && exerciseCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'exercise_created' }) }} color='success' />}
-                  {!updating && exerciseUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'exercise_updated' }) }} color='success' />}
-                  {!deletingAnswer && answerDeleted && <CustomAlert messages={{ id: 'answer_deleted', message: `${formatMessage({ id: 'answer_deleted' })}: ${answerToDelete.name}` }} color='success' />}
+                  {!creating && exerciseCreated && <CustomAlert color='success' messages={{ id: 'unit_created' }} />}
+                  {!updating && exerciseUpdated && <CustomAlert color='success' messages={{ id: 'unit_updated' }} />}
+                  {!deletingAnswer && answerDeleted && <CustomAlert color='success' messages={{ id: 'answer_deleted' }} />}
                 </div>
               )}
 
@@ -371,7 +371,7 @@ const ExercisesEditor = (props) => {
         {fetchingAnswers && <div className='text-center'><LoadingInline color='grey' /></div>}
         {!fetchingAnswers && answers.length === 0 && <NoResults />}
         {!fetchingAnswers && answers.length !== 0 && <Table columns={columns} data={answers} />}
-        {alerts && <CustomAlert messages={alerts} color='warning' />}
+        {alerts && <CustomAlert color='warning' messages={alerts} />}
       </div>
     </div>
   )
