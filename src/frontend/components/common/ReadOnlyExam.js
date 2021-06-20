@@ -9,23 +9,17 @@ const ReadOnlyExam = (props) => {
   // Props and params
   const { exam, goBackPath } = props
 
-  const totalScore = exam.exercises.reduce((exerciseAcc, exerciseCurr) => {
-    const solvedCorrectly = exerciseCurr.answers.find(x => x.correct && x.selected)
-    const exercisePoints = solvedCorrectly ? exerciseCurr.points : 0
-    return exerciseAcc + parseFloat(exercisePoints)
-  }, 0)
-
   return (
     <Form>
       <div className='timer d-flex justify-content-between'>
         <span className='h3'>
-          {totalScore >= EXAM_SETTINGS.PASSING_SCORE
+          {exam.score >= EXAM_SETTINGS.PASSING_SCORE
             ? <FormattedMessage id='exams_passed' />
             : <FormattedMessage id='exams_failed' />}
         </span>
 
         <div className='border border-secondary shadow p-2 mb-1 bg-white rounded text-right'>
-          <i><FormattedMessage id='total_score' />: {totalScore}</i>
+          <i><FormattedMessage id='score' />: {exam.score}</i>
         </div>
       </div>
       <hr />

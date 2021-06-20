@@ -86,6 +86,7 @@ const ExamsList = (props) => {
     LIST_ASSIGNED_EXAMS,
     {
       variables: { idNumber: idNumber },
+      fetchPolicy: 'network-only',
       onCompleted: onFetchAssignedExamsSuccess,
       onError
     }
@@ -94,6 +95,7 @@ const ExamsList = (props) => {
     LIST_EXAMS,
     {
       variables: { idNumber: idNumber },
+      fetchPolicy: 'network-only',
       onCompleted: onFetchExamsSuccess,
       onError
     }
@@ -151,6 +153,7 @@ const ExamsList = (props) => {
     courseName: formatMessage({ id: 'course_name' }),
     examName: formatMessage({ id: 'exam_name' }),
     action: formatMessage({ id: 'action' }),
+    score: formatMessage({ id: 'score' }),
     goToExam: formatMessage({ id: 'button.go_to_exam' }),
     goToExamDetails: formatMessage({ id: 'button.details' })
   }
@@ -159,14 +162,34 @@ const ExamsList = (props) => {
     {
       Header: columnsExamTranslations.dateStarted,
       accessor: 'dateStarted',
-      Cell: ({ row }) => format(new Date(row.original.created), 'yyyy-MM-dd')
+      Cell: ({ row }) => {
+        return (
+          <div className='row'>
+            <div className='col-md-12 col-xs-12'>
+              {format(new Date(row.original.created), 'yyyy-MM-dd')}
+            </div>
+            <div className='col-md-12 col-xs-12'>
+              {format(new Date(row.original.created), 'h:mm a')}
+            </div>
+          </div>
+        )
+      }
     },
     {
       Header: columnsExamTranslations.dateFinished,
       accessor: 'dateFinished',
       Cell: ({ row }) => {
         return (row.original.updated && row.original.completed === true)
-          ? format(new Date(row.original.updated), 'yyyy-MM-dd')
+          ? (
+            <>
+              <div className='col-md-12 col-xs-12'>
+                {format(new Date(row.original.updated), 'yyyy-MM-dd')}
+              </div>
+              <div className='col-md-12 col-xs-12'>
+                {format(new Date(row.original.updated), 'h:mm a')}
+              </div>
+            </>
+          )
           : '-'
       }
     },
@@ -181,6 +204,11 @@ const ExamsList = (props) => {
       Cell: ({ row }) => row.original.name
     },
     {
+      Header: columnsExamTranslations.score,
+      accessor: 'score',
+      Cell: ({ row }) => row.original.score || '-'
+    },
+    {
       Header: columnsExamTranslations.action,
       Cell: ({ row }) => {
         return (
@@ -192,14 +220,14 @@ const ExamsList = (props) => {
                     {columnsExamTranslations.goToExamDetails}
                   </Button>
                 </Link>
-                )
+              )
               : (
                 <Link to={`/exams/${row.original.id}`}>
                   <Button color='secondary' className='m-2' disabled={creatingExam}>
                     {columnsExamTranslations.goToExam}
                   </Button>
                 </Link>
-                )}
+              )}
           </div>
         )
       }

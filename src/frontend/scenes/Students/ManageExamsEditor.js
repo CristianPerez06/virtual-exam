@@ -252,6 +252,7 @@ const ManageExamsEditor = (props) => {
     courseName: formatMessage({ id: 'course_name' }),
     examName: formatMessage({ id: 'exam_name' }),
     action: formatMessage({ id: 'action' }),
+    score: formatMessage({ id: 'score' }),
     goToExamDetails: formatMessage({ id: 'button.details' })
   }
 
@@ -259,14 +260,34 @@ const ManageExamsEditor = (props) => {
     {
       Header: columnsExamTranslations.dateStarted,
       accessor: 'dateStarted',
-      Cell: ({ row }) => format(new Date(row.original.created), 'yyyy-MM-dd')
+      Cell: ({ row }) => {
+        return (
+          <div className='row'>
+            <div className='col-md-12 col-xs-12'>
+              {format(new Date(row.original.created), 'yyyy-MM-dd')}
+            </div>
+            <div className='col-md-12 col-xs-12'>
+              {format(new Date(row.original.created), 'h:mm a')}
+            </div>
+          </div>
+        )
+      }
     },
     {
       Header: columnsExamTranslations.dateFinished,
       accessor: 'dateFinished',
       Cell: ({ row }) => {
         return (row.original.updated && row.original.completed === true)
-          ? format(new Date(row.original.updated), 'yyyy-MM-dd')
+          ? (
+            <>
+              <div className='col-md-12 col-xs-12'>
+                {format(new Date(row.original.updated), 'yyyy-MM-dd')}
+              </div>
+              <div className='col-md-12 col-xs-12'>
+                {format(new Date(row.original.updated), 'h:mm a')}
+              </div>
+            </>
+          )
           : '-'
       }
     },
@@ -279,6 +300,11 @@ const ManageExamsEditor = (props) => {
       Header: columnsExamTranslations.examName,
       accessor: 'name',
       Cell: ({ row }) => row.original.name
+    },
+    {
+      Header: columnsExamTranslations.score,
+      accessor: 'score',
+      Cell: ({ row }) => row.original.score || '-'
     },
     {
       Header: columnsExamTranslations.action,

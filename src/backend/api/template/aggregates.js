@@ -9,7 +9,7 @@ const getExamTemplates = (name, courseId, useExerciseValidations = false) => {
       }
     }
   ]
-  
+
   const byName = [
     {
       $match: {
@@ -34,28 +34,28 @@ const getExamTemplates = (name, courseId, useExerciseValidations = false) => {
     },
     {
       $unwind: {
-        path: '$exercises', 
+        path: '$exercises',
         preserveNullAndEmptyArrays: false
       }
     },
     {
       $lookup: {
-        from: 'answers', 
-        localField: 'exercises._id', 
-        foreignField: 'exerciseId', 
+        from: 'answers',
+        localField: 'exercises._id',
+        foreignField: 'exerciseId',
         as: 'answers'
       }
     },
     {
       $project: {
-        _id: 1, 
-        name: 1, 
-        courseId: 1, 
-        created: 1, 
-        updated: 1, 
+        _id: 1,
+        name: 1,
+        courseId: 1,
+        created: 1,
+        updated: 1,
         exercise: {
-          _id: '$exercises._id', 
-          points: '$exercises.points', 
+          _id: '$exercises._id',
+          points: '$exercises.points',
           hasCorrectAnswer: {
             $anyElementTrue: '$answers.correct'
           }
@@ -64,9 +64,9 @@ const getExamTemplates = (name, courseId, useExerciseValidations = false) => {
     },
     {
       $group: {
-        _id: '$_id', 
+        _id: '$_id',
         name: {
-          '$first': '$name'
+          $first: '$name'
         },
         courseId: {
           $first: '$courseId'
@@ -91,21 +91,21 @@ const getExamTemplates = (name, courseId, useExerciseValidations = false) => {
     },
     {
       $project: {
-        _id: 1, 
-        name: 1, 
-        courseId: 1, 
-        created: 1, 
-        updated: 1, 
-        exercises: 1, 
+        _id: 1,
+        name: 1,
+        courseId: 1,
+        created: 1,
+        updated: 1,
+        exercises: 1,
         answersCorrectSet: {
           $allElementsTrue: '$exercises.hasCorrectAnswer'
-        }, 
+        },
         exercisesAmountSet: {
           $gte: [
             { $size: '$exercises' },
             2
           ]
-        }, 
+        },
         exercisesValidScoreSet: {
           $and: [
             {
@@ -132,8 +132,8 @@ const getExamTemplates = (name, courseId, useExerciseValidations = false) => {
     },
     {
       $match: {
-        answersCorrectSet: true, 
-        exercisesAmountSet: true, 
+        answersCorrectSet: true,
+        exercisesAmountSet: true,
         exercisesValidScoreSet: true
       }
     }
@@ -166,32 +166,32 @@ const getExamTemplates = (name, courseId, useExerciseValidations = false) => {
 const getExercises = [
   {
     $project: {
-      _id: 0, 
+      _id: 0,
       exercisesWithPoints: '$exercises'
     }
   },
   {
     $unwind: {
-      path: '$exercisesWithPoints', 
+      path: '$exercisesWithPoints',
       preserveNullAndEmptyArrays: false
     }
   },
   {
     $lookup: {
-      from: 'exercises', 
-      localField: 'exercisesWithPoints._id', 
-      foreignField: '_id', 
+      from: 'exercises',
+      localField: 'exercisesWithPoints._id',
+      foreignField: '_id',
       as: 'exercise'
     }
   },
   {
     $project: {
-      _id: 0, 
+      _id: 0,
       exercise: {
         $arrayElemAt: [
           '$exercise', 0
         ]
-      }, 
+      },
       points: '$exercisesWithPoints.points'
     }
   },
@@ -202,20 +202,20 @@ const getExercises = [
   },
   {
     $project: {
-      'exercise': 1
+      exercise: 1
     }
   },
   {
     $lookup: {
-      from: 'units', 
-      localField: 'exercise.unitId', 
-      foreignField: '_id', 
+      from: 'units',
+      localField: 'exercise.unitId',
+      foreignField: '_id',
       as: 'unit'
     }
   },
   {
     $project: {
-      exercise: 1, 
+      exercise: 1,
       unit: {
         $arrayElemAt: [
           '$unit', 0
@@ -230,7 +230,7 @@ const getExercises = [
   },
   {
     $project: {
-      'exercise': 1
+      exercise: 1
     }
   }
 ]
