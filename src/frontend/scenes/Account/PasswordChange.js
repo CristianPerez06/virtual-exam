@@ -1,19 +1,12 @@
 import React, { useState } from 'react'
-import { Form, Field } from 'react-final-form'
 import { useHistory } from 'react-router-dom'
-import { Input, Button } from 'reactstrap'
-import { injectIntl, FormattedMessage } from 'react-intl'
+import { injectIntl } from 'react-intl'
 import { COGNITO_ERROR_CODES, ACCOUNT_ACTION_TYPES } from '../../common/constants'
-import { translateFieldError } from '../../common/translations'
-import { required, shouldMatch, shouldNotMatch, composeValidators } from '../../common/validators'
-import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
+import { CustomAlert } from '../../components/common'
 import { useQueryParams, useAuthContext } from '../../hooks'
+import PasswordChangeForm from './components/PasswordChangeForm'
 
 const PasswordChange = (props) => {
-  // Props and params
-  const { intl } = props
-  const { formatMessage } = intl
-
   // props
   const queryParams = useQueryParams()
   const id = queryParams.get('id')
@@ -62,82 +55,14 @@ const PasswordChange = (props) => {
   }
 
   return (
-    <div className='d-flex h-100 align-items-center justify-content-center' style={{ background: 'rgba(0, 0, 0, 0.76)' }}>
-      <Form
-        onSubmit={onSubmit}
-        render={({ handleSubmit, values }) => (
-          <form
-            onSubmit={handleSubmit}
-            className='text-center bg-light p-5'
-            style={{ minWidth: 400 + 'px' }}
-          >
-            <p className='h4 mb-4'>
-              <FormattedMessage id='common_title.change_password' />
-            </p>
-            <Input
-              id='id'
-              className='form-control mb-4'
-              placeholder='ID'
-              value={id}
-              readOnly
-            />
-            <Input
-              id='email'
-              className='form-control mb-4'
-              placeholder='Email'
-              value={email}
-              readOnly
-            />
-            <Field name='password' validate={required}>
-              {({ input, meta }) => (
-                <div className='mb-4'>
-                  <input
-                    {...input}
-                    type='password'
-                    className='form-control'
-                    placeholder={formatMessage({ id: 'password' })}
-                  />
-                  {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                </div>
-              )}
-            </Field>
-            <Field name='newPassword' validate={composeValidators(required, shouldNotMatch(values.password))}>
-              {({ input, meta }) => (
-                <div className='mb-4'>
-                  <input
-                    {...input}
-                    type='password'
-                    className='form-control'
-                    placeholder={formatMessage({ id: 'new_password' })}
-                  />
-                  {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error, formatMessage({ id: 'password' }), formatMessage({ id: 'new_password' }))} />}
-                </div>
-              )}
-            </Field>
-            <Field name='newPasswordConfirm' validate={composeValidators(required, shouldMatch(values.newPassword))}>
-              {({ input, meta }) => (
-                <div className='mb-4'>
-                  <input
-                    {...input}
-                    type='password'
-                    className='form-control'
-                    placeholder={formatMessage({ id: 'confirm_new_password' })}
-                  />
-                  {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error, formatMessage({ id: 'new_password' }), formatMessage({ id: 'confirm_new_password' }))} />}
-                </div>
-              )}
-            </Field>
-            <Button color='primary' disabled={isLoading}>
-              <FormattedMessage id='button.update_password' />
-              {isLoading && <LoadingInline className='ml-3' />}
-            </Button>
+    <div className='password-change d-flex justify-content-center row text-center'>
+      <div className='password-change-form bg-light col-md-12 col-xs-12'>
+        <PasswordChangeForm isLoading={isLoading} idNumber={id} email={email} onSubmit={onSubmit} />
+      </div>
 
-            <div className='d-flex justify-content-around pt-3'>
-              {!isLoading && error && <CustomAlert messages={error} />}
-            </div>
-          </form>
-        )}
-      />
+      <div className='info pt-3 col-md-12 col-xs-12'>
+        {!isLoading && error && <CustomAlert messages={error} />}
+      </div>
     </div>
   )
 }

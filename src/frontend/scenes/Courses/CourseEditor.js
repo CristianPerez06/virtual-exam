@@ -53,11 +53,11 @@ const CourseEditor = (props) => {
 
     isCreating
       ? createCourse({
-        variables: { name: name },
-        update: (cache, result) => {
-          syncCacheOnCreate(cache, result.data.createCourse)
-        }
-      })
+          variables: { name: name },
+          update: (cache, result) => {
+            syncCacheOnCreate(cache, result.data.createCourse)
+          }
+        })
       : updateCourse({
         variables: { id: params.id, name: name },
         update: (cache, result) => {
@@ -131,8 +131,8 @@ const CourseEditor = (props) => {
             {(errors || courseCreated || courseUpdated) && (
               <div id='info' className='d-flex justify-content-around mt-3  '>
                 {errors && <CustomAlert messages={errors} className='ml-3' />}
-                {!creating && courseCreated && <CustomAlert messages={{ id: 'course_created', message: formatMessage({ id: 'course_created' }) }} color='success' />}
-                {!updating && courseUpdated && <CustomAlert messages={{ id: 'course_updated', message: formatMessage({ id: 'course_updated' }) }} color='success' />}
+                {!creating && courseCreated && <CustomAlert color='success' messages={{ id: 'course_created' }} />}
+                {!updating && courseUpdated && <CustomAlert color='success' messages={{ id: 'course_updated' }} />}
               </div>
             )}
           </form>

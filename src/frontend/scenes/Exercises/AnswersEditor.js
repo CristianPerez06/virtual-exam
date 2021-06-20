@@ -148,8 +148,8 @@ const AnswersEditor = (props) => {
             {(errors || answerCreated || answerUpdated) && (
               <div id='info' className='d-flex justify-content-around mt-3'>
                 {errors && <CustomAlert messages={errors} className='ml-3' />}
-                {!creating && answerCreated && <CustomAlert messages={{ id: 'answer_created', message: formatMessage({ id: 'answer_created' }) }} color='success' />}
-                {!updating && answerUpdated && <CustomAlert messages={{ id: 'answer_updated', message: formatMessage({ id: 'answer_updated' }) }} color='success' />}
+                {!creating && answerCreated && <CustomAlert color='success' messages={{ id: 'answer_created' }} />}
+                {!updating && answerUpdated && <CustomAlert color='success' messages={{ id: 'answer_updated' }} />}
               </div>
             )}
 

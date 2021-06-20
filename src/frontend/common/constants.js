@@ -18,7 +18,8 @@ export const COGNITO_ERROR_CODES = {
   NEW_PASSWORD_REQUIRED: 'newPasswordRequired',
   INVALID_PARAMETER_EXCEPTION: 'InvalidParameterException',
   INVALID_PASSWORD_EXCEPTION: 'InvalidPasswordException',
-  CODE_MISMATCH_EXCEPTION: 'CodeMismatchException'
+  CODE_MISMATCH_EXCEPTION: 'CodeMismatchException',
+  EXPIRED_CODE: 'ExpiredCodeException'
 }
 
 export const ID_LENGTH = {

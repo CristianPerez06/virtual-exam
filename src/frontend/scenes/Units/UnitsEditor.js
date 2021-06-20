@@ -166,8 +166,8 @@ const UnitsEditor = (props) => {
             {(errors || unitCreated || unitUpdated) && (
               <div id='info' className='d-flex justify-content-around mt-3'>
                 {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-                {!creating && unitCreated && <CustomAlert messages={{ id: 'unit_created', message: formatMessage({ id: 'unit_created' }) }} color='success' />}
-                {!updating && unitUpdated && <CustomAlert messages={{ id: 'unit_updated', message: formatMessage({ id: 'unit_updated' }) }} color='success' />}
+                {!creating && unitCreated && <CustomAlert color='success' messages={{ id: 'unit_created' }} />}
+                {!updating && unitUpdated && <CustomAlert color='success' messages={{ id: 'unit_updated' }} />}
               </div>
             )}
 

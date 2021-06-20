@@ -1,22 +1,17 @@
 import React, { useState } from 'react'
-import { Form, Field } from 'react-final-form'
 import { Link } from 'react-router-dom'
-import { Button } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { COGNITO_ERROR_CODES } from '../../common/constants'
-import { translateFieldError } from '../../common/translations'
-import { required, emailFormat, composeValidators } from '../../common/validators'
-import { LoadingInline, CustomAlert, FieldError } from '../../components/common'
+import { CustomAlert } from '../../components/common'
 import { useAuthContext } from '../../hooks'
+import SendRecoveryCodeForm from './components/SendRecoveryCodeForm'
+import ConfirmPasswordForm from './components/ConfirmPasswordForm'
 
 const SignUp = (props) => {
-  // Props and params
-  const { intl } = props
-  const { formatMessage } = intl
-
   // state
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [email, setEmail] = useState('cristian.ap84@gmail.com')
   const [codeSent, setCodeSent] = useState(false)
   const [confirmedPassword, setConfirmedPassword] = useState(false)
 
@@ -31,7 +26,6 @@ const SignUp = (props) => {
 
   const onConfirmPasswordSuccess = (data) => {
     setIsLoading(false)
-    setCodeSent(false)
     setConfirmedPassword(true)
   }
 
@@ -44,6 +38,9 @@ const SignUp = (props) => {
       case COGNITO_ERROR_CODES.CODE_MISMATCH_EXCEPTION:
         setError({ id: 'cognito_error.code_mismatch_exception' })
         break
+      case COGNITO_ERROR_CODES.EXPIRED_CODE:
+        setError({ id: 'cognito_error.expired_code' })
+        break
       default:
         setError({ id: 'common_error.internal_server_error' })
         break
@@ -51,116 +48,43 @@ const SignUp = (props) => {
     setIsLoading(false)
   }
 
-  const onSubmit = values => {
-    const { email, recoveryCode, newPassword } = values
+  const onSubmitRecoveryCode = values => {
+    const { email } = values
     setError(false)
-    setCodeSent(false)
+    setEmail(email)
     setIsLoading(true)
 
-    if (codeSent) {
-      cognito.confirmPassword(email, recoveryCode, newPassword)
-        .then(data => onConfirmPasswordSuccess(data))
-        .catch(err => onError(err))
-    } else {
-      cognito.forgotPassword(email)
-        .then(data => onForgotPasswordSuccess(data))
-        .catch(err => onError(err))
-    }
+    cognito.forgotPassword(email)
+      .then(data => onForgotPasswordSuccess(data))
+      .catch(err => onError(err))
+  }
+
+  const onSubmitConfirmPassword = values => {
+    const { recoveryCode, newPassword } = values
+    setError(false)
+    setIsLoading(true)
+
+    cognito.confirmPassword(email, recoveryCode, newPassword)
+      .then(data => onConfirmPasswordSuccess(data))
+      .catch(err => onError(err))
   }
 
   return (
-    <div className='d-flex h-100 align-items-center justify-content-center' style={{ background: 'rgba(0, 0, 0, 0.76)' }}>
-      <Form
-        onSubmit={onSubmit}
-        render={({ handleSubmit }) => (
-          <form
-            onSubmit={handleSubmit}
-            className='text-center bg-light p-5'
-            style={{ minWidth: 400 + 'px' }}
-          >
-            <div className='pb-3'>
-              <p className='h4 mb-4'>
-                <FormattedMessage id='common_title.forgot_password' />
-              </p>
-              <Field name='email' validate={composeValidators(required, emailFormat)}>
-                {({ input, meta }) => (
-                  <div className='mb-4'>
-                    <input
-                      {...input}
-                      className='form-control'
-                      placeholder='Email'
-                      disabled={isLoading || codeSent || confirmedPassword}
-                    />
-                    {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                  </div>
-                )}
-              </Field>
-              {!confirmedPassword &&
-                <div>
-                  {/* Forgot password */}
-                  {!codeSent &&
-                    <div className='forgot-password-workflow'>
-                      <Button color='primary' disabled={isLoading}>
-                        <FormattedMessage id='button.send_recovery_code' />
-                        {isLoading && <LoadingInline className='ml-3' />}
-                      </Button>
-                    </div>}
-                  {/* Update password */}
-                  {codeSent &&
-                    <div className='update-password-workflow'>
-                      <Field name='recoveryCode' validate={required}>
-                        {({ input, meta }) => (
-                          <div className='mb-4'>
-                            <input
-                              {...input}
-                              className='form-control'
-                              placeholder={formatMessage({ id: 'recovery_code' })}
-                              disabled={isLoading}
-                            />
-                            {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                          </div>
-                        )}
-                      </Field>
-                      <Field name='newPassword' validate={required}>
-                        {({ input, meta }) => (
-                          <div className='mb-4'>
-                            <input
-                              {...input}
-                              className='form-control'
-                              type='password'
-                              placeholder={formatMessage({ id: 'new_password' })}
-                              disabled={isLoading}
-                            />
-                            {meta.error && meta.touched && <FieldError error={translateFieldError(intl, meta.error)} />}
-                          </div>
-                        )}
-                      </Field>
-                      <Button color='primary' disabled={isLoading || confirmedPassword}>
-                        <FormattedMessage id='button.update_password' />
-                        {isLoading && <LoadingInline className='ml-3' />}
-                      </Button>
-                    </div>}
-                </div>}
-            </div>
-            <div className='d-flex justify-content-around pt-3'>
-              <>
-                {!isLoading && error &&
-                  <CustomAlert messages={error} className='ml-3' />}
-                {!isLoading && codeSent &&
-                  <CustomAlert
-                    messages={{ id: 'recovery_code_sent', message: formatMessage({ id: 'recovery_code_sent' }) }}
-                    color='success'
-                    className='ml-3'
-                  />}
-                {!isLoading && confirmedPassword && <CustomAlert message='Password successfully updated' color='success' />}
-                <Link className='nav-link' to='/login'>
-                  <FormattedMessage id='button.go_signin_page' />
-                </Link>
-              </>
-            </div>
-          </form>
-        )}
-      />
+    <div className='forgot-password d-flex justify-content-center row text-center'>
+      <div className='forgot-password-form bg-light col-md-12 col-xs-12'>
+        {!codeSent
+          ? <SendRecoveryCodeForm isLoading={isLoading} onSubmit={onSubmitRecoveryCode} />
+          : <ConfirmPasswordForm isLoading={isLoading} email={email} disabled={confirmedPassword} onSubmit={onSubmitConfirmPassword} />}
+        <Link className='nav-link' to='/login'>
+          <FormattedMessage id='button.go_signin_page' />
+        </Link>
+      </div>
+
+      <div className='info pt-3 col-md-12 col-xs-12'>
+        {!isLoading && error && <CustomAlert messages={error} />}
+        {!isLoading && !error && codeSent && !confirmedPassword && <CustomAlert color='success' messages={{ id: 'recovery_code_sent' }} />}
+        {!isLoading && confirmedPassword && <CustomAlert color='success' messages={{ id: 'password_updated' }} />}
+      </div>
     </div>
   )
 }

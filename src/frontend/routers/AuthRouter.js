@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Route, Switch, Redirect, useLocation } from 'react-router-dom'
-import { Layout } from '../components/layout'
+import { LayoutAuth } from '../components/layout'
 import { PageNotFound, Error, Loading } from '../components/common'
 import { Home } from '../components'
 import {
@@ -48,7 +48,7 @@ const AuthRouter = () => {
   }, [location, dispatch, cognito])
 
   return (
-    <Layout>
+    <LayoutAuth>
       {isLoading
         ? <Loading />
         : (
@@ -67,9 +67,8 @@ const AuthRouter = () => {
             <Route path='/settings' name='Settings' component={AsyncSettings} />
             <Route name='/error' component={Error} />
             <Route name='Page Not Found' component={PageNotFound} />
-          </Switch>
-        )}
-    </Layout>
+          </Switch>)}
+    </LayoutAuth>
   )
 }
 
