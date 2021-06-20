@@ -24,6 +24,7 @@ type Exam {
   idNumber: String!
   courseId: ID!
   courseName: String!
+  score: Float
 }
 
 type Exams {

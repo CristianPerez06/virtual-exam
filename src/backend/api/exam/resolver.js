@@ -125,7 +125,7 @@ const resolver = {
       const responseCreate = await collection.insertOne(newItem, { writeConcern: { w: 'majority' } })
 
       // Delete assigned exam
-      // await assignedExamsCollection.deleteOne({ _id: objAssignedExamId }, { w: 'majority' })
+      await assignedExamsCollection.deleteOne({ _id: objAssignedExamId }, { w: 'majority' })
 
       // Results
       if (responseCreate.result.ok !== 1) {
@@ -174,10 +174,17 @@ const resolver = {
         return transformedExercise
       })
 
+      const score = transformedExercises.reduce((exerciseAcc, exerciseCurr) => {
+        const solvedCorrectly = exerciseCurr.answers.find(x => x.correct && x.selected)
+        const exercisePoints = solvedCorrectly ? exerciseCurr.points : 0
+        return exerciseAcc + parseFloat(exercisePoints)
+      }, 0)
+
       // Query
       const update = {
         $set: {
           exercises: transformedExercises,
+          score: score,
           completed: true,
           updated: new Date().toISOString()
         }

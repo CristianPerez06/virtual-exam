@@ -90,6 +90,7 @@ const getExamsByCustomParameters = (idNumber, courseId, completed) => {
         created: 1,
         updated: 1,
         completed: 1,
+        score: 1,
         templateInfo: {
           $arrayElemAt: [
             '$examTemplate', 0
@@ -106,6 +107,7 @@ const getExamsByCustomParameters = (idNumber, courseId, completed) => {
         created: 1,
         updated: 1,
         completed: 1,
+        score: 1,
         courseId: '$templateInfo.courseId'
       }
     },
@@ -126,6 +128,7 @@ const getExamsByCustomParameters = (idNumber, courseId, completed) => {
         created: 1,
         updated: 1,
         completed: 1,
+        score: 1,
         course: {
           $arrayElemAt: ['$course', 0]
         }
@@ -140,6 +143,7 @@ const getExamsByCustomParameters = (idNumber, courseId, completed) => {
         created: 1,
         updated: 1,
         completed: 1,
+        score: 1,
         courseId: {
           $convert: {
             input: '$course._id', to: 'string'

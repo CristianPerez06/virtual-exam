@@ -21,6 +21,7 @@ export const GET_EXAM = gql`
           selected
         }
       }
+      score
     }
   }
 `
@@ -35,6 +36,7 @@ export const LIST_EXAMS = gql`
         completed
         idNumber
         courseName
+        score
       }
       count
     }
