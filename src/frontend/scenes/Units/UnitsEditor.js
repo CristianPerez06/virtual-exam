@@ -68,12 +68,12 @@ const UnitsEditor = (props) => {
     const { name, courseId } = values
     isCreating
       ? createUnit({
-        variables: { name: name, courseId: courseId },
-        update: (cache, result) => {
-          const variables = { courseId: courseId }
-          syncCacheOnCreate(cache, result.data.createUnit, variables)
-        }
-      })
+          variables: { name: name, courseId: courseId },
+          update: (cache, result) => {
+            const variables = { courseId: courseId }
+            syncCacheOnCreate(cache, result.data.createUnit, variables)
+          }
+        })
       : updateUnit({
         variables: { id: params.id, name: name, courseId: courseId },
         update: (cache, result) => {
@@ -150,7 +150,7 @@ const UnitsEditor = (props) => {
               </div>
             </div>
 
-            <div id='buttons' className='d-flex justify-content-center'>
+            <div id='buttons' className='d-flex justify-content-end'>
               <ButtonSubmit
                 isDisabled={creating || updating || fetching || fetchingCourses || pristine}
                 isLoading={creating || updating || fetching}

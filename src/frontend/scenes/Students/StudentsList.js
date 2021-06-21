@@ -4,6 +4,7 @@ import { injectIntl, FormattedMessage } from 'react-intl'
 import { useAuthContext } from '../../hooks'
 import { Link } from 'react-router-dom'
 import { Loading, TranslatableErrors, Table, NoResults } from '../../components/common'
+import { ROLES } from './../../common/constants'
 
 const StudentsList = (props) => {
   // Props and params
@@ -22,7 +23,14 @@ const StudentsList = (props) => {
   const onSuccess = (data) => {
     // TO DO - Handle error when no users where returned from AWS
     const { Users } = data
-    const studentsList = Users.map((user) => {
+
+    // Admin users should be displayed in Students list
+    const filteredUsers = Users.filter(user => {
+      const userAttr = user.Attributes.find(x => x.Name === 'custom:role')
+      return userAttr.Value === ROLES.GUEST ? user : null
+    })
+
+    const studentsList = filteredUsers.map((user) => {
       return {
         idNumber: user.Username,
         completeName: user.Attributes.find(x => x.Name === 'name').Value + ' ' + user.Attributes.find(x => x.Name === 'family_name').Value

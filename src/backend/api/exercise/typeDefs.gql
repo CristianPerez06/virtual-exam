@@ -2,7 +2,8 @@ type Exercise {
   id: ID!
   name: String!,
   courseId: ID!,
-  unitId: ID!
+  unitId: ID!,
+  descriptionUrl: String
 }
 
 type Exercises {
@@ -19,6 +20,7 @@ extend type Query {
 extend type Mutation {
   createExercise(name: String!, courseId: ID!, unitId: ID!): Exercise
   updateExercise(id: ID!, name: String!, courseId: ID!, unitId: ID!): Exercise
+  updateExerciseDescription(id: ID!, descriptionUrl: String!): Exercise
   disableExercise(id: ID!): Exercise
   deleteExercise(id: ID!): Response
 }

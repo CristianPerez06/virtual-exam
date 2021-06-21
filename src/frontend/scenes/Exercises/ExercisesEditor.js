@@ -14,12 +14,14 @@ import {
   ButtonSubmit,
   ButtonGoTo,
   NoResults,
-  LoadingInline
+  LoadingInline,
+  ImageUploader
 } from '../../components/common'
+import ExerciseDescription from './components/ExerciseDescription'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { CREATE_EXERCISE, UPDATE_EXERCISE, GET_EXERCISE } from '../../common/requests/exercises'
+import { CREATE_EXERCISE, UPDATE_EXERCISE, GET_EXERCISE, UPDATE_EXERCISE_DESCRIPTION } from '../../common/requests/exercises'
 import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS } from '../../common/requests/units'
 import { DISABLE_ANSWER, LIST_ANSWERS } from '../../common/requests/answers'
@@ -33,6 +35,7 @@ const ExercisesEditor = (props) => {
   const history = useHistory()
 
   // State
+  const [exercise, setExercise] = useState(false)
   const [exerciseCreated, setExerciseCreated] = useState(false)
   const [exerciseUpdated, setExerciseUpdated] = useState(false)
   const [courses, setCourses] = useState([])
@@ -45,6 +48,8 @@ const ExercisesEditor = (props) => {
   const [answerToDelete, setAnswerToDelete] = useState()
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
   const [answerDeleted, setAnswerDeleted] = useState(false)
+  const [showImageUploader, setShowImageUploader] = useState(true)
+  const [descriptionImage, setDescriptionImage] = useState(true)
 
   // Handlers
   const onSuccess = (result) => {
@@ -65,11 +70,16 @@ const ExercisesEditor = (props) => {
 
   const onFetchExerciseSuccess = (result) => {
     if (!result) return
-    const exercise = { ...result.getExercise }
-    setInitialValues(exercise)
+    const ex = { ...result.getExercise }
+    setExercise(ex)
+    setInitialValues(ex)
+    if (ex.descriptionUrl) {
+      setDescriptionImage(ex.descriptionUrl)
+      setShowImageUploader(false)
+    }
     setFilters({
-      selectedCourse: exercise.courseId,
-      selectedUnit: exercise.unitId
+      selectedCourse: ex.courseId,
+      selectedUnit: ex.unitId
     })
   }
 
@@ -110,6 +120,18 @@ const ExercisesEditor = (props) => {
           syncCacheOnUpdate(cache, result.data.updateExercise, variables, variables)
         }
       })
+  }
+
+  const onUploadComplete = (fileUrl) => {
+    updateExerciseDescription({
+      variables: { id: params.id, descriptionUrl: fileUrl },
+      update: (cache, result) => {
+        setShowImageUploader(false)
+        setDescriptionImage(fileUrl)
+        // const variables = { courseId: courseId, unitId: unitId }
+        // syncCacheOnUpdate(cache, result.data.updateExercise, variables, variables)
+      }
+    })
   }
 
   const getAlerts = (answersList) => {
@@ -154,11 +176,15 @@ const ExercisesEditor = (props) => {
     })
   }
 
+  const onUpdateImageClicked = () => {
+    setShowImageUploader(true)
+  }
+
   // Other
   const stateCleanupOnDelete = () => {
     setErrors()
     setDeleteModalIsOpen(false)
-    setAnswerDeleted(true)
+    setAnswerDeleted(false)
   }
 
   // Queries and mutations
@@ -206,6 +232,7 @@ const ExercisesEditor = (props) => {
   const [createExercise, { loading: creating }] = useMutation(CREATE_EXERCISE, { onCompleted: onSuccess, onError })
   const [updateExercise, { loading: updating }] = useMutation(UPDATE_EXERCISE, { onCompleted: onSuccess, onError })
   const [disableAnswer, { loading: deletingAnswer }] = useMutation(DISABLE_ANSWER, { onCompleted: stateCleanupOnDelete, onError })
+  const [updateExerciseDescription, { loading: updatingDescription }] = useMutation(UPDATE_EXERCISE_DESCRIPTION, { onCompleted: stateCleanupOnDelete, onError })
 
   const columnTranslations = {
     answerName: formatMessage({ id: 'answer_name' }),
@@ -314,52 +341,69 @@ const ExercisesEditor = (props) => {
                 </div>
               </div>
 
-              {/* Delete answer modal */}
-              <div id='delete-modal'>
-                <DeleteModal
-                  modalIsOpen={deleteModalIsOpen}
-                  isBussy={deletingAnswer}
-                  onCloseClick={() => onCancelClicked()}
-                  onDeleteClick={() => onDeleteConfirmClicked()}
-                />
-              </div>
-
-              {/* Buttons */}
-              <div id='buttons' className='d-flex justify-content-center'>
-                <ButtonSubmit
-                  isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits || pristine}
-                  isLoading={creating || updating || fetching}
-                />
-
-                {!isCreating && (
-                  <ButtonGoTo
-                    path={`/exercises/${params.id}/answers/new`}
-                    color='info'
-                    translatableTextId='button.add_answer'
-                    isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
-                  />
-                )}
-
-                <ButtonGoTo
-                  path='/exercises/list'
-                  color='secondary'
-                  translatableTextId='button.go_to_list'
-                  isDisabled={creating || updating || fetching || fetchingCourses || fetchingUnits}
-                />
-              </div>
-
-              {/* Info */}
-              {(errors || exerciseCreated || exerciseUpdated || answerDeleted) && (
-                <div id='info' className='d-flex justify-content-around mt-3'>
-                  {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-                  {!creating && exerciseCreated && <CustomAlert color='success' messages={{ id: 'unit_created' }} />}
-                  {!updating && exerciseUpdated && <CustomAlert color='success' messages={{ id: 'unit_updated' }} />}
-                  {!deletingAnswer && answerDeleted && <CustomAlert color='success' messages={{ id: 'answer_deleted' }} />}
+              {/* Description / Image */}
+              {!fetching && !isCreating && (
+                <div className='row'>
+                  <div className='col-md-12 col-xs-12'>
+                    <span className='text-left pl-1 pb-1'>
+                      <FormattedMessage id='exercise_description' />
+                    </span>
+                    {showImageUploader
+                      ? <ImageUploader id={params.id} disabled={false} onUploadSuccess={onUploadComplete} oldImage={exercise.descriptionUrl} />
+                      : <ExerciseDescription url={descriptionImage} onChangeClicked={onUpdateImageClicked} />}
+                  </div>
                 </div>
               )}
 
+              {/* Buttons */}
+              <div className='d-flex justify-content-between mt-4'>
+                <div id='button-add-answer'>
+                  {!isCreating && (
+                    <ButtonGoTo
+                      path={`/exercises/${params.id}/answers/new`}
+                      color='info'
+                      translatableTextId='button.add_answer'
+                      isDisabled={creating || updating || updatingDescription || fetching || fetchingCourses || fetchingUnits}
+                    />
+                  )}
+                </div>
+
+                <div id='buttons'>
+                  <ButtonSubmit
+                    isDisabled={creating || updating || updatingDescription || fetching || fetchingCourses || fetchingUnits || pristine}
+                    isLoading={creating || updating || updatingDescription || fetching}
+                  />
+                  <ButtonGoTo
+                    path='/exercises/list'
+                    color='secondary'
+                    translatableTextId='button.go_to_list'
+                    isDisabled={creating || updating || updatingDescription || fetching || fetchingCourses || fetchingUnits}
+                  />
+                </div>
+              </div>
+
             </form>
           )}
+        />
+      </div>
+
+      {/* Info */}
+      {(errors || exerciseCreated || exerciseUpdated || answerDeleted) && (
+        <div id='info' className='d-flex justify-content-around mt-1'>
+          {errors && <TranslatableErrors errors={errors} className='ml-3' />}
+          {!creating && exerciseCreated && <CustomAlert color='success' messages={{ id: 'exercise_created' }} />}
+          {!updating && exerciseUpdated && <CustomAlert color='success' messages={{ id: 'exercise_updated' }} />}
+          {!deletingAnswer && answerDeleted && <CustomAlert color='success' messages={{ id: 'answer_deleted' }} />}
+        </div>
+      )}
+
+      {/* Delete answer modal */}
+      <div id='delete-modal'>
+        <DeleteModal
+          modalIsOpen={deleteModalIsOpen}
+          isBussy={deletingAnswer}
+          onCloseClick={() => onCancelClicked()}
+          onDeleteClick={() => onDeleteConfirmClicked()}
         />
       </div>
 
@@ -371,8 +415,12 @@ const ExercisesEditor = (props) => {
         {fetchingAnswers && <div className='text-center'><LoadingInline color='grey' /></div>}
         {!fetchingAnswers && answers.length === 0 && <NoResults />}
         {!fetchingAnswers && answers.length !== 0 && <Table columns={columns} data={answers} />}
-        {alerts && <CustomAlert color='warning' messages={alerts} />}
       </div>
+      {alerts && (
+        <div id='info' className='d-flex justify-content-around mt-1'>
+          {alerts && <CustomAlert color='warning' messages={alerts} />}
+        </div>
+      )}
     </div>
   )
 }
