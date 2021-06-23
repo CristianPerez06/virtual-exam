@@ -63,6 +63,8 @@ const getExercisesAndAnswers = [
     $project: {
       _id: '$exercise._id',
       name: '$exercise.name',
+      description: '$exercise.description',
+      descriptionUrl: '$exercise.descriptionUrl',
       points: '$exercise.points',
       answers: 1
     }

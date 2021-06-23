@@ -101,8 +101,19 @@ const TakeExam = (props) => {
             return (
               <div className='exam-item' key={exerciseIndex}>
                 <FormGroup tag='fieldset'>
+                  {/* Exercise name */}
                   <span className='d-block'>{exerciseIndex + 1} - {exercise.name}</span>
-                  <span className='d-block'>{exercise.description}</span>
+
+                  {/* Exercise description */}
+                  {exercise.descriptionUrl
+                    ? (
+                      <div className='w-100 text-center'>
+                        <img style={{ maxWidth: 600 + 'px' }} src={exercise.descriptionUrl} alt='' />
+                      </div>
+                    )
+                    : <span>{exercise.description}</span>}
+
+                  {/* Exercise answers */}
                   {exercise.answers.map((answer) => {
                     return (
                       <FormGroup

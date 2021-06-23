@@ -163,6 +163,7 @@ const resolver = {
       // Look up for duplicates
       const docWithSameName = await collection.findOne({ name: name })
       const isDuplicated = docWithSameName &&
+        docWithSameName._id.toString() !== id &&
         docWithSameName.courseId.toString() === courseId &&
         docWithSameName.unitId.toString() === unitId &&
         docWithSameName.disabled !== true
@@ -190,8 +191,8 @@ const resolver = {
       }
       return prepSingleResultForUser(response.value)
     },
-    updateExerciseDescription: async (parent, args, context) => {
-      debug('Running disableExercise mutation with params:', args)
+    updateExerciseDescriptionUrl: async (parent, args, context) => {
+      debug('Running updateExerciseDescriptionUrl mutation with params:', args)
 
       // Args
       const { id, descriptionUrl } = args
@@ -213,7 +214,7 @@ const resolver = {
 
       // Results
       if (response.ok !== 1) {
-        debug('updateExerciseDescription error:', response.lastErrorObject)
+        debug('updateExerciseDescriptionUrl error:', response.lastErrorObject)
         throw new Error(response.lastErrorObject)
       }
       return prepSingleResultForUser(response.value)

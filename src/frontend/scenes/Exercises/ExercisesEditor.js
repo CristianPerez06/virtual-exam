@@ -21,7 +21,7 @@ import ExerciseDescription from './components/ExerciseDescription'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { CREATE_EXERCISE, UPDATE_EXERCISE, GET_EXERCISE, UPDATE_EXERCISE_DESCRIPTION } from '../../common/requests/exercises'
+import { CREATE_EXERCISE, UPDATE_EXERCISE, GET_EXERCISE, UPDATE_EXERCISE_DESCRIPTION_URL } from '../../common/requests/exercises'
 import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS } from '../../common/requests/units'
 import { DISABLE_ANSWER, LIST_ANSWERS } from '../../common/requests/answers'
@@ -123,7 +123,7 @@ const ExercisesEditor = (props) => {
   }
 
   const onUploadComplete = (fileUrl) => {
-    updateExerciseDescription({
+    updateExerciseDescriptionUrl({
       variables: { id: params.id, descriptionUrl: fileUrl },
       update: (cache, result) => {
         setShowImageUploader(false)
@@ -234,7 +234,7 @@ const ExercisesEditor = (props) => {
   const [createExercise, { loading: creating }] = useMutation(CREATE_EXERCISE, { onCompleted: onSuccess, onError })
   const [updateExercise, { loading: updating }] = useMutation(UPDATE_EXERCISE, { onCompleted: onSuccess, onError })
   const [disableAnswer, { loading: deletingAnswer }] = useMutation(DISABLE_ANSWER, { onCompleted: stateCleanupOnDelete, onError })
-  const [updateExerciseDescription, { loading: updatingDescription }] = useMutation(UPDATE_EXERCISE_DESCRIPTION, { onCompleted: stateCleanupOnDelete, onError })
+  const [updateExerciseDescriptionUrl, { loading: updatingDescription }] = useMutation(UPDATE_EXERCISE_DESCRIPTION_URL, { onCompleted: stateCleanupOnDelete, onError })
 
   const columnTranslations = {
     answerName: formatMessage({ id: 'answer_name' }),
@@ -343,12 +343,22 @@ const ExercisesEditor = (props) => {
                 </div>
               </div>
 
-              {/* Description / Image */}
+              {/* Description */}
+              <div className='row'>
+                <div className='col-md-12 col-xs-12'>
+                  <span className='text-left pl-1 pb-1'>
+                    <FormattedMessage id='exercise_description' />
+                  </span>
+                  <FieldWrapper fieldName='description' placeHolder={formatMessage({ id: 'exercise_description' })} />
+                </div>
+              </div>
+
+              {/* Visual Description */}
               {!fetching && !isCreating && (
                 <div className='row'>
                   <div className='col-md-12 col-xs-12'>
                     <span className='text-left pl-1 pb-1'>
-                      <FormattedMessage id='exercise_description' />
+                      <FormattedMessage id='exercise_visual_description' />
                     </span>
                     {showImageUploader
                       ? (
