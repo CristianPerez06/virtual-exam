@@ -103,6 +103,7 @@
 
   "exercise_name": "Titulo del ejercicio",
   "exercise_description": "Descripción del ejercicio",
+  "exercise_visual_description": "Descripción visual del ejercicio",
   "exercise_created": "Ejercicio creado exitosamente",
   "exercise_updated": "Ejercicio actualizado exitosamente",
   "exercise_deleted": "Ejercicio eliminado exitosamente",

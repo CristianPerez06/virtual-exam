@@ -8,6 +8,7 @@ export const GET_EXERCISE = gql`
       name
       courseId
       unitId,
+      description,
       descriptionUrl
     }
   }
@@ -45,6 +46,7 @@ export const CREATE_EXERCISE = gql`
       name
       courseId
       unitId
+      description
     }
   }
 `
@@ -55,16 +57,14 @@ export const UPDATE_EXERCISE = gql`
       name
       courseId
       unitId
+      description
     }
   }
 `
-export const UPDATE_EXERCISE_DESCRIPTION = gql`
-  mutation updateExerciseDescription($id: ID!, $descriptionUrl: String!) {
-    updateExerciseDescription(id: $id, descriptionUrl: $descriptionUrl){
+export const UPDATE_EXERCISE_DESCRIPTION_URL = gql`
+  mutation updateExerciseDescriptionUrl($id: ID!, $descriptionUrl: String!) {
+    updateExerciseDescriptionUrl(id: $id, descriptionUrl: $descriptionUrl){
       id
-      name
-      courseId
-      unitId,
       descriptionUrl
     }
   }

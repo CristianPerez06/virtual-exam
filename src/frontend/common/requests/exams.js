@@ -13,6 +13,8 @@ export const GET_EXAM = gql`
         id
         name
         points
+        description
+        descriptionUrl
         answers {
           id
           name
