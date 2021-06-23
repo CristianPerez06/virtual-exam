@@ -107,12 +107,12 @@ const ExercisesEditor = (props) => {
     const { name, courseId, unitId } = values
     isCreating
       ? createExercise({
-          variables: { name: name, courseId: courseId, unitId: unitId },
-          update: (cache, result) => {
-            const variables = { courseId: courseId, unitId: unitId }
-            syncCacheOnCreate(cache, result.data.createExercise, variables)
-          }
-        })
+        variables: { name: name, courseId: courseId, unitId: unitId },
+        update: (cache, result) => {
+          const variables = { courseId: courseId, unitId: unitId }
+          syncCacheOnCreate(cache, result.data.createExercise, variables)
+        }
+      })
       : updateExercise({
         variables: { id: params.id, name: name, courseId: courseId, unitId: unitId },
         update: (cache, result) => {
@@ -128,8 +128,6 @@ const ExercisesEditor = (props) => {
       update: (cache, result) => {
         setShowImageUploader(false)
         setDescriptionImage(fileUrl)
-        // const variables = { courseId: courseId, unitId: unitId }
-        // syncCacheOnUpdate(cache, result.data.updateExercise, variables, variables)
       }
     })
   }
@@ -178,6 +176,10 @@ const ExercisesEditor = (props) => {
 
   const onUpdateImageClicked = () => {
     setShowImageUploader(true)
+  }
+
+  const onCancelSelectImageClick = () => {
+    setShowImageUploader(false)
   }
 
   // Other
@@ -349,7 +351,14 @@ const ExercisesEditor = (props) => {
                       <FormattedMessage id='exercise_description' />
                     </span>
                     {showImageUploader
-                      ? <ImageUploader id={params.id} disabled={false} onUploadSuccess={onUploadComplete} oldImage={exercise.descriptionUrl} />
+                      ? (
+                        <ImageUploader
+                          id={params.id}
+                          disabled={false}
+                          onUploadSuccess={onUploadComplete}
+                          oldImage={exercise.descriptionUrl}
+                          onCancelClick={onCancelSelectImageClick}
+                        />)
                       : <ExerciseDescription url={descriptionImage} onChangeClicked={onUpdateImageClicked} />}
                   </div>
                 </div>
