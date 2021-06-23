@@ -230,7 +230,7 @@ const ExamTemplatesEditor = (props) => {
                 </div>
               </div>
 
-              <div id='buttons' className='d-flex justify-content-center'>
+              <div id='buttons' className='d-flex justify-content-end'>
                 <ButtonSubmit
                   isDisabled={creating || updating || fetchingCourses || pristine}
                   isLoading={creating || updating}

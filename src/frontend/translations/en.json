@@ -88,6 +88,10 @@
   "button.go_to_exam": "Go to exam",
   "button.details": "Details",
   "button.edit_points": "Points",
+  "button.select_image": "Select image",
+  "button.upload_image": "Upload image",
+  "button.remove_image": "Remove image",
+  "button.update_image": "Update image",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
@@ -102,6 +106,7 @@
   "unit_delete_related_entities": "You may have to delete related 'Exercises'.",
 
   "exercise_name": "Exercise name",
+  "exercise_description": "Exercise description",
   "exercise_created": "Exercise created succesfully",
   "exercise_updated": "Exercise updated succesfully",
   "exercise_deleted": "Exercise deleted succesfully",
@@ -170,6 +175,7 @@
   "welcome_virtual_exam": "Welcome to Virtual Exam",
   "points": "Points",
   "score": "Score",
+  "no_image": "No picture available",
 
   "language.spanish": "Spanish",
   "language.english": "English"

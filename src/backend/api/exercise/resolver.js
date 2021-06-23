@@ -190,6 +190,34 @@ const resolver = {
       }
       return prepSingleResultForUser(response.value)
     },
+    updateExerciseDescription: async (parent, args, context) => {
+      debug('Running disableExercise mutation with params:', args)
+
+      // Args
+      const { id, descriptionUrl } = args
+      const objExerciseId = new ObjectId(id)
+
+      // Collection
+      const collection = context.db.collection('exercises')
+
+      // Query
+      const update = {
+        $set: {
+          descriptionUrl: descriptionUrl,
+          updated: new Date().toISOString()
+        }
+      }
+
+      // Exec
+      const response = await collection.findOneAndUpdate({ _id: objExerciseId }, update, { returnDocument: 'after', w: 'majority' })
+
+      // Results
+      if (response.ok !== 1) {
+        debug('updateExerciseDescription error:', response.lastErrorObject)
+        throw new Error(response.lastErrorObject)
+      }
+      return prepSingleResultForUser(response.value)
+    },
     disableExercise: async (parent, args, context) => {
       debug('Running disableExercise mutation with params:', args)
 
