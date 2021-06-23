@@ -88,10 +88,6 @@
   "button.go_to_exam": "Ir al examen",
   "button.details": "Detalles",
   "button.edit_points": "Puntaje",
-  "button.select_image": "Seleccionar imagen",
-  "button.upload_image": "Subir imagen",
-  "button.remove_image": "Quitar imagen",
-  "button.update_image": "Cambiar imagen",
 
   "course_name": "Nombre del curso",
   "course_created": "Curso creado exitosamente",
@@ -175,7 +171,7 @@
   "welcome_virtual_exam": "Bienvenido a Virtual Exam",
   "points": "Puntaje",
   "score": "Nota final",
-  "no_image": "No hay imagen disponible",
+  "select_image": "Seleccione una imagen",
 
   "language.spanish": "Español",
   "language.english": "Ingles"

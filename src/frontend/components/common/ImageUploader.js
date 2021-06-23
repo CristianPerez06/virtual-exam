@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button } from 'reactstrap'
 import { LoadingInline } from '../common'
 import { injectIntl, FormattedMessage } from 'react-intl'
+import { FaFileImport, FaUpload, FaTrash, FaTimes } from 'react-icons/fa'
 import ImageUploading from 'react-images-uploading'
 import AWS from 'aws-sdk'
 import variables from '../../variables'
@@ -20,11 +21,11 @@ const myBucket = new AWS.S3({
   region: S3_REGION
 })
 
-const buttonFontSize = { fontSize: 0.8 + 'rem' }
+const buttonFontSize = { fontSize: 1.2 + 'rem' }
 
 const ImageUploader = (props) => {
   // Props and params
-  const { id, disabled, onUploadSuccess, oldImage } = props
+  const { id, disabled, onUploadSuccess, oldImage, onCancelClick } = props
 
   // State
   const [images, setImages] = React.useState([])
@@ -49,16 +50,17 @@ const ImageUploader = (props) => {
       Key: fileName
     }
 
+    setUploading(true)
     const putObjectPromise = myBucket.putObject(params).promise()
+    const fileUrl = `https://s3-${S3_REGION}.amazonaws.com/${S3_BUCKET}/${fileName}`
+
     putObjectPromise
       .then(() => {
         if (oldImage) {
           try {
             const urlParts = oldImage.split('/')
             const oldFileName = urlParts[urlParts.length - 1]
-
-            const deleteParams = { Bucket: S3_BUCKET, Key: oldFileName }
-            const deleteObjectPromise = myBucket.deleteObject(deleteParams).promise()
+            const deleteObjectPromise = myBucket.deleteObject({ Bucket: S3_BUCKET, Key: oldFileName }).promise()
             deleteObjectPromise
               .then(() => {
                 console.log('deleteObject - success')
@@ -66,16 +68,16 @@ const ImageUploader = (props) => {
           } catch {
             console.log('deleteObject - error')
           } finally {
-            const fileUrl = `https://s3-${S3_REGION}.amazonaws.com/${S3_BUCKET}/${fileName}`
             onUploadSuccess(fileUrl)
+            setUploading(false)
           }
+        } else {
+          onUploadSuccess(fileUrl)
+          setUploading(false)
         }
       })
       .catch((err) => {
         console.log(err)
-      })
-      .finally(() => {
-        setUploading(false)
       })
   }
 
@@ -99,10 +101,10 @@ const ImageUploader = (props) => {
         }) => (
           <div className='upload-image-wrapper'>
             <div className='row text-center ml-1 mr-1'>
-              <div className='col-md-9 col-xs-12 pl-0 pr-0 border rounded'>
+              <div className='col-md-10 col-xs-12 pl-0 pr-0 border rounded'>
                 {imageList.length === 0 && (
                   <div className='d-flex justify-content-center align-items-center bg-light text-muted h-100 disabled'>
-                    <FormattedMessage id='no_image' />
+                    <FormattedMessage id='select_image' />
                   </div>
                 )}
                 {imageList.map((image, index) => (
@@ -117,18 +119,18 @@ const ImageUploader = (props) => {
                   </div>
                 ))}
               </div>
-              <div className='col-md-3 col-xs-12'>
+              <div className='col-md-2 col-xs-12'>
                 <div className='row text-center'>
                   <div className='col-md-12 col-xs-12'>
                     <Button
                       color='outline-secondary'
                       className='m-1'
                       style={buttonFontSize}
-                      disabled={disabled || imageList.length !== 0 || uploading}
+                      disabled={imageList.length !== 0 || disabled || uploading}
                       onClick={onImageUpload}
                       {...dragProps}
                     >
-                      <FormattedMessage id='button.select_image' />
+                      <FaFileImport />
                     </Button>
                   </div>
                   <div className='col-md-12 col-xs-12'>
@@ -136,10 +138,10 @@ const ImageUploader = (props) => {
                       color='outline-danger'
                       className='m-1'
                       style={buttonFontSize}
-                      disabled={disabled || uploading}
+                      disabled={imageList.length === 0 || disabled || uploading}
                       onClick={onImageRemoveAll}
                     >
-                      <FormattedMessage id='button.remove_image' />
+                      <FaTrash />
                     </Button>
                   </div>
                   <div className='col-md-12 col-xs-12'>
@@ -147,11 +149,23 @@ const ImageUploader = (props) => {
                       color='outline-success'
                       className='m-1'
                       style={buttonFontSize}
-                      disabled={disabled || imageList.length === 0 || uploading}
+                      disabled={imageList.length === 0 || disabled || uploading}
                       onClick={onUploadClick}
                     >
-                      <FormattedMessage id='button.upload_image' />
-                      {uploading && <LoadingInline className='ml-3' />}
+                      <FaUpload />
+                      {uploading && <LoadingInline color='success' className='ml-3' />}
+                    </Button>
+                  </div>
+                  <div className='col-md-12 col-xs-12'>
+                    <Button
+                      color='outline-dark'
+                      className='m-1'
+                      style={buttonFontSize}
+                      disabled={disabled || uploading}
+                      onClick={onCancelClick}
+                    >
+                      <FaTimes />
+                      {uploading && <LoadingInline color='success' className='ml-3' />}
                     </Button>
                   </div>
                 </div>
