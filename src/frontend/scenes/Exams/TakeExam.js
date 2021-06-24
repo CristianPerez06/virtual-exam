@@ -2,41 +2,44 @@ import React, { useState } from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Loading, CustomAlert, ButtonGoTo, ModalWrapper, Timer } from '../../components/common'
+import { Loading, ButtonGoTo, ModalWrapper, Timer } from '../../components/common'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { GET_EXAM, FINISH_EXAM } from '../../common/requests/exams'
 import Cookies from 'js-cookie'
 import { COOKIE_NAMES, EXAM_SETTINGS } from '../../common/constants'
 import { syncCacheOnFinishExam } from './cacheHelpers'
+import { useAlert } from '../../hooks'
 
 const TakeExam = (props) => {
   // Props and params
+  const { intl } = props
   const { params } = useRouteMatch()
+  const { formatMessage } = intl
 
   // State
   const [exam, setExam] = useState()
   const [examCompleted, setExamCompleted] = useState(false)
   const [answerPerExerciseList, setAnswerPerExerciseList] = useState([])
-  const [errors, setErrors] = useState()
   const [finishConfirmModalIsOpen, setFinishConfirmModalIsOpen] = useState(false)
+
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
 
   // Handlers
   const onSuccess = (result) => {
     setExamCompleted(true)
-    setErrors()
   }
 
   const onFetchExamSuccess = (result) => {
     if (!result) return
-    setErrors()
     setExam(result.getExam)
   }
 
   const onError = (err) => {
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-    setErrors(translatableErrors)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
   }
 
   const onTimeExpired = () => {
@@ -45,9 +48,11 @@ const TakeExam = (props) => {
       update: (cache, result) => {
         const variables = { idNumber: Cookies.get(COOKIE_NAMES.USER) }
         syncCacheOnFinishExam(cache, result.data.finishExam, variables)
+        setFinishConfirmModalIsOpen(false)
+
+        alertSuccess(formatMessage({ id: 'exams_finalized_successfully' }))
       }
     })
-    setFinishConfirmModalIsOpen(false)
   }
 
   // Button handlers
@@ -72,9 +77,11 @@ const TakeExam = (props) => {
       update: (cache, result) => {
         const variables = { idNumber: Cookies.get(COOKIE_NAMES.USER) }
         syncCacheOnFinishExam(cache, result.data.finishExam, variables)
+        setFinishConfirmModalIsOpen(false)
+
+        alertSuccess(formatMessage({ id: 'exams_finalized_successfully' }))
       }
     })
-    setFinishConfirmModalIsOpen(false)
   }
 
   // Queries and mutations
@@ -110,7 +117,7 @@ const TakeExam = (props) => {
                       <div className='w-100 text-center'>
                         <img style={{ maxWidth: 600 + 'px' }} src={exercise.descriptionUrl} alt='' />
                       </div>
-                    )
+                      )
                     : <span>{exercise.description}</span>}
 
                   {/* Exercise answers */}
@@ -151,11 +158,11 @@ const TakeExam = (props) => {
             />
           </div>
 
-          {(errors) && (
+          {/* {(errors) && (
             <div id='info' className='d-flex justify-content-around mt-3'>
               {errors && <CustomAlert messages={errors} className='ml-3' />}
             </div>
-          )}
+          )} */}
         </Form>
       )}
       <div id='confirm-finish-modal'>
@@ -169,7 +176,6 @@ const TakeExam = (props) => {
           onConfirmClick={() => onConfirmFinishClicked()}
         />
       </div>
-      {errors && <CustomAlert messages={errors} className='ml-3' />}
     </div>
   )
 }

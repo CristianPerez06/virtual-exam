@@ -5,18 +5,24 @@ import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS, DISABLE_UNIT } from '../../common/requests/units'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import Select from 'react-select'
-import { CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
+import { DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
+import { useAlert } from '../../hooks'
 
 const UnitsList = (props) => {
+  // Props and params
+  const { intl } = props
+  const { formatMessage } = intl
+
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
+
   // State
   const [courses, setCourses] = useState([])
   const [units, setUnits] = useState([])
   const [filters, setFilters] = useState({ selectedCourse: null })
-  const [errors, setErrors] = useState()
   const [unitToDelete, setUnitToDelete] = useState()
-  const [unitDeleted, setUnitDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 
   // Handlers
@@ -38,10 +44,8 @@ const UnitsList = (props) => {
 
   const onError = (err) => {
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-
-    setErrors(translatableErrors)
-    setUnitDeleted(false)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
     setDeleteModalIsOpen(false)
   }
 
@@ -69,9 +73,8 @@ const UnitsList = (props) => {
 
   // Other
   const stateCleanupOnDelete = () => {
-    setErrors()
     setDeleteModalIsOpen(false)
-    setUnitDeleted(true)
+    alertSuccess(formatMessage({ id: 'unit_deleted' }))
   }
 
   // Queries and mutations
@@ -109,7 +112,6 @@ const UnitsList = (props) => {
                 onChange={(option) => {
                   const selected = courses.find(x => x.value === option.value)
                   setFilters({ selectedCourse: selected })
-                  setErrors()
                 }}
               />
             </div>
@@ -141,9 +143,6 @@ const UnitsList = (props) => {
         </CardBody>
       </Card>
 
-      {/* Alerts */}
-      {!deleting && unitDeleted && <CustomAlert color='success' messages={{ id: 'unit_deleted' }} />}
-      {errors && <TranslatableErrors errors={errors} />}
     </div>
   )
 }

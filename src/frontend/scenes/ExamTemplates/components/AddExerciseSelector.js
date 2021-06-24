@@ -7,6 +7,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LIST_VALID_EXERCISES } from '../../../common/requests/exercises'
 import { ADD_EXERCISE_TO_EXAM_TEMPLATE } from '../../../common/requests/templates'
 import { syncCacheOnAddTemplateExercise } from '../cacheHelpers'
+import { useAlert } from '../../../hooks'
 
 const AddExerciseSelector = (props) => {
   // Props and params
@@ -14,8 +15,13 @@ const AddExerciseSelector = (props) => {
     examTemplateId,
     courseId,
     onExerciseAdded,
-    onExerciseAddError
+    onExerciseAddError,
+    intl
   } = props
+  const { formatMessage } = intl
+
+  // Hooks
+  const { alertSuccess } = useAlert()
 
   // State
   const [exercises, setExercises] = useState([])
@@ -24,6 +30,7 @@ const AddExerciseSelector = (props) => {
   // Handlers
   const onSuccess = (res) => {
     setSelectedExercise()
+    alertSuccess(formatMessage({ id: 'exam_template_exercise_added' }))
     onExerciseAdded()
   }
 

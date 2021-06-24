@@ -5,18 +5,18 @@ export const getTranslatableErrors = (gqlErrors) => {
     const { message } = error
     switch (message) {
       case ERROR_MESSAGES.DUPLICATED_ENTITY:
-        return { id: 'common_error.duplicated_entity', message: message }
+        return { id: 'common_error.duplicated_entity' }
       case ERROR_MESSAGES.CORRECT_ANSWER_ALREADY_SELECTED:
-        return { id: 'entity_error.correct_answer_already_selected', message: message }
+        return { id: 'entity_error.correct_answer_already_selected' }
       case ERROR_MESSAGES.RELATED_ENTITY_EXISTS:
-        return { id: 'entity_error.related_entity_exists', message: message }
+        return { id: 'entity_error.related_entity_exists' }
       default:
-        return { id: 'common_error.internal_server_error', message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR }
+        return { id: 'common_error.internal_server_error' }
     }
   })
   if (translatableErrors.length === 0) {
-    translatableErrors.push({ id: 'common_error.internal_server_error', message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR })
+    translatableErrors.push({ id: 'common_error.internal_server_error' })
   }
 
-  return translatableErrors
+  return translatableErrors[0]
 }

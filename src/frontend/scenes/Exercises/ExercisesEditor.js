@@ -4,8 +4,6 @@ import { Button, Input } from 'reactstrap'
 import { Link, useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import {
-  CustomAlert,
-  TranslatableErrors,
   Table,
   DeleteModal,
   FieldWrapper,
@@ -26,6 +24,7 @@ import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS } from '../../common/requests/units'
 import { DISABLE_ANSWER, LIST_ANSWERS } from '../../common/requests/answers'
 import { syncCacheOnCreate, syncCacheOnUpdate, syncAnswersCacheOnDelete } from './cacheHelpers'
+import { useAlert } from '../../hooks'
 
 const ExercisesEditor = (props) => {
   // Props and params
@@ -34,20 +33,18 @@ const ExercisesEditor = (props) => {
   const { params } = useRouteMatch()
   const history = useHistory()
 
+  // Hooks
+  const { alertSuccess, alertError, alertWarning } = useAlert()
+
   // State
   const [exercise, setExercise] = useState(false)
-  const [exerciseCreated, setExerciseCreated] = useState(false)
-  const [exerciseUpdated, setExerciseUpdated] = useState(false)
   const [courses, setCourses] = useState([])
   const [units, setUnits] = useState([])
   const [initialValues, setInitialValues] = useState({})
   const [filters, setFilters] = useState({})
-  const [errors, setErrors] = useState()
-  const [alerts, setAlerts] = useState()
   const [answers, setAnswers] = useState([])
   const [answerToDelete, setAnswerToDelete] = useState()
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
-  const [answerDeleted, setAnswerDeleted] = useState(false)
   const [showImageUploader, setShowImageUploader] = useState(true)
   const [descriptionImage, setDescriptionImage] = useState(true)
 
@@ -55,17 +52,11 @@ const ExercisesEditor = (props) => {
   const onSuccess = (result) => {
     const { id } = isCreating ? result.createExercise : result.updateExercise
     if (isCreating) {
-      setExerciseCreated(true)
-      setExerciseUpdated(false)
-      history.push({
-        pathname: `/exercises/${id}`,
-        state: { isCreating: false }
-      })
+      alertSuccess(formatMessage({ id: 'exercise_created' }))
+      history.push({ pathname: `/exercises/${id}`, state: { isCreating: false } })
     } else {
-      setExerciseCreated(false)
-      setExerciseUpdated(true)
+      alertSuccess(formatMessage({ id: 'exercise_updated' }))
     }
-    setErrors()
   }
 
   const onFetchExerciseSuccess = (result) => {
@@ -94,25 +85,21 @@ const ExercisesEditor = (props) => {
   }
 
   const onError = (err) => {
-    setExerciseCreated(false)
-    setExerciseUpdated(false)
-
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-
-    setErrors(translatableErrors)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
   }
 
   const onSubmit = (values) => {
     const { name, courseId, unitId } = values
     isCreating
       ? createExercise({
-        variables: { name: name, courseId: courseId, unitId: unitId },
-        update: (cache, result) => {
-          const variables = { courseId: courseId, unitId: unitId }
-          syncCacheOnCreate(cache, result.data.createExercise, variables)
-        }
-      })
+          variables: { name: name, courseId: courseId, unitId: unitId },
+          update: (cache, result) => {
+            const variables = { courseId: courseId, unitId: unitId }
+            syncCacheOnCreate(cache, result.data.createExercise, variables)
+          }
+        })
       : updateExercise({
         variables: { id: params.id, name: name, courseId: courseId, unitId: unitId },
         update: (cache, result) => {
@@ -167,9 +154,13 @@ const ExercisesEditor = (props) => {
       variables: { id: answerToDelete.id },
       update: (cache, result) => {
         const updatedAnswersList = syncAnswersCacheOnDelete(cache, answerToDelete, { exerciseId: params.id })
-        const alerts = getAlerts(updatedAnswersList.data)
         setAnswers(updatedAnswersList.data)
-        setAlerts(alerts)
+
+        alertSuccess(formatMessage({ id: 'answer_deleted' }))
+
+        const alert = getAlerts(updatedAnswersList.data)
+        if (!alert) return
+        alertWarning(formatMessage({ id: alert.id }))
       }
     })
   }
@@ -184,9 +175,7 @@ const ExercisesEditor = (props) => {
 
   // Other
   const stateCleanupOnDelete = () => {
-    setErrors()
     setDeleteModalIsOpen(false)
-    setAnswerDeleted(false)
   }
 
   // Queries and mutations
@@ -223,10 +212,13 @@ const ExercisesEditor = (props) => {
       skip: isCreating,
       onCompleted: (data) => {
         if (!data) return
+
         const answers = { ...data.listAnswers }
-        const alerts = getAlerts(answers.data)
         setAnswers(answers.data)
-        setAlerts(alerts)
+
+        const alert = getAlerts(answers.data)
+        if (!alert) return
+        alertWarning(formatMessage({ id: alert.id }))
       },
       onError
     }
@@ -282,7 +274,7 @@ const ExercisesEditor = (props) => {
   useEffect(() => {
     // State cleanup in case user was editing and now wants to create
     if (isCreating) {
-      setExerciseUpdated(false)
+      // setExerciseUpdated(false)
       setInitialValues({})
       setFilters({ selectedCourse: '', selectedUnit: '' })
     }
@@ -406,16 +398,6 @@ const ExercisesEditor = (props) => {
         />
       </div>
 
-      {/* Info */}
-      {(errors || exerciseCreated || exerciseUpdated || answerDeleted) && (
-        <div id='info' className='d-flex justify-content-around mt-1'>
-          {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-          {!creating && exerciseCreated && <CustomAlert color='success' messages={{ id: 'exercise_created' }} />}
-          {!updating && exerciseUpdated && <CustomAlert color='success' messages={{ id: 'exercise_updated' }} />}
-          {!deletingAnswer && answerDeleted && <CustomAlert color='success' messages={{ id: 'answer_deleted' }} />}
-        </div>
-      )}
-
       {/* Delete answer modal */}
       <div id='delete-modal'>
         <DeleteModal
@@ -435,11 +417,7 @@ const ExercisesEditor = (props) => {
         {!fetchingAnswers && answers.length === 0 && <NoResults />}
         {!fetchingAnswers && answers.length !== 0 && <Table columns={columns} data={answers} />}
       </div>
-      {alerts && (
-        <div id='info' className='d-flex justify-content-around mt-1'>
-          {alerts && <CustomAlert color='warning' messages={alerts} />}
-        </div>
-      )}
+
     </div>
   )
 }

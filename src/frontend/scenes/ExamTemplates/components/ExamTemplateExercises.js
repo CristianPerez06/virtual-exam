@@ -1,37 +1,35 @@
 import React, { useState } from 'react'
 import { injectIntl } from 'react-intl'
 import { getTranslatableErrors } from '../../../common/graphqlErrorHandlers'
-import { TranslatableErrors } from '../../../components/common'
 import AddExerciseSelector from './AddExerciseSelector'
 import EditExercisesList from './EditExercisesList'
+import { useAlert } from '../../../hooks'
 
 const ExamTemplateExercises = (props) => {
   // Props and params
-  const {
-    examTemplateId,
-    courseId
-  } = props
+  const { examTemplateId, courseId, intl } = props
+  const { formatMessage } = intl
+
+  // Hooks
+  const { alertError } = useAlert()
 
   // State
-  const [errors, setErrors] = useState()
   const [forceRefresh, setForceRefresh] = useState(true)
 
   // Handlers
   const onAddExerciseSuccess = (res) => {
     setForceRefresh(true)
-    setErrors()
   }
 
   const onSuccess = (res) => {
     setForceRefresh(false)
-    setErrors()
   }
 
   const onError = (err) => {
     setForceRefresh(false)
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-    setErrors(translatableErrors)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
   }
 
   return (
@@ -49,10 +47,6 @@ const ExamTemplateExercises = (props) => {
         forceRefetch={forceRefresh}
       />
 
-      {/* Errors */}
-      <div id='info' className='mt-2 w-100'>
-        {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-      </div>
     </div>
   )
 }

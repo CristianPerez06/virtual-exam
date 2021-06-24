@@ -54,6 +54,7 @@
     "react-select": "^4.3.0",
     "react-table": "^7.6.3",
     "react-timer-hook": "^3.0.3",
+    "react-toastify": "^7.0.4",
     "reactstrap": "^8.6.0",
     "styled-components": "^5.2.1"
   },

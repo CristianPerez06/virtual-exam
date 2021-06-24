@@ -3,10 +3,11 @@ import { Button } from 'reactstrap'
 import { injectIntl } from 'react-intl'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LIST_EXAM_TEMPLATE_EXERCISES, REMOVE_EXERCISE_FROM_EXAM_TEMPLATE, UPDATE_EXERCISE_NOTE } from '../../../common/requests/templates'
-import { DeleteModal, Table, NoResults, CustomAlert, LoadingInline } from '../../../components/common'
+import { DeleteModal, Table, NoResults, LoadingInline } from '../../../components/common'
 import { syncCacheOnUpdateTemplateExercise, syncCacheOnRemoveTemplateExercise } from '../cacheHelpers'
 import EditPointsModal from './EditPointsModal'
 import { BigNumber } from 'bignumber.js'
+import { useAlert } from '../../../hooks'
 
 const EditExercisesList = (props) => {
   // Props and params
@@ -17,8 +18,10 @@ const EditExercisesList = (props) => {
     forceRefetch,
     intl
   } = props
-
   const { formatMessage } = intl
+
+  // Hooks
+  const { alertSuccess, alertWarning } = useAlert()
 
   // State
   const [templateExercises, setTemplateExercises] = useState([])
@@ -26,7 +29,6 @@ const EditExercisesList = (props) => {
   const [exerciseToEditNote, setExerciseToEditNote] = useState()
   const [editPointsModalIsOpen, setEditPointsModalIsOpen] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
-  const [alerts, setAlerts] = useState()
 
   // Handlers
   const onSuccess = (res) => {
@@ -42,8 +44,9 @@ const EditExercisesList = (props) => {
     const templateExercises = res.listExamTemplateExercises.data
     setTemplateExercises(templateExercises)
 
-    const alerts = getValidationAlerts(templateExercises)
-    setAlerts(alerts)
+    const alert = getValidationAlerts(templateExercises)
+    if (!alert) return
+    alertWarning(formatMessage({ id: alert.id }))
 
     onEditExercisesListSuccess(templateExercises)
   }
@@ -68,8 +71,11 @@ const EditExercisesList = (props) => {
         const updatedTemplateExercisesList = syncCacheOnRemoveTemplateExercise(cache, templateExerciseToDelete, variables)
         setTemplateExercises(updatedTemplateExercisesList.data)
 
-        const alerts = getValidationAlerts(updatedTemplateExercisesList.data)
-        setAlerts(alerts)
+        alertSuccess(formatMessage({ id: 'exam_template_exercise_removed' }))
+
+        const alert = getValidationAlerts(updatedTemplateExercisesList.data)
+        if (!alert) return
+        alertWarning(formatMessage({ id: alert.id }))
       }
     })
     setDeleteModalIsOpen(!deleteModalIsOpen)
@@ -84,8 +90,9 @@ const EditExercisesList = (props) => {
         const updatedTemplateExercisesList = syncCacheOnUpdateTemplateExercise(cache, exerciseWithNote, variables)
         setTemplateExercises(updatedTemplateExercisesList.data)
 
-        const alerts = getValidationAlerts(updatedTemplateExercisesList.data)
-        setAlerts(alerts)
+        const alert = getValidationAlerts(updatedTemplateExercisesList.data)
+        if (!alert) return
+        alertWarning(formatMessage({ id: alert.id }))
       }
     })
     setEditPointsModalIsOpen(!editPointsModalIsOpen)
@@ -209,11 +216,6 @@ const EditExercisesList = (props) => {
           {!fetchingTemplateExercises && templateExercises.length === 0 && <NoResults />}
           {!fetchingTemplateExercises && templateExercises.length !== 0 && <Table columns={columns} data={templateExercises} />}
         </div>
-      </div>
-
-      {/* Alerts */}
-      <div className='row'>
-        {alerts && <CustomAlert messages={alerts} color='warning' />}
       </div>
 
       {/* Delete modal */}

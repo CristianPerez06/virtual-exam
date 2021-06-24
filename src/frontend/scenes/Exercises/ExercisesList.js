@@ -6,11 +6,19 @@ import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_UNITS } from '../../common/requests/units'
 import { LIST_EXERCISES, DISABLE_EXERCISE } from '../../common/requests/exercises'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
+import { TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
+import { useAlert } from '../../hooks'
 
 const ExercisesList = (props) => {
+  // Props and params
+  const { intl } = props
+  const { formatMessage } = intl
+
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
+
   // State
   const [courses, setCourses] = useState([])
   const [units, setUnits] = useState([])
@@ -18,7 +26,6 @@ const ExercisesList = (props) => {
   const [errors, setErrors] = useState()
   const [filters, setFilters] = useState({ selectedCourse: null, selectedUnit: null })
   const [exerciseToDelete, setExerciseToDelete] = useState()
-  const [exerciseDeleted, setExerciseDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 
   // Handlers
@@ -51,10 +58,8 @@ const ExercisesList = (props) => {
 
   const onError = (err) => {
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-
-    setErrors(translatableErrors)
-    setExerciseDeleted(false)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
     setDeleteModalIsOpen(false)
   }
 
@@ -84,7 +89,7 @@ const ExercisesList = (props) => {
   const stateCleanupOnDelete = () => {
     setErrors()
     setDeleteModalIsOpen(false)
-    setExerciseDeleted(true)
+    alertSuccess(formatMessage({ id: 'exercise_deleted' }))
   }
 
   // Queries and mutations
@@ -140,9 +145,7 @@ const ExercisesList = (props) => {
                 onChange={(option) => {
                   const selected = courses.find(x => x.value === option.value)
                   setFilters({ selectedCourse: selected, selectedUnit: null })
-                  setExerciseDeleted()
                   setExercises([])
-                  setErrors()
                 }}
               />
             </div>
@@ -160,8 +163,6 @@ const ExercisesList = (props) => {
                 onChange={(option) => {
                   const selected = units.find(x => x.value === option.value)
                   setFilters({ ...filters, selectedUnit: selected })
-                  setExerciseDeleted()
-                  setErrors()
                 }}
               />
             </div>
@@ -190,8 +191,6 @@ const ExercisesList = (props) => {
             />
           </div>
 
-          {/* Alerts */}
-          {!deleting && exerciseDeleted && <CustomAlert color='success' messages={{ id: 'exercise_deleted' }} />}
         </CardBody>
       </Card>
       {errors && <TranslatableErrors errors={errors} />}

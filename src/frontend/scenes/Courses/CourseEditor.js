@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Form } from 'react-final-form'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, ButtonSubmit, ButtonGoTo, FieldWrapper, TranslatableTitle } from '../../components/common'
+import { ButtonSubmit, ButtonGoTo, FieldWrapper, TranslatableTitle } from '../../components/common'
 import { required } from '../../common/validators'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { CREATE_COURSE, UPDATE_COURSE, GET_COURSE } from '../../common/requests/courses'
 import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
+import { useAlert } from '../../hooks'
 
 const CourseEditor = (props) => {
   // Props and params
@@ -16,36 +17,27 @@ const CourseEditor = (props) => {
   const { params } = useRouteMatch()
   const history = useHistory()
 
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
+
   // State
-  const [courseCreated, setCourseCreated] = useState(false)
-  const [courseUpdated, setCourseUpdated] = useState(false)
   const [initialValues, setInitialValues] = useState({})
-  const [errors, setErrors] = useState()
 
   // Handlers
   const onSuccess = (result) => {
     const { id } = isCreating ? result.createCourse : result.updateCourse
     if (isCreating) {
-      setCourseCreated(true)
-      setCourseUpdated(false)
-      history.push({
-        pathname: `/courses/${id}`,
-        state: { isCreating: false }
-      })
+      alertSuccess(formatMessage({ id: 'course_created' }))
+      history.push({ pathname: `/courses/${id}`, state: { isCreating: false } })
     } else {
-      setCourseCreated(false)
-      setCourseUpdated(true)
+      alertSuccess(formatMessage({ id: 'course_updated' }))
     }
-    setErrors()
   }
 
   const onError = (err) => {
-    setCourseCreated(false)
-    setCourseUpdated(false)
-
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-    setErrors(translatableErrors)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
   }
 
   const onSubmit = (values) => {
@@ -92,7 +84,6 @@ const CourseEditor = (props) => {
   useEffect(() => {
     // State cleanup in case user was editing and now wants to create
     if (isCreating) {
-      setCourseUpdated(false)
       setInitialValues({})
     }
   }, [isCreating])
@@ -128,13 +119,6 @@ const CourseEditor = (props) => {
                 isDisabled={creating || updating || fetching}
               />
             </div>
-            {(errors || courseCreated || courseUpdated) && (
-              <div id='info' className='d-flex justify-content-around mt-3  '>
-                {errors && <CustomAlert messages={errors} className='ml-3' />}
-                {!creating && courseCreated && <CustomAlert color='success' messages={{ id: 'course_created' }} />}
-                {!updating && courseUpdated && <CustomAlert color='success' messages={{ id: 'course_updated' }} />}
-              </div>
-            )}
           </form>
         )}
       />

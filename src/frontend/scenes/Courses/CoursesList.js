@@ -3,17 +3,23 @@ import { Card, CardBody, CardHeader } from 'reactstrap'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_COURSES, DISABLE_COURSE } from '../../common/requests/courses'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
+import { DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
+import { useAlert } from '../../hooks'
 
 const CoursesList = (props) => {
+  // Props and params
+  const { intl } = props
+  const { formatMessage } = intl
+
   // State
   const [courses, setCourses] = useState([])
-  const [errors, setErrors] = useState()
   const [courseToDelete, setCourseToDelete] = useState()
-  const [courseDeleted, setCourseDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
+
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
 
   // Handlers
   const onCompleted = (res) => {
@@ -23,10 +29,8 @@ const CoursesList = (props) => {
 
   const onError = (err) => {
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-
-    setErrors(translatableErrors)
-    setCourseDeleted(false)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
     setDeleteModalIsOpen(false)
   }
 
@@ -53,9 +57,8 @@ const CoursesList = (props) => {
 
   // Other
   const stateCleanupOnDelete = () => {
-    setErrors()
     setDeleteModalIsOpen(false)
-    setCourseDeleted(true)
+    alertSuccess(formatMessage({ id: 'course_deleted' }))
   }
 
   // Queries and mutations
@@ -95,10 +98,6 @@ const CoursesList = (props) => {
           </div>
         </CardBody>
       </Card>
-
-      {/* Alerts */}
-      {!deleting && courseDeleted && <CustomAlert messages={{ id: 'course_deleted' }} color='success' />}
-      {errors && <TranslatableErrors errors={errors} />}
     </div>
   )
 }

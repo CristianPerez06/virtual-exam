@@ -7,7 +7,7 @@ import { useRouteMatch, Link } from 'react-router-dom'
 import { format } from 'date-fns'
 import mapStudents from '../../common/utils'
 import { required } from '../../common/validators'
-import { ButtonGoTo, SelectWrapper, TranslatableErrors, Table, DeleteModal, LoadingInline, NoResults } from '../../components/common'
+import { ButtonGoTo, SelectWrapper, Table, DeleteModal, LoadingInline, NoResults } from '../../components/common'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { LIST_COURSES } from '../../common/requests/courses'
@@ -15,7 +15,7 @@ import { LIST_VALID_EXAM_TEMPLATES } from '../../common/requests/templates'
 import { LIST_EXAMS } from '../../common/requests/exams'
 import { LIST_ASSIGNED_EXAMS, CREATE_ASSIGNED_EXAM, DELETE_ASSIGNED_EXAM } from '../../common/requests/assignedExams'
 import { syncCacheOnCreate, syncCacheOnDelete } from './cacheHelpers'
-import { useAuthContext } from '../../hooks'
+import { useAlert, useCognitoUsers } from '../../hooks'
 
 const ManageExamsEditor = (props) => {
   // Props
@@ -24,14 +24,13 @@ const ManageExamsEditor = (props) => {
   const { params } = useRouteMatch()
 
   // Hooks
-  const { cognito } = useAuthContext()
+  const { alertSuccess, alertError } = useAlert()
+  const [cognitoUsers, fetchingCognitoUsers] = useCognitoUsers()
 
   // State
-  const [fetchingStudents, setFetchingStudents] = useState(false)
   const [students, setStudents] = useState([])
   const [initialValues, setInitialValues] = useState({})
   const [filters, setFilters] = useState({})
-  const [errors, setErrors] = useState()
   const [courses, setCourses] = useState([])
   const [validExamTemplates, setValidExamTemplates] = useState([])
   const [assignedExams, setAssignedExams] = useState([])
@@ -54,6 +53,9 @@ const ManageExamsEditor = (props) => {
           idNumber: filters.selectedStudent.value,
           courseId: filters.selectedCourse.value
         }
+
+        alertSuccess(formatMessage({ id: 'assigned_exam_created' }))
+
         const updatedAssignedExamsList = syncCacheOnCreate(cache, result.data.createAssignedExam, variables)
         setAssignedExams(updatedAssignedExamsList.data)
       }
@@ -78,6 +80,9 @@ const ManageExamsEditor = (props) => {
           idNumber: (filters.selectedStudent || {}).value,
           courseId: (filters.selectedCourse || {}).value
         }
+
+        alertSuccess(formatMessage({ id: 'assigned_exam_removed' }))
+
         const updatedAssignedExamsList = syncCacheOnDelete(cache, assignedExamToDelete, variables)
         setAssignedExams(updatedAssignedExamsList.data)
       }
@@ -86,7 +91,6 @@ const ManageExamsEditor = (props) => {
 
   // Handlers
   const onSuccess = (result) => {
-    setErrors()
     setFilters({ ...filters, selectedExamTemplate: '' })
     setInitialValues({})
   }
@@ -103,14 +107,13 @@ const ManageExamsEditor = (props) => {
 
   const onError = (err) => {
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
     setDeleteModalIsOpen(false)
-    setErrors(translatableErrors)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
   }
 
   const onDeleteSuccess = () => {
     setAssignedExamToDelete()
-    setErrors()
     setDeleteModalIsOpen(false)
   }
 
@@ -176,32 +179,18 @@ const ManageExamsEditor = (props) => {
     // State cleanup in case user was editing and now wants to create
     setFilters({ selectedStudent: '' })
 
-    setFetchingStudents(true)
-    const getUsers = () => {
-      cognito.getUsersList()
-        .then(data => {
-          // TO DO - Handle error when no users where returned from AWS
-          const { Users } = data
-          const mappedStudents = mapStudents(Users)
-          setStudents(mappedStudents)
+    if (!fetchingCognitoUsers) {
+      const mappedStudents = mapStudents(cognitoUsers)
+      setStudents(mappedStudents)
 
-          // First load - If idNumber is in URL use it to set selected student
-          const { idNumber } = params
-          if (idNumber) {
-            const selectedStudent = mappedStudents.find(x => x.value === params.idNumber)
-            setFilters({ selectedStudent: selectedStudent })
-          }
-
-          setErrors()
-          setFetchingStudents(false)
-        })
-        .catch(err => onError(err))
-        .finally(() => {
-          setFetchingStudents(false)
-        })
+      // First load - If idNumber is in URL use it to set selected student
+      const { idNumber } = params
+      if (idNumber) {
+        const selectedStudent = mappedStudents.find(x => x.value === params.idNumber)
+        setFilters({ selectedStudent: selectedStudent })
+      }
     }
-    getUsers()
-  }, [cognito, params])
+  }, [cognitoUsers, fetchingCognitoUsers, params])
 
   // Other
   const validateBeforeSubmit = (values) => {
@@ -287,7 +276,7 @@ const ManageExamsEditor = (props) => {
                 {format(new Date(row.original.updated), 'h:mm a')}
               </div>
             </>
-          )
+            )
           : '-'
       }
     },
@@ -344,11 +333,10 @@ const ManageExamsEditor = (props) => {
                   <Select
                     value={filters.selectedStudent}
                     options={students}
-                    isDisabled={params.idNumber || fetchingStudents}
+                    isDisabled={params.idNumber || fetchingCognitoUsers}
                     onChange={(option) => {
                       const selected = students.find(x => x.value === option.value)
                       setFilters({ selectedStudent: selected })
-                      setErrors()
                     }}
                   />
                 </div>
@@ -368,7 +356,6 @@ const ManageExamsEditor = (props) => {
                     selectedValue={(filters.selectedCourse || {}).value}
                     handleOnChange={(selectedOption) => {
                       setFilters({ ...filters, selectedCourse: selectedOption, selectedExamTemplate: {} })
-                      setErrors()
                     }}
                   />
                 </div>
@@ -417,11 +404,6 @@ const ManageExamsEditor = (props) => {
           </form>
         )}
       />
-
-      {/* Errors */}
-      <div id='info' className='d-flex justify-content-around mt-3'>
-        {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-      </div>
 
       {/* Assigned exams */}
       <div className='assigned-exams border shadow mb-3 p-2 bg-white rounded d-block'>
