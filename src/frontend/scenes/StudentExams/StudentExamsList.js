@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import Select from 'react-select'
 import { Button } from 'reactstrap'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { useAuthContext } from '../../hooks'
+import { useAlert, useCognitoUsers } from '../../hooks'
 import mapStudents from '../../common/utils'
-import { TranslatableErrors, LoadingInline, NoResults, Table, DeleteModal, ModalWrapper } from '../../components/common'
+import { LoadingInline, NoResults, Table, DeleteModal, ModalWrapper } from '../../components/common'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { LIST_EXAMS, FINISH_EXAM } from '../../common/requests/exams'
@@ -20,12 +20,11 @@ const StudentExamsList = (props) => {
   const { formatMessage } = intl
 
   // Hooks
-  const { cognito } = useAuthContext()
+  const { alertSuccess, alertError } = useAlert()
+  const [cognitoUsers, fetchingCognitoUsers] = useCognitoUsers()
 
   // State
-  const [fetchingStudents, setFetchingStudents] = useState(false)
   const [courses, setCourses] = useState([])
-  const [errors, setErrors] = useState()
   const [assignedExams, setAssignedExams] = useState([])
   const [exams, setExams] = useState([])
   const [students, setStudents] = useState([])
@@ -55,6 +54,9 @@ const StudentExamsList = (props) => {
           idNumber: (filters.selectedStudent || {}).value,
           courseId: (filters.selectedCourse || {}).value
         }
+
+        alertSuccess(formatMessage({ id: 'assigned_exam_removed' }))
+
         const updatedAssignedExamsList = syncCacheOnDelete(cache, assignedExamToDelete, variables)
         setAssignedExams(updatedAssignedExamsList.data)
       }
@@ -80,6 +82,9 @@ const StudentExamsList = (props) => {
           idNumber: (filters.selectedStudent || {}).value,
           courseId: (filters.selectedCourse || {}).value
         }
+
+        alertSuccess(formatMessage({ id: 'exams_finalized_successfully' }))
+
         const updatedExamsList = syncCacheOnFinishExam(cache, result.data.finishExam, variables)
         setExams(updatedExamsList.data)
       }
@@ -88,15 +93,6 @@ const StudentExamsList = (props) => {
   }
 
   // Handlers
-  const onFetchStudentsSuccess = (data) => {
-    // TO DO - Handle error when no users where returned from AWS
-    const { Users } = data
-    const mappedStudents = mapStudents(Users)
-    setStudents(mappedStudents)
-    setErrors()
-    setFetchingStudents(false)
-  }
-
   const onFetchCoursesSuccess = (result) => {
     if (!result) return
     const mappedCourses = result.listCourses.data.map((course) => {
@@ -120,19 +116,13 @@ const StudentExamsList = (props) => {
 
   const onDeleteSuccess = () => {
     setAssignedExamToDelete()
-    setErrors()
     setDeleteModalIsOpen(false)
-  }
-
-  const onFinishSuccess = (result) => {
-    setErrors()
   }
 
   const onError = (err) => {
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-
-    setErrors(translatableErrors)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
   }
 
   // Queries and mutations
@@ -164,7 +154,7 @@ const StudentExamsList = (props) => {
     }
   )
   const [deleteAssignedExam, { loading: deletingAssignedExam }] = useMutation(DELETE_ASSIGNED_EXAM, { onCompleted: onDeleteSuccess, onError })
-  const [finishExam, { loading: finishingExam }] = useMutation(FINISH_EXAM, { onCompleted: onFinishSuccess, onError })
+  const [finishExam, { loading: finishingExam }] = useMutation(FINISH_EXAM, { onError })
 
   // Other
   const columnsExamTranslations = {
@@ -215,7 +205,7 @@ const StudentExamsList = (props) => {
                 {format(new Date(row.original.updated), 'h:mm a')}
               </div>
             </>
-          )
+            )
           : '-'
       }
     },
@@ -301,19 +291,14 @@ const StudentExamsList = (props) => {
   ]
 
   useEffect(() => {
-    // State cleanup
+    // State cleanup in case user was editing and now wants to create
     setFilters({ selectedCourse: '' })
 
-    setFetchingStudents(true)
-    const getUsers = () => {
-      cognito.getUsersList()
-        .then(data => onFetchStudentsSuccess(data))
-        .catch(err => onError(err))
-        .finally(() => { setFetchingStudents(false) })
+    if (!fetchingCognitoUsers) {
+      const mappedStudents = mapStudents(cognitoUsers)
+      setStudents(mappedStudents)
     }
-
-    getUsers()
-  }, [cognito])
+  }, [cognitoUsers, fetchingCognitoUsers])
 
   return (
     <div className='student-exams-list' style={{ width: 850 + 'px' }}>
@@ -333,7 +318,6 @@ const StudentExamsList = (props) => {
               onChange={(option) => {
                 const selected = courses.find(x => x.value === option.value)
                 setFilters({ selectedCourse: selected, selectedStudent: '' })
-                setErrors()
               }}
             />
           </div>
@@ -346,19 +330,15 @@ const StudentExamsList = (props) => {
             <Select
               value={filters.selectedStudent}
               options={students}
-              isDisabled={fetchingStudents || !filters.selectedCourse}
+              isDisabled={fetchingCognitoUsers || !filters.selectedCourse}
               onChange={(option) => {
                 const selected = students.find(x => x.value === option.value)
                 setFilters({ ...filters, selectedStudent: selected })
-                setErrors()
               }}
             />
           </div>
         </div>
       </div>
-
-      {/* Errors */}
-      {errors && <TranslatableErrors errors={errors} />}
 
       {/* Assigned exams */}
       <div className='exams border shadow mb-3 p-2 bg-white rounded d-block'>

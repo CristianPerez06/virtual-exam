@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Form, Field } from 'react-final-form'
 import { useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, ButtonSubmit, ButtonGoTo, FieldWrapper, TranslatableTitle } from '../../components/common'
+import { ButtonSubmit, ButtonGoTo, FieldWrapper, TranslatableTitle } from '../../components/common'
 import { required } from '../../common/validators'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { CREATE_ANSWER, UPDATE_ANSWER, GET_ANSWER } from '../../common/requests/answers'
 import { syncAnswersCacheOnCreate, syncAnswersCacheOnUpdate } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
+import { useAlert } from '../../hooks'
 
 const AnswersEditor = (props) => {
   // Props and params
@@ -16,30 +17,24 @@ const AnswersEditor = (props) => {
   const { params } = useRouteMatch()
 
   // State
-  const [answerCreated, setAnswerCreated] = useState(false)
-  const [answerUpdated, setAnswerUpdated] = useState(false)
   const [initialValues, setInitialValues] = useState({})
-  const [errors, setErrors] = useState()
+
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
 
   // Handlers
   const onSuccess = (result) => {
     if (isCreating) {
-      setAnswerCreated(true)
-      setAnswerUpdated(false)
+      alertSuccess(formatMessage({ id: 'answer_created' }))
     } else {
-      setAnswerCreated(false)
-      setAnswerUpdated(true)
+      alertSuccess(formatMessage({ id: 'answer_updated' }))
     }
-    setErrors()
   }
 
   const onError = (err) => {
-    setAnswerCreated(false)
-    setAnswerUpdated(false)
-
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-    setErrors(translatableErrors)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
   }
 
   const onSubmit = (values) => {
@@ -47,12 +42,12 @@ const AnswersEditor = (props) => {
 
     isCreating
       ? createAnswer({
-        variables: { name, description, correct, exerciseId: params.exerciseId },
-        update: (cache, result) => {
-          const variables = { exerciseId: params.exerciseId }
-          syncAnswersCacheOnCreate(cache, result.data.createAnswer, variables)
-        }
-      })
+          variables: { name, description, correct, exerciseId: params.exerciseId },
+          update: (cache, result) => {
+            const variables = { exerciseId: params.exerciseId }
+            syncAnswersCacheOnCreate(cache, result.data.createAnswer, variables)
+          }
+        })
       : updateAnswer({
         variables: { id: params.answerId, name, description, correct, exerciseId: params.exerciseId },
         update: (cache, result) => {
@@ -89,7 +84,6 @@ const AnswersEditor = (props) => {
   useEffect(() => {
     // State cleanup in case user was editing and now wants to create
     if (isCreating) {
-      setAnswerUpdated(false)
       setInitialValues({})
     }
   }, [isCreating])
@@ -143,15 +137,6 @@ const AnswersEditor = (props) => {
                 isDisabled={creating || updating || fetching}
               />
             </div>
-
-            {/* Info */}
-            {(errors || answerCreated || answerUpdated) && (
-              <div id='info' className='d-flex justify-content-around mt-3'>
-                {errors && <CustomAlert messages={errors} className='ml-3' />}
-                {!creating && answerCreated && <CustomAlert color='success' messages={{ id: 'answer_created' }} />}
-                {!updating && answerUpdated && <CustomAlert color='success' messages={{ id: 'answer_updated' }} />}
-              </div>
-            )}
 
           </form>
         )}

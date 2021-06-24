@@ -1,5 +1,7 @@
 import React from 'react'
 import { Header } from '.'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const LayoutAuth = (props) => {
   return (
@@ -8,7 +10,7 @@ const LayoutAuth = (props) => {
       <div id='body' className='d-flex justify-content-center mt-4'>
         {props.children}
       </div>
-      {/* <Footer /> */}
+      <ToastContainer />
     </div>
   )
 }

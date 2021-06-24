@@ -18,6 +18,7 @@
 
   "common_error.internal_server_error": "Internal server error",
   "common_error.duplicated_entity": "An entity with the same name already exist",
+  "common_error.couldnt_upload_image": "There was an error trying to upload the image.",
 
   "entity_error.correct_answer_already_selected": "A correct answer was already selected",
   "entity_error.related_entity_exists": "Before deleting this entity you should also delete the related ones.",
@@ -124,27 +125,29 @@
   "exam_template_updated": "Exam template updated succesfully",
   "exam_template_deleted": "Exam template deleted successfully",
   "exam_template_exercise_added": "Exercise successfully added to the Exam template",
-  "exam_template_exercise_removed": "Exercise successfully remoed from the Exam template",
+  "exam_template_exercise_removed": "Exercise successfully removed from the Exam template",
   "exam_template_at_least_two_exercises_needed": "This exam template needs at least 2 exercises",
   "exam_template_all_exercises_must_have_points": "All exercises must have a score higher than 0",
   "exam_template_note_cant_be_zero": "Max Exam template note can't be 0",
   "exam_template_note_cant_be_higher_than_ten": "Max Exam template note can't be higher than 10",
   "exam_template_note_must_be_close_to_nine_ninetynine": "Max Exam template note must be at least 9.99",
-  "exam_finish_exam": "Finish exam",
 
   "student_id_number": "ID Number",
 
   "assigned_exam_created": "Exam successfully assigned",
+  "assigned_exam_removed": "Exam successfully removed",
   "assigned_exams": "Assigned exams",
   "pending_exams": "Pending exams",
 
   "exam_name": "Exam name",
   "exams_initiated_finalized": "Initiated or finalized exams",
   "exams_finalized": "Finalized exams",
+  "exams_finalized_successfully": "Exam finalized successfully",
   "exams_passed": "Exam passed",
   "exams_failed": "Exam failed",
   "exams_manage": "Manage exams",
   "exams_manage_per_student": "Manage exams per student",
+  "exam_finish_exam": "Finish exam",
 
   "registration_completed": "Registration succesful",
   "first_name": "Name",
@@ -173,6 +176,7 @@
   "points": "Points",
   "score": "Score",
   "select_image": "Select an image",
+  "image_uploaded": "Image uploaded successfully",
 
   "language.spanish": "Spanish",
   "language.english": "English"

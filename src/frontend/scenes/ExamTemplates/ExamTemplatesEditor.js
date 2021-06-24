@@ -3,7 +3,7 @@ import { Button } from 'reactstrap'
 import { Form } from 'react-final-form'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { ButtonSubmit, ButtonGoTo, FieldWrapper, SelectWrapper, TranslatableTitle, TranslatableErrors, ModalWrapper } from '../../components/common'
+import { ButtonSubmit, ButtonGoTo, FieldWrapper, SelectWrapper, TranslatableTitle, ModalWrapper } from '../../components/common'
 import { required } from '../../common/validators'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { CREATE_EXAM_TEMPLATE, GET_EXAM_TEMPLATE, UPDATE_EXAM_TEMPLATE, RESET_EXAM_TEMPLATE } from '../../common/requests/templates'
@@ -11,6 +11,7 @@ import { LIST_COURSES } from '../../common/requests/courses'
 import { syncCacheOnCreate, syncCacheOnUpdate, syncCacheOnResetTemplateExercises } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import ExamTemplateExercises from './components/ExamTemplateExercises'
+import { useAlert } from '../../hooks'
 
 const ExamTemplatesEditor = (props) => {
   // Props and params
@@ -19,11 +20,13 @@ const ExamTemplatesEditor = (props) => {
   const { params } = useRouteMatch()
   const history = useHistory()
 
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
+
   // State
   const [courses, setCourses] = useState([])
   const [initialValues, setInitialValues] = useState({})
   const [filters, setFilters] = useState({})
-  const [errors, setErrors] = useState()
   const [editableCourse, setEditableCourse] = useState(false)
   const [editConfirmModalIsOpen, setEditConfirmModalIsOpen] = useState(false)
 
@@ -31,29 +34,20 @@ const ExamTemplatesEditor = (props) => {
   const onSuccess = (result) => {
     if (result.createExamTemplate) {
       const { id } = result.createExamTemplate
-
-      // setTemplateCreated(true)
-      // setTemplateUpdated(false)
-      history.push({
-        pathname: `/exam-templates/${id}`,
-        state: { isCreating: false }
-      })
+      alertSuccess(formatMessage({ id: 'exam_template_created' }))
+      history.push({ pathname: `/exam-templates/${id}`, state: { isCreating: false } })
     }
     if (result.updateExamTemplate) {
       const { courseId } = result.updateExamTemplate
-
       setEditableCourse(false)
       setInitialValues({ ...initialValues, courseId: courseId })
-      // setTemplateCreated(false)
-      // setTemplateUpdated(true)
+      alertSuccess(formatMessage({ id: 'exam_template_updated' }))
     }
     if (result.resetExamTemplate) {
       const { courseId, ...rest } = initialValues
       setInitialValues({ ...rest })
-      // setTemplateCreated(false)
-      // setTemplateUpdated(false)
+      alertSuccess(formatMessage({ id: 'exam_template_updated' }))
     }
-    setErrors()
   }
 
   const onFetchExamTemplateSuccess = (result) => {
@@ -74,8 +68,8 @@ const ExamTemplatesEditor = (props) => {
 
   const onError = (err) => {
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-    setErrors(translatableErrors)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
   }
 
   // Button handlers
@@ -113,9 +107,6 @@ const ExamTemplatesEditor = (props) => {
       }
     })
 
-    // Reset States to initial values
-    setErrors()
-    // setTemplateUpdated(false)
     setEditableCourse(true)
     setEditConfirmModalIsOpen(false)
 
@@ -241,10 +232,6 @@ const ExamTemplatesEditor = (props) => {
                   translatableTextId='button.go_to_list'
                   isDisabled={creating || updating || fetching || fetchingCourses}
                 />
-              </div>
-
-              <div id='info' className='d-flex justify-content-around mt-3'>
-                {errors && <TranslatableErrors errors={errors} className='ml-3' />}
               </div>
 
             </form>

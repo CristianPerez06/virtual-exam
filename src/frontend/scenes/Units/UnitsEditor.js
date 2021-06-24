@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Form } from 'react-final-form'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, TranslatableErrors, ButtonSubmit, ButtonGoTo, FieldWrapper, SelectWrapper, TranslatableTitle } from '../../components/common'
+import { ButtonSubmit, ButtonGoTo, FieldWrapper, SelectWrapper, TranslatableTitle } from '../../components/common'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { CREATE_UNIT, UPDATE_UNIT, GET_UNIT } from '../../common/requests/units'
 import { LIST_COURSES } from '../../common/requests/courses'
 import { syncCacheOnCreate, syncCacheOnUpdate } from './cacheHelpers'
+import { useAlert } from '../../hooks'
 
 const UnitsEditor = (props) => {
   // Props and params
@@ -17,29 +18,23 @@ const UnitsEditor = (props) => {
   const { params } = useRouteMatch()
   const history = useHistory()
 
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
+
   // State
-  const [unitCreated, setUnitCreated] = useState(false)
-  const [unitUpdated, setUnitUpdated] = useState(false)
   const [courses, setCourses] = useState([])
   const [initialValues, setInitialValues] = useState({})
   const [filters, setFilters] = useState({})
-  const [errors, setErrors] = useState()
 
   // Handlers
   const onSuccess = (result) => {
     const { id } = isCreating ? result.createUnit : result.updateUnit
     if (isCreating) {
-      setUnitCreated(true)
-      setUnitUpdated(false)
-      history.push({
-        pathname: `/units/${id}`,
-        state: { isCreating: false }
-      })
+      alertSuccess(formatMessage({ id: 'unit_created' }))
+      history.push({ pathname: `/units/${id}`, state: { isCreating: false } })
     } else {
-      setUnitCreated(false)
-      setUnitUpdated(true)
+      alertSuccess(formatMessage({ id: 'unit_updated' }))
     }
-    setErrors()
   }
 
   const onFetchUnitSuccess = (result) => {
@@ -55,13 +50,9 @@ const UnitsEditor = (props) => {
   }
 
   const onError = (err) => {
-    setUnitCreated(false)
-    setUnitUpdated(false)
-
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-
-    setErrors(translatableErrors)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
   }
 
   const onSubmit = (values) => {
@@ -107,7 +98,6 @@ const UnitsEditor = (props) => {
   useEffect(() => {
     // State cleanup in case user was editing and now wants to create
     if (isCreating) {
-      setUnitUpdated(false)
       setInitialValues({})
       setFilters({})
     }
@@ -162,14 +152,6 @@ const UnitsEditor = (props) => {
                 isDisabled={creating || updating || fetching || fetchingCourses}
               />
             </div>
-
-            {(errors || unitCreated || unitUpdated) && (
-              <div id='info' className='d-flex justify-content-around mt-3'>
-                {errors && <TranslatableErrors errors={errors} className='ml-3' />}
-                {!creating && unitCreated && <CustomAlert color='success' messages={{ id: 'unit_created' }} />}
-                {!updating && unitUpdated && <CustomAlert color='success' messages={{ id: 'unit_updated' }} />}
-              </div>
-            )}
 
           </form>
         )}

@@ -4,19 +4,25 @@ import { injectIntl, FormattedMessage } from 'react-intl'
 import { LIST_COURSES } from '../../common/requests/courses'
 import { LIST_EXAM_TEMPLATES, DISABLE_EXAM_TEMPLATE } from '../../common/requests/templates'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { CustomAlert, TranslatableErrors, DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
+import { DeleteModal, TwoColumnsTable, LoadingInline } from '../../components/common'
 import Select from 'react-select'
 import { syncCacheOnDelete } from './cacheHelpers'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
+import { useAlert } from '../../hooks'
 
 const ExamTemplatesList = (props) => {
+  // Props and params
+  const { intl } = props
+  const { formatMessage } = intl
+
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
+
   // State
   const [templates, setTemplates] = useState([])
   const [courses, setCourses] = useState([])
-  const [errors, setErrors] = useState()
   const [filters, setFilters] = useState({ selectedCourse: null })
   const [templateToDelete, setTemplateToDelete] = useState()
-  const [templateDeleted, setTemplateDeleted] = useState(false)
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 
   // Handlers
@@ -38,10 +44,8 @@ const ExamTemplatesList = (props) => {
 
   const onError = (err) => {
     const { graphQLErrors } = err
-    const translatableErrors = getTranslatableErrors(graphQLErrors)
-
-    setErrors(translatableErrors)
-    setTemplateDeleted(false)
+    const translatableError = getTranslatableErrors(graphQLErrors)
+    alertError(formatMessage({ id: translatableError.id }))
     setDeleteModalIsOpen(false)
   }
 
@@ -69,9 +73,8 @@ const ExamTemplatesList = (props) => {
 
   // Other
   const stateCleanupOnDelete = () => {
-    setErrors()
     setDeleteModalIsOpen(false)
-    setTemplateDeleted(true)
+    alertSuccess(formatMessage({ id: 'exam_template_deleted' }))
   }
 
   // Queries and mutations
@@ -107,9 +110,7 @@ const ExamTemplatesList = (props) => {
                 isDisabled={fetchingCourses}
                 onChange={(option) => {
                   const selected = courses.find(x => x.value === option.value)
-                  setTemplateDeleted()
                   setFilters({ selectedCourse: selected })
-                  setErrors()
                 }}
               />
             </div>
@@ -140,9 +141,6 @@ const ExamTemplatesList = (props) => {
         </CardBody>
       </Card>
 
-      {/* Alerts */}
-      {!deleting && templateDeleted && <CustomAlert messages={{ id: 'exercise_deleted' }} color='success' />}
-      {errors && <TranslatableErrors errors={errors} />}
     </div>
   )
 }

@@ -18,6 +18,7 @@
 
   "common_error.internal_server_error": "Ocurrio un error en el servidor",
   "common_error.duplicated_entity": "Ya existe una entidad con el mismo nombre",
+  "common_error.couldnt_upload_image": "Ocurrio un error al intentar subir la imagen.",
 
   "entity_error.correct_answer_already_selected": "Ya existe una respuesta correcta.",
   "entity_error.related_entity_exists": "Antes de eliminar esta entidad necesita eliminar las entidades relacionadas.",
@@ -135,16 +136,18 @@
   "student_id_number": "Legajo",
 
   "assigned_exam_created": "Examen asignado correctamente",
+  "assigned_exam_removed": "Examen removido correctamente",
   "assigned_exams": "Examenes asignados",
   "pending_exams": "Examenes pendientes",
 
   "exam_name": "Nombre del examen",
   "exams_initiated_finalized": "Examenes iniciados o finalizados",
   "exams_finalized": "Examenes finalizados",
-  "exam_finish_exam": "Finalizar examen",
+  "exams_finalized_successfully": "Examen finalizado correctamente",
   "exams_passed": "Exam aprobado",
   "exams_failed": "Exam reprobado",
   "exams_manage_per_student": "Administrar examenes por alumno",
+  "exam_finish_exam": "Finalizar examen",
 
   "registration_completed": "Registro exitoso",
   "first_name": "Nombre",
@@ -173,6 +176,7 @@
   "points": "Puntaje",
   "score": "Nota final",
   "select_image": "Seleccione una imagen",
+  "image_uploaded": "Imagen subida correctamente",
 
   "language.spanish": "Español",
   "language.english": "Ingles"

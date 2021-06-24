@@ -6,6 +6,7 @@ import { FaFileImport, FaUpload, FaTrash, FaTimes } from 'react-icons/fa'
 import ImageUploading from 'react-images-uploading'
 import AWS from 'aws-sdk'
 import variables from '../../variables'
+import { useAlert } from '../../hooks'
 
 const MAX_NUMBER = 1
 const S3_BUCKET = variables.bucketS3Name
@@ -25,7 +26,11 @@ const buttonFontSize = { fontSize: 1.2 + 'rem' }
 
 const ImageUploader = (props) => {
   // Props and params
-  const { id, disabled, onUploadSuccess, oldImage, onCancelClick } = props
+  const { id, disabled, onUploadSuccess, oldImage, onCancelClick, intl } = props
+  const { formatMessage } = intl
+
+  // Hooks
+  const { alertSuccess, alertError } = useAlert()
 
   // State
   const [images, setImages] = React.useState([])
@@ -34,14 +39,20 @@ const ImageUploader = (props) => {
   // Button handlers
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
-    console.log(imageList, addUpdateIndex)
+    // console.log(imageList, addUpdateIndex)
     setImages(imageList)
   }
 
   const onUploadClick = () => {
     const fileToUpload = images[0]
     const { file } = fileToUpload
-    const fileName = id + '_' + file.name.replace(' ', '_')
+    const fileName =
+      id +
+      '_' +
+      file.name
+        .replace(' ', '_')
+        .replace('-', '_')
+        .replace(/[^a-zA-Z0-9-_.]/g, '')
 
     const params = {
       ACL: 'public-read',
@@ -52,10 +63,10 @@ const ImageUploader = (props) => {
 
     setUploading(true)
     const putObjectPromise = myBucket.putObject(params).promise()
-    const fileUrl = `https://s3-${S3_REGION}.amazonaws.com/${S3_BUCKET}/${fileName}`
-
+    const fileUrl = `https://${S3_BUCKET}.s3.${S3_REGION}.amazonaws.com/${fileName}`
+    console.log(fileUrl)
     putObjectPromise
-      .then(() => {
+      .then((data) => {
         if (oldImage) {
           try {
             const urlParts = oldImage.split('/')
@@ -66,18 +77,21 @@ const ImageUploader = (props) => {
                 console.log('deleteObject - success')
               })
           } catch {
-            console.log('deleteObject - error')
+            alertError(formatMessage({ id: 'common_error.couldnt_upload_image' }))
           } finally {
+            alertSuccess(formatMessage({ id: 'image_uploaded' }))
             onUploadSuccess(fileUrl)
             setUploading(false)
           }
         } else {
+          alertSuccess(formatMessage({ id: 'image_uploaded' }))
           onUploadSuccess(fileUrl)
           setUploading(false)
         }
       })
       .catch((err) => {
         console.log(err)
+        alertError(formatMessage({ id: 'common_error.couldnt_upload_image' }))
       })
   }
 
@@ -94,9 +108,9 @@ const ImageUploader = (props) => {
           imageList,
           onImageUpload,
           onImageRemoveAll,
-          onImageUpdate,
-          onImageRemove,
-          isDragging,
+          // onImageUpdate,
+          // onImageRemove,
+          // isDragging,
           dragProps
         }) => (
           <div className='upload-image-wrapper'>
@@ -165,7 +179,6 @@ const ImageUploader = (props) => {
                       onClick={onCancelClick}
                     >
                       <FaTimes />
-                      {uploading && <LoadingInline color='success' className='ml-3' />}
                     </Button>
                   </div>
                 </div>
