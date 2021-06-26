@@ -293,7 +293,7 @@ const ManageExamsEditor = (props) => {
     {
       Header: columnsExamTranslations.score,
       accessor: 'score',
-      Cell: ({ row }) => row.original.score || '-'
+      Cell: ({ row }) => row.original.score !== undefined ? row.original.score : '-'
     },
     {
       Header: columnsExamTranslations.action,

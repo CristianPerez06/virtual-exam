@@ -217,7 +217,7 @@ const StudentExamsList = (props) => {
     {
       Header: columnsExamTranslations.score,
       accessor: 'score',
-      Cell: ({ row }) => row.original.score || '-'
+      Cell: ({ row }) => (row.original).score ? row.original.score : '-'
     },
     {
       Header: columnsExamTranslations.action,

@@ -7,6 +7,7 @@ export const GET_ANSWER = gql`
       id
       name
       description
+      descriptionUrl
       correct
     }
   }
@@ -42,8 +43,17 @@ export const UPDATE_ANSWER = gql`
       id
       name
       description
-      correct,
+      descriptionUrl
+      correct
       exerciseId
+    }
+  }
+`
+export const UPDATE_ANSWER_DESCRIPTION_URL = gql`
+  mutation updateAnswerDescriptionUrl($id: ID!, $descriptionUrl: String!) {
+    updateAnswerDescriptionUrl(id: $id, descriptionUrl: $descriptionUrl){
+      id
+      descriptionUrl
     }
   }
 `

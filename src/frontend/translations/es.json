@@ -119,6 +119,7 @@
   "answer_updated": "Respuesta actualizada exitosamente",
   "answer_deleted": "Respuesta eliminada exitosamente",
   "answer_correct": "Respuesta correcta",
+  "answer_visual_description": "Descripción visual de la respuesta",
 
   "exam_template_name": "Nombre de la Plantilla de Examen",
   "exam_template_created": "Plantilla de Examen creada exitosamente",

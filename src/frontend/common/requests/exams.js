@@ -19,6 +19,7 @@ export const GET_EXAM = gql`
           id
           name
           description
+          descriptionUrl
           correct
           selected
         }

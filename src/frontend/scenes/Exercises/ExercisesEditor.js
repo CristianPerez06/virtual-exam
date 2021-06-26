@@ -15,7 +15,7 @@ import {
   LoadingInline,
   ImageUploader
 } from '../../components/common'
-import ExerciseDescription from './components/ExerciseDescription'
+import VisualDescription from './components/VisualDescription'
 import { required } from '../../common/validators'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { injectIntl, FormattedMessage } from 'react-intl'
@@ -226,7 +226,7 @@ const ExercisesEditor = (props) => {
   const [createExercise, { loading: creating }] = useMutation(CREATE_EXERCISE, { onCompleted: onSuccess, onError })
   const [updateExercise, { loading: updating }] = useMutation(UPDATE_EXERCISE, { onCompleted: onSuccess, onError })
   const [disableAnswer, { loading: deletingAnswer }] = useMutation(DISABLE_ANSWER, { onCompleted: stateCleanupOnDelete, onError })
-  const [updateExerciseDescriptionUrl, { loading: updatingDescription }] = useMutation(UPDATE_EXERCISE_DESCRIPTION_URL, { onCompleted: stateCleanupOnDelete, onError })
+  const [updateExerciseDescriptionUrl, { loading: updatingDescriptionUrl }] = useMutation(UPDATE_EXERCISE_DESCRIPTION_URL, { onCompleted: stateCleanupOnDelete, onError })
 
   const columnTranslations = {
     answerName: formatMessage({ id: 'answer_name' }),
@@ -361,7 +361,7 @@ const ExercisesEditor = (props) => {
                           oldImage={exercise.descriptionUrl}
                           onCancelClick={onCancelSelectImageClick}
                         />)
-                      : <ExerciseDescription url={descriptionImage} onChangeClicked={onUpdateImageClicked} />}
+                      : <VisualDescription url={descriptionImage} onChangeClicked={onUpdateImageClicked} />}
                   </div>
                 </div>
               )}
@@ -374,21 +374,21 @@ const ExercisesEditor = (props) => {
                       path={`/exercises/${params.id}/answers/new`}
                       color='info'
                       translatableTextId='button.add_answer'
-                      isDisabled={creating || updating || updatingDescription || fetching || fetchingCourses || fetchingUnits}
+                      isDisabled={creating || updating || updatingDescriptionUrl || fetching || fetchingCourses || fetchingUnits}
                     />
                   )}
                 </div>
 
                 <div id='buttons'>
                   <ButtonSubmit
-                    isDisabled={creating || updating || updatingDescription || fetching || fetchingCourses || fetchingUnits || pristine}
-                    isLoading={creating || updating || updatingDescription || fetching}
+                    isDisabled={creating || updating || updatingDescriptionUrl || fetching || fetchingCourses || fetchingUnits || pristine}
+                    isLoading={creating || updating || updatingDescriptionUrl || fetching}
                   />
                   <ButtonGoTo
                     path='/exercises/list'
                     color='secondary'
                     translatableTextId='button.go_to_list'
-                    isDisabled={creating || updating || updatingDescription || fetching || fetchingCourses || fetchingUnits}
+                    isDisabled={creating || updating || updatingDescriptionUrl || fetching || fetchingCourses || fetchingUnits}
                   />
                 </div>
               </div>

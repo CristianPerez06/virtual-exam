@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from 'reactstrap'
-import { LoadingInline } from '../common'
+import { LoadingInline, BlackWhiteImg } from '../common'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { FaFileImport, FaUpload, FaTrash, FaTimes } from 'react-icons/fa'
 import ImageUploading from 'react-images-uploading'
@@ -22,7 +22,7 @@ const myBucket = new AWS.S3({
   region: S3_REGION
 })
 
-const buttonFontSize = { fontSize: 1.2 + 'rem' }
+const buttonStyles = { fontSize: 1.2 + 'rem' }
 
 const ImageUploader = (props) => {
   // Props and params
@@ -117,19 +117,19 @@ const ImageUploader = (props) => {
             <div className='row text-center ml-1 mr-1'>
               <div className='col-md-10 col-xs-12 pl-0 pr-0 border rounded'>
                 {imageList.length === 0 && (
-                  <div className='d-flex justify-content-center align-items-center bg-light text-muted h-100 disabled'>
+                  <div className='d-flex justify-content-center align-items-center bg-light text-muted h-100'>
                     <FormattedMessage id='select_image' />
                   </div>
                 )}
                 {imageList.map((image, index) => (
-                  <div key={index} className='image-item'>
-                    <img src={image.data_url} alt='' className='w-100' />
+                  <div key={index} className='image-item h-100 d-flex justify-content-center align-items-center'>
+                    <BlackWhiteImg url={image.data_url} />
                     {/*
-                    <div className='image-item__btn-wrapper'>
-                      <button onClick={() => onImageUpdate(index)}>Update</button>
-                      <button onClick={() => onImageRemove(index)}>Remove</button>
-                    </div>
-                    */}
+                  <div className='image-item__btn-wrapper'>
+                    <button onClick={() => onImageUpdate(index)}>Update</button>
+                    <button onClick={() => onImageRemove(index)}>Remove</button>
+                  </div>
+                  */}
                   </div>
                 ))}
               </div>
@@ -139,7 +139,6 @@ const ImageUploader = (props) => {
                     <Button
                       color='outline-secondary'
                       className='m-1'
-                      style={buttonFontSize}
                       disabled={imageList.length !== 0 || disabled || uploading}
                       onClick={onImageUpload}
                       {...dragProps}
@@ -151,7 +150,7 @@ const ImageUploader = (props) => {
                     <Button
                       color='outline-danger'
                       className='m-1'
-                      style={buttonFontSize}
+                      style={buttonStyles}
                       disabled={imageList.length === 0 || disabled || uploading}
                       onClick={onImageRemoveAll}
                     >
@@ -162,7 +161,7 @@ const ImageUploader = (props) => {
                     <Button
                       color='outline-success'
                       className='m-1'
-                      style={buttonFontSize}
+                      style={buttonStyles}
                       disabled={imageList.length === 0 || disabled || uploading}
                       onClick={onUploadClick}
                     >
@@ -174,7 +173,7 @@ const ImageUploader = (props) => {
                     <Button
                       color='outline-dark'
                       className='m-1'
-                      style={buttonFontSize}
+                      style={buttonStyles}
                       disabled={disabled || uploading}
                       onClick={onCancelClick}
                     >

@@ -119,6 +119,7 @@
   "answer_updated": "Answer updated succesfully",
   "answer_deleted": "Answer deleted succesfully",
   "answer_correct": "Correct answer",
+  "answer_visual_description": "Answer visual description",
 
   "exam_template_name": "Exam template name",
   "exam_template_created": "Exam template created succesfully",

@@ -175,6 +175,34 @@ const resolver = {
       }
       return prepSingleResultForUser(response.value)
     },
+    updateAnswerDescriptionUrl: async (parent, args, context) => {
+      debug('Running updateAnswerDescriptionUrl mutation with params:', args)
+
+      // Args
+      const { id, descriptionUrl } = args
+      const objAnswerId = new ObjectId(id)
+
+      // Collection
+      const collection = context.db.collection('answers')
+
+      // Query
+      const update = {
+        $set: {
+          descriptionUrl: descriptionUrl,
+          updated: new Date().toISOString()
+        }
+      }
+
+      // Exec
+      const response = await collection.findOneAndUpdate({ _id: objAnswerId }, update, { returnDocument: 'after', w: 'majority' })
+
+      // Results
+      if (response.ok !== 1) {
+        debug('updateAnswerDescriptionUrl error:', response.lastErrorObject)
+        throw new Error(response.lastErrorObject)
+      }
+      return prepSingleResultForUser(response.value)
+    },
     disableAnswer: async (parent, args, context) => {
       debug('Running disableAnswer mutation with params:', args)
 
