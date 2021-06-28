@@ -91,7 +91,7 @@ const StudentsList = (props) => {
   }, [cognito])
 
   return (
-    <div className='students-list' style={{ width: 850 + 'px' }}>
+    <div className='students-list'>
       {fetching && <Loading />}
       {!fetching &&
         <Card className='mx-auto shadow mb-3 bg-white rounded'>

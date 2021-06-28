@@ -89,7 +89,7 @@ const CourseEditor = (props) => {
   }, [isCreating])
 
   return (
-    <div className='course-editor border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
+    <div className='course-editor border shadow p-3 mb-3 bg-white rounded'>
       <Form
         onSubmit={onSubmit}
         validate={validateBeforeSubmit}

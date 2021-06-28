@@ -301,7 +301,7 @@ const StudentExamsList = (props) => {
   }, [cognitoUsers, fetchingCognitoUsers])
 
   return (
-    <div className='student-exams-list' style={{ width: 850 + 'px' }}>
+    <div className='student-exams-list'>
       <div className='filters border shadow p-3 mb-3 bg-white rounded d-block'>
         <p className='text-center h4 mb-4'>
           <FormattedMessage id='common_entity.exams' />

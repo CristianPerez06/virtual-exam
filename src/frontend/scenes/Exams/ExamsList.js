@@ -235,7 +235,7 @@ const ExamsList = (props) => {
   ]
 
   return (
-    <div className='exams-list' style={{ width: 850 + 'px' }}>
+    <div className='exams-list'>
       <Card className='mx-auto shadow mb-3 bg-white rounded'>
         <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
           <p className='h4'>

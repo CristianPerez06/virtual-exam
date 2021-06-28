@@ -92,7 +92,7 @@ const UnitsList = (props) => {
   const [disableUnit, { loading: deleting }] = useMutation(DISABLE_UNIT, { onCompleted: stateCleanupOnDelete, onError })
 
   return (
-    <div className='units-list' style={{ width: 850 + 'px' }}>
+    <div className='units-list'>
       <Card className='mx-auto shadow mb-3 bg-white rounded'>
         <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
           <p className='h4'>
