@@ -1,8 +1,9 @@
 type Answer {
   id: ID!
-  name: String!,
-  description: String,
-  correct: Boolean,
+  name: String!
+  description: String
+  descriptionUrl: String
+  correct: Boolean
   exerciseId: ID!
 }
 
@@ -17,8 +18,9 @@ extend type Query {
 }
 
 extend type Mutation {
-  createAnswer(name: String!, description: String!, correct: Boolean, exerciseId: ID!): Answer
-  updateAnswer(id: ID!, name: String!, description: String!, correct: Boolean, exerciseId: ID!): Answer
+  createAnswer(name: String!, description: String, correct: Boolean, exerciseId: ID!): Answer
+  updateAnswer(id: ID!, name: String!, description: String, correct: Boolean, exerciseId: ID!): Answer
+  updateAnswerDescriptionUrl(id: ID!, descriptionUrl: String!): Answer
   disableAnswer(id: ID!): Answer
   deleteAnswer(id: ID!): Response
 }

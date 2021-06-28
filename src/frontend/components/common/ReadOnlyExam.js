@@ -1,9 +1,9 @@
 import React from 'react'
-import { Form, FormGroup, Label, Input } from 'reactstrap'
+import { Form, Label } from 'reactstrap'
 import { ButtonGoTo } from '../../components/common'
 import { EXAM_SETTINGS } from '../../common/constants'
 import { injectIntl, FormattedMessage } from 'react-intl'
-import { FaCheck, FaCheckDouble, FaTimesCircle } from 'react-icons/fa'
+import ReadOnlyExamExercise from './ReadOnlyExamExercise'
 
 const ReadOnlyExam = (props) => {
   // Props and params
@@ -25,45 +25,12 @@ const ReadOnlyExam = (props) => {
       <hr />
       <Label className='h4'>{exam.name}</Label>
       {exam.exercises.map((exercise, exerciseIndex) => {
-        const solvedCorrectly = exercise.answers.find(x => x.correct && x.selected)
-        const exercisePoints = solvedCorrectly ? exercise.points : 0
-
         return (
-          <div className='exam-item' key={exerciseIndex}>
-            <FormGroup tag='fieldset'>
-              <span className='d-block'>{exerciseIndex + 1} - {exercise.name}</span>
-              <span className='d-block'>{exercise.description}</span>
-              <table>
-                <tbody>
-                  {exercise.answers.map((answer, answerIndex) => {
-                    return (
-                      <tr key={answerIndex}>
-                        <td style={{ width: 40 + 'px' }}>
-                          {answer.correct && <FaCheck />}
-                        </td>
-                        <td style={{ width: 40 + 'px' }}>
-                          {answer.selected && answer.correct && <FaCheckDouble />}
-                          {answer.selected && !answer.correct && <FaTimesCircle />}
-                        </td>
-                        <td>
-                          <FormGroup check>
-                            <Label check>
-                              <Input type='radio' name={exercise.id} disabled defaultChecked={answer.selected} />{' '}
-                              {answer.name}
-                            </Label>
-                          </FormGroup>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-              <span className='d-block mt-2'>
-                <i><FormattedMessage id='points' />: {exercisePoints}</i>
-              </span>
-              <hr />
-            </FormGroup>
-          </div>
+          <ReadOnlyExamExercise
+            key={exerciseIndex}
+            exercise={exercise}
+            index={exerciseIndex + 1}
+          />
         )
       })}
       <div id='buttons' className='d-flex justify-content-center'>

@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useRouteMatch } from 'react-router-dom'
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap'
+import { Button, Form, Label } from 'reactstrap'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Loading, ButtonGoTo, ModalWrapper, Timer } from '../../components/common'
+import ExerciseSelector from './components/ExerciseSelector'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { GET_EXAM, FINISH_EXAM } from '../../common/requests/exams'
@@ -102,45 +103,25 @@ const TakeExam = (props) => {
     <div className='take-exam position border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
       {!fetching && exam && (
         <Form>
+          {/* Timer */}
           {!examCompleted && <Timer startTime={new Date(exam.created)} minutesToExpire={EXAM_SETTINGS.MINUTES_TO_EXPIRATION} onTimeExpired={onTimeExpired} />}
-          <Label className='h4'>{exam.name}</Label>
+
+          {/* Exam name */}
+          <Label className='h4 mb-4'>{exam.name}</Label>
+
+          {/* Exercises */}
           {exam.exercises.map((exercise, exerciseIndex) => {
             return (
-              <div className='exam-item' key={exerciseIndex}>
-                <FormGroup tag='fieldset'>
-                  {/* Exercise name */}
-                  <span className='d-block'>{exerciseIndex + 1} - {exercise.name}</span>
-
-                  {/* Exercise description */}
-                  {exercise.descriptionUrl
-                    ? (
-                      <div className='w-100 text-center'>
-                        <img style={{ maxWidth: 600 + 'px' }} src={exercise.descriptionUrl} alt='' />
-                      </div>
-                      )
-                    : <span>{exercise.description}</span>}
-
-                  {/* Exercise answers */}
-                  {exercise.answers.map((answer) => {
-                    return (
-                      <FormGroup
-                        check
-                        key={answer.id}
-                        className='ml-3'
-                        onChange={() => onAnswerClick({ exerciseId: exercise.id, answerId: answer.id })}
-                      >
-                        <Label check>
-                          <Input type='radio' name={exercise.id} disabled={exam.completed || examCompleted} />{' '}
-                          {answer.name}
-                        </Label>
-                      </FormGroup>
-                    )
-                  })}
-                </FormGroup>
-                <hr />
-              </div>
+              <ExerciseSelector
+                key={exerciseIndex}
+                exercise={exercise}
+                index={exerciseIndex + 1}
+                disabled={exam.completed || examCompleted}
+                onAnswerClick={onAnswerClick}
+              />
             )
           })}
+
           <div id='buttons' className='d-flex justify-content-center'>
             <Button
               color='success'
@@ -158,11 +139,6 @@ const TakeExam = (props) => {
             />
           </div>
 
-          {/* {(errors) && (
-            <div id='info' className='d-flex justify-content-around mt-3'>
-              {errors && <CustomAlert messages={errors} className='ml-3' />}
-            </div>
-          )} */}
         </Form>
       )}
       <div id='confirm-finish-modal'>

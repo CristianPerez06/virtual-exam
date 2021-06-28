@@ -1,7 +1,8 @@
 type ExamExerciseAnswer {
   id: ID!
   name: String!,
-  description: String!
+  description: String
+  descriptionUrl: String
   correct: Boolean
   selected: Boolean
 }
