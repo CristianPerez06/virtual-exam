@@ -100,7 +100,7 @@ const TakeExam = (props) => {
   if (fetching) return <Loading />
 
   return (
-    <div className='take-exam position border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
+    <div className='take-exam position border shadow p-3 mb-3 bg-white rounded'>
       {!fetching && exam && (
         <Form>
           {/* Timer */}

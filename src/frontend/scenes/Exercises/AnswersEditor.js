@@ -118,7 +118,7 @@ const AnswersEditor = (props) => {
   }, [isCreating])
 
   return (
-    <div className='answer-editor border shadow p-3 mb-3 bg-white rounded' style={{ width: 850 + 'px' }}>
+    <div className='answer-editor border shadow p-3 mb-3 bg-white rounded' >
       <Form
         onSubmit={onSubmit}
         validate={validateBeforeSubmit}

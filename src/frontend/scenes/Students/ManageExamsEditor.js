@@ -293,7 +293,7 @@ const ManageExamsEditor = (props) => {
     {
       Header: columnsExamTranslations.score,
       accessor: 'score',
-      Cell: ({ row }) => row.original.score !== undefined ? row.original.score : '-'
+      Cell: ({ row }) => (row.original).score ? row.original.score : '-'
     },
     {
       Header: columnsExamTranslations.action,
@@ -312,7 +312,7 @@ const ManageExamsEditor = (props) => {
   ]
 
   return (
-    <div className='students-exam-editor' style={{ width: 850 + 'px' }}>
+    <div className='students-exam-editor'>
       <Form
         onSubmit={onSubmit}
         initialValues={initialValues}
