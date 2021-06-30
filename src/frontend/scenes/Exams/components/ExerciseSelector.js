@@ -12,18 +12,26 @@ const ExerciseSelector = (props) => {
 
   // State
   const [collapse, setCollapse] = useState(true)
+  const [answerIsSelected, setAnswerIsSelected] = useState(false)
 
   const onCardClick = () => {
     setCollapse(!collapse)
+  }
+
+  const onAnswerSelected = (selectedItem) => {
+    setAnswerIsSelected(true)
+    onAnswerClick(selectedItem)
   }
 
   return (
     <div className='exercise-container'>
       <Card>
         <CardHeader className='d-flex'>
-          <Button onClick={onCardClick}>
-            {collapse ? <FaChevronCircleRight /> : <FaChevronCircleDown />}
-          </Button>
+          <>
+            <Button onClick={onCardClick} color={answerIsSelected ? 'secondary' : 'warning'}>
+              {collapse ? <FaChevronCircleRight /> : <FaChevronCircleDown />}
+            </Button>
+          </>
           <span className='d-flex align-items-center ml-4'>
             {index} - {exercise.name}
           </span>
@@ -45,7 +53,7 @@ const ExerciseSelector = (props) => {
                   exerciseId={exercise.id}
                   answer={answer}
                   disabled={disabled}
-                  onAnswerClick={onAnswerClick}
+                  onAnswerClick={onAnswerSelected}
                 />
               )}
             </FormGroup>
