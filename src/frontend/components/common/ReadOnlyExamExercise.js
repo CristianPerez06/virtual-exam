@@ -27,9 +27,11 @@ const ReadOnlyExamExercise = (props) => {
           <div className='row w-100'>
             <div className='col-md-10 col-xs-12'>
               <div className='d-flex'>
-                <Button onClick={onCardClick}>
-                  {collapse ? <FaChevronCircleRight /> : <FaChevronCircleDown />}
-                </Button>
+                <>
+                  <Button onClick={onCardClick}>
+                    {collapse ? <FaChevronCircleRight /> : <FaChevronCircleDown />}
+                  </Button>
+                </>
                 <span className='d-flex align-items-center ml-4'>
                   {index} - {exercise.name}
                 </span>
