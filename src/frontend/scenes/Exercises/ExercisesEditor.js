@@ -130,14 +130,6 @@ const ExercisesEditor = (props) => {
     }
   }
 
-  const validateBeforeSubmit = (values) => {
-    const errors = {}
-    if (!values.name) { errors.name = formatMessage({ id: 'common_field_error.required' }) }
-    if (!values.courseId) { errors.courseId = formatMessage({ id: 'common_field_error.required' }) }
-    if (!values.unitId) { errors.unitId = formatMessage({ id: 'common_field_error.required' }) }
-    return errors
-  }
-
   // Button handlers
   const onDeleteClicked = (course) => {
     setAnswerToDelete(course)
@@ -277,6 +269,7 @@ const ExercisesEditor = (props) => {
       // setExerciseUpdated(false)
       setInitialValues({})
       setFilters({ selectedCourse: '', selectedUnit: '' })
+      setAnswers([])
     }
   }, [isCreating])
 
@@ -285,14 +278,13 @@ const ExercisesEditor = (props) => {
       <div className='exercise-data border shadow p-3 mb-3 bg-white rounded d-block'>
         <Form
           onSubmit={onSubmit}
-          validate={validateBeforeSubmit}
           initialValues={initialValues}
           render={({ handleSubmit, pristine }) => (
             <form onSubmit={handleSubmit}>
               <TranslatableTitle isCreating={isCreating} entityName='exercise' />
 
               {/* Course - Unit */}
-              <div className='row mb-4'>
+              <div className='row mb-2'>
                 <div className='col-md-6 col-xs-12'>
                   <span className='text-left pl-1 pb-1'>
                     <FormattedMessage id='common_entity.course' />

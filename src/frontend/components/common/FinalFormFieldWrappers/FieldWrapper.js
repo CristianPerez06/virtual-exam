@@ -12,10 +12,15 @@ const FieldWrapper = (props) => {
     intl
   } = props
 
+  const fieldProps = {
+    name: fieldName,
+    ...(validations && { validate: validations })
+  }
+
   return (
-    <Field name={fieldName} validate={validations}>
+    <Field {...fieldProps}>
       {({ input, meta }) => (
-        <div className='mb-4'>
+        <div className='mb-2'>
           <input
             {...input}
             className='form-control'

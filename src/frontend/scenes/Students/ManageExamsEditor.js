@@ -193,13 +193,6 @@ const ManageExamsEditor = (props) => {
   }, [cognitoUsers, fetchingCognitoUsers, params])
 
   // Other
-  const validateBeforeSubmit = (values) => {
-    const errors = {}
-    if (!values.courseId) { errors.name = formatMessage({ id: 'common_field_error.required' }) }
-    if (!values.examTemplateId) { errors.name = formatMessage({ id: 'common_field_error.required' }) }
-    return errors
-  }
-
   const columnsAssignedExamsTranslations = {
     courseName: formatMessage({ id: 'course_name' }),
     examTemplateName: formatMessage({ id: 'exam_template_name' }),
@@ -293,7 +286,7 @@ const ManageExamsEditor = (props) => {
     {
       Header: columnsExamTranslations.score,
       accessor: 'score',
-      Cell: ({ row }) => (row.original).score ? row.original.score : '-'
+      Cell: ({ row }) => (row.original).score ?? '-'
     },
     {
       Header: columnsExamTranslations.action,
@@ -316,7 +309,6 @@ const ManageExamsEditor = (props) => {
       <Form
         onSubmit={onSubmit}
         initialValues={initialValues}
-        validate={validateBeforeSubmit}
         render={({ handleSubmit, pristine }) => (
           <form onSubmit={handleSubmit}>
             <div className='filters border shadow p-3 mb-3 bg-white rounded d-block'>

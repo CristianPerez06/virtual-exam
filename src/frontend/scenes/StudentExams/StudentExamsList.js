@@ -217,7 +217,7 @@ const StudentExamsList = (props) => {
     {
       Header: columnsExamTranslations.score,
       accessor: 'score',
-      Cell: ({ row }) => (row.original).score ? row.original.score : '-'
+      Cell: ({ row }) => (row.original).score ?? '-'
     },
     {
       Header: columnsExamTranslations.action,
@@ -306,7 +306,7 @@ const StudentExamsList = (props) => {
         <p className='text-center h4 mb-4'>
           <FormattedMessage id='common_entity.exams' />
         </p>
-        <div className='row d-flex justify-content-center mb-4'>
+        <div className='row d-flex justify-content-center mb-2'>
           <div className='col-md-10 col-xs-12'>
             <span className='text-left pl-1 pb-1'>
               <FormattedMessage id='common_entity.course' />
@@ -322,7 +322,7 @@ const StudentExamsList = (props) => {
             />
           </div>
         </div>
-        <div className='row d-flex justify-content-center mb-4'>
+        <div className='row d-flex justify-content-center mb-2'>
           <div className='col-md-10 col-xs-12'>
             <span className='text-left pl-1 pb-1'>
               <FormattedMessage id='common_entity.student' />

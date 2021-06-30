@@ -154,7 +154,9 @@ const EditExercisesList = (props) => {
 
   // Force refetch Exam Template Exercises
   useEffect(() => {
-    refetch()
+    if (forceRefetch) {
+      refetch()
+    }
   }, [refetch, forceRefetch])
 
   const columnTranslations = {

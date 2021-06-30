@@ -1,0 +1,16 @@
+type ExamMetric {
+  courseId: ID!
+  courseName: String!
+  total: Int!
+  totalPassed: Int!
+  totalFailed: Int!
+}
+
+type ExamMetrics {
+  data: [ExamMetric]
+  count: Int!
+}
+
+extend type Query {
+  getExamMetrics(dateFrom: String!, dateTo: String!): ExamMetrics
+}

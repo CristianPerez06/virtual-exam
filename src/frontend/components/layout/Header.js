@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 import { ACCOUNT_ACTION_TYPES, COOKIE_NAMES, ROLES } from '../../common/constants'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import { Link } from 'react-router-dom'
-import { FaHome } from 'react-icons/fa'
+import { FaHome, FaAlignLeft } from 'react-icons/fa'
 import {
   Collapse,
   Navbar,
@@ -132,6 +132,13 @@ const Header = () => {
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
+              {/* Metrics */}
+              <NavItem>
+                <Link className='nav-link' to='/metrics'>
+                  <FormattedMessage id='button.metrics' />
+                  <FaAlignLeft className='ml-2' style={{ fontSize: 15 + 'px' }} />
+                </Link>
+              </NavItem>
             </>
           )}
           {state.role === ROLES.GUEST && (

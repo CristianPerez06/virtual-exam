@@ -117,12 +117,6 @@ const ExamTemplatesEditor = (props) => {
     setFilters(restFilters)
   }
 
-  const validateBeforeSubmit = (values) => {
-    const errors = {}
-    if (!values.name) { errors.name = formatMessage({ id: 'common_field_error.required' }) }
-    return errors
-  }
-
   // Queries and mutations
   const { loading: fetching } = useQuery(
     GET_EXAM_TEMPLATE,
@@ -160,13 +154,12 @@ const ExamTemplatesEditor = (props) => {
       <div className='exam-template border shadow p-3 mb-3 bg-white rounded d-block'>
         <Form
           onSubmit={onSubmit}
-          validate={validateBeforeSubmit}
           initialValues={initialValues}
           render={({ handleSubmit, pristine }) => (
             <form onSubmit={handleSubmit}>
               <TranslatableTitle isCreating={isCreating} entityName='exam_template' />
 
-              <div className='row mb-4'>
+              <div className='row mb-2'>
                 <div className='col-md-12 col-xs-12'>
                   <div className={isCreating ? 'row d-flex justify-content-center' : 'row'}>
                     <div className='col-md-10 col-xs-12'>

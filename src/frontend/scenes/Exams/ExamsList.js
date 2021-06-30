@@ -189,7 +189,7 @@ const ExamsList = (props) => {
                 {format(new Date(row.original.updated), 'h:mm a')}
               </div>
             </>
-          )
+            )
           : '-'
       }
     },
@@ -206,7 +206,7 @@ const ExamsList = (props) => {
     {
       Header: columnsExamTranslations.score,
       accessor: 'score',
-      Cell: ({ row }) => (row.original).score ? row.original.score : '-'
+      Cell: ({ row }) => (row.original).score ?? '-'
     },
     {
       Header: columnsExamTranslations.action,
@@ -220,14 +220,14 @@ const ExamsList = (props) => {
                     {columnsExamTranslations.goToExamDetails}
                   </Button>
                 </Link>
-              )
+                )
               : (
                 <Link to={`/exams/${row.original.id}`}>
                   <Button color='secondary' className='m-2' disabled={creatingExam}>
                     {columnsExamTranslations.goToExam}
                   </Button>
                 </Link>
-              )}
+                )}
           </div>
         )
       }
@@ -239,7 +239,7 @@ const ExamsList = (props) => {
       <Card className='mx-auto shadow mb-3 bg-white rounded'>
         <CardHeader className='d-flex justify-content-between align-items-center bg-light'>
           <p className='h4'>
-            <FormattedMessage id='common_entity.assigned_exams' />
+            <FormattedMessage id='common_entity.exams' />
           </p>
         </CardHeader>
         <CardBody className='d-flex flex-column'>

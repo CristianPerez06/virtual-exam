@@ -19,6 +19,7 @@
   "common_error.internal_server_error": "Ocurrio un error en el servidor",
   "common_error.duplicated_entity": "Ya existe una entidad con el mismo nombre",
   "common_error.couldnt_upload_image": "Ocurrio un error al intentar subir la imagen.",
+  "common_error.selected_valid_dates": "Debe seleccionar fechas validas",
 
   "entity_error.correct_answer_already_selected": "Ya existe una respuesta correcta.",
   "entity_error.related_entity_exists": "Antes de eliminar esta entidad necesita eliminar las entidades relacionadas.",
@@ -89,6 +90,7 @@
   "button.go_to_exam": "Ir al examen",
   "button.details": "Detalles",
   "button.edit_points": "Puntaje",
+  "button.metrics": "Metrics",
 
   "course_name": "Nombre del curso",
   "course_created": "Curso creado exitosamente",
@@ -150,6 +152,10 @@
   "exams_manage_per_student": "Administrar examenes por alumno",
   "exam_finish_exam": "Finalizar examen",
 
+  "metrics": "Metricas",
+  "metrics_top_exams_per_course": "Examenes mas rendidos por materia",
+  "metrics_top_exams_passed_failed_per_course": "Examenes mas rendidos (aprobados/reprobados) por materia",
+
   "registration_completed": "Registro exitoso",
   "first_name": "Nombre",
   "last_name": "Apellido",
@@ -178,6 +184,10 @@
   "score": "Nota final",
   "select_image": "Seleccione una imagen",
   "image_uploaded": "Imagen subida correctamente",
+  "date_from": "Fecha desde",
+  "date_to": "Fecha hasta",
+  "passed": "Aprobados",
+  "failed": "Reprobados",
 
   "language.spanish": "Español",
   "language.english": "Ingles"

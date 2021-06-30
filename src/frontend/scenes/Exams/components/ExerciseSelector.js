@@ -5,7 +5,6 @@ import AnswerSelector from './AnswerSelector'
 import { injectIntl } from 'react-intl'
 import { FaChevronCircleRight, FaChevronCircleDown } from 'react-icons/fa'
 
-
 const ExerciseSelector = (props) => {
   // Props and params
   const { exercise, index, disabled, onAnswerClick } = props
@@ -24,9 +23,9 @@ const ExerciseSelector = (props) => {
   }
 
   return (
-    <div className='exercise-container'>
+    <div className='exercise-container mb-2'>
       <Card>
-        <CardHeader className='d-flex'>
+        <CardHeader className='d-flex p-2'>
           <>
             <Button onClick={onCardClick} color={answerIsSelected ? 'secondary' : 'warning'}>
               {collapse ? <FaChevronCircleRight /> : <FaChevronCircleDown />}
@@ -38,13 +37,12 @@ const ExerciseSelector = (props) => {
         </CardHeader>
         <Collapse isOpen={!collapse}>
           <CardBody>
-            <FormGroup tag='fieldset'>
+            <FormGroup tag='fieldset' className='mb-0'>
               {/* Exercise description */}
               {exercise.description && <span className='d-block'>{exercise.description}</span>}
 
               {/* Exercise image description */}
-              {exercise.descriptionUrl &&<div className='text-center mt-2'><BlackWhiteImg url={exercise.descriptionUrl} /></div>}
-              <hr />
+              {exercise.descriptionUrl && <div className='text-center mt-2'><BlackWhiteImg url={exercise.descriptionUrl} /><hr /></div>}
 
               {/* Exercise answers */}
               {exercise.answers.map((answer) =>
@@ -60,7 +58,6 @@ const ExerciseSelector = (props) => {
           </CardBody>
         </Collapse>
       </Card>
-      <hr />
     </div>
   )
 }

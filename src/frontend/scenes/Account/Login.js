@@ -61,8 +61,8 @@ const Login = (props) => {
   }
 
   return (
-    <div className='sign-up d-flex justify-content-center row text-center'>
-      <div className='sign-up-form bg-light col-md-12 col-xs-12'>
+    <div className='login d-flex justify-content-center row text-center'>
+      <div className='login-form bg-light col-md-12 col-xs-12'>
         <LoginForm isLoading={isLoading} onSubmit={onSubmit} />
       </div>
 

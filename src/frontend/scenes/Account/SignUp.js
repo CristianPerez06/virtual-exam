@@ -61,9 +61,11 @@ const SignUp = (props) => {
 
   return (
     <div className='sign-up d-flex justify-content-center row text-center'>
-      <div className='sign-up-form bg-light col-md-12 col-xs-12'>
-        {signUpInProgress && <SignUpForm isLoading={isLoading} onSubmit={onSubmit} />}
-      </div>
+      {signUpInProgress && (
+        <div className='sign-up-form bg-light col-md-12 col-xs-12'>
+          {signUpInProgress && <SignUpForm isLoading={isLoading} onSubmit={onSubmit} />}
+        </div>
+      )}
 
       <div className='info pt-3 col-md-12 col-xs-12'>
         {!isLoading && error && <CustomAlert messages={error} />}

@@ -1,5 +1,3 @@
-const { ObjectId } = require('bson')
-
 const getAssignedExamsByIdNumberAndCourseId = (idNumber, courseId) => {
   let aggregate = []
 
@@ -38,21 +36,21 @@ const getAssignedExamsByIdNumberAndCourseId = (idNumber, courseId) => {
     },
     {
       $lookup: {
-        from: 'courses', 
-        localField: 'courseId', 
-        foreignField: '_id', 
+        from: 'courses',
+        localField: 'courseId',
+        foreignField: '_id',
         as: 'course'
       }
     },
     {
       $project: {
-        _id: 1, 
-        examTemplateId: 1, 
-        examTemplateName: 1, 
-        idNumber: 1, 
-        created: 1, 
+        _id: 1,
+        examTemplateId: 1,
+        examTemplateName: 1,
+        idNumber: 1,
+        created: 1,
         course: {
-          '$arrayElemAt': [
+          $arrayElemAt: [
             '$course', 0
           ]
         }
@@ -60,14 +58,14 @@ const getAssignedExamsByIdNumberAndCourseId = (idNumber, courseId) => {
     },
     {
       $project: {
-        _id: 1, 
-        examTemplateId: 1, 
-        examTemplateName: 1, 
-        idNumber: 1, 
-        created: 1, 
+        _id: 1,
+        examTemplateId: 1,
+        examTemplateName: 1,
+        idNumber: 1,
+        created: 1,
         courseId: {
           $convert: {
-            input: '$course._id', to: "string"
+            input: '$course._id', to: 'string'
           }
         },
         courseName: '$course.name'

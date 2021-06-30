@@ -26,6 +26,9 @@ const EditPointsModal = (props) => {
     if (points) {
       setUpdatedPoints(points)
     }
+
+    // Cleanup state on unmount
+    return () => setUpdatedPoints(0)
   }, [points])
 
   return (

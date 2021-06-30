@@ -19,6 +19,7 @@
   "common_error.internal_server_error": "Internal server error",
   "common_error.duplicated_entity": "An entity with the same name already exist",
   "common_error.couldnt_upload_image": "There was an error trying to upload the image.",
+  "common_error.selected_valid_dates": "You have to select valid dates",
 
   "entity_error.correct_answer_already_selected": "A correct answer was already selected",
   "entity_error.related_entity_exists": "Before deleting this entity you should also delete the related ones.",
@@ -89,6 +90,7 @@
   "button.go_to_exam": "Go to exam",
   "button.details": "Details",
   "button.edit_points": "Points",
+  "button.metrics": "Metrics",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",
@@ -150,6 +152,10 @@
   "exams_manage_per_student": "Manage exams per student",
   "exam_finish_exam": "Finish exam",
 
+  "metrics": "Metrics",
+  "metrics_top_exams_per_course": "Top exams per course",
+  "metrics_top_exams_passed_failed_per_course": "Top exams passed/failed per course",
+
   "registration_completed": "Registration succesful",
   "first_name": "Name",
   "last_name": "Last name",
@@ -178,6 +184,10 @@
   "score": "Score",
   "select_image": "Select an image",
   "image_uploaded": "Image uploaded successfully",
+  "date_from": "Date from",
+  "date_to": "Date to",
+  "passed": "Passed",
+  "failed": "Failed",
 
   "language.spanish": "Spanish",
   "language.english": "English"

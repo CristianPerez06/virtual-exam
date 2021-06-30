@@ -80,13 +80,6 @@ const AnswersEditor = (props) => {
     })
   }
 
-  const validateBeforeSubmit = (values) => {
-    const errors = {}
-    if (!values.name) { errors.name = formatMessage({ id: 'common_field_error.required' }) }
-    if (!values.description) { errors.description = formatMessage({ id: 'common_field_error.required' }) }
-    return errors
-  }
-
   // Button handlers
   const onUpdateImageClicked = () => {
     setShowImageUploader(true)
@@ -118,10 +111,9 @@ const AnswersEditor = (props) => {
   }, [isCreating])
 
   return (
-    <div className='answer-editor border shadow p-3 mb-3 bg-white rounded' >
+    <div className='answer-editor border shadow p-3 mb-3 bg-white rounded'>
       <Form
         onSubmit={onSubmit}
-        validate={validateBeforeSubmit}
         initialValues={initialValues}
         render={({ handleSubmit, pristine }) => (
           <form onSubmit={handleSubmit}>
@@ -143,13 +135,13 @@ const AnswersEditor = (props) => {
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='answer_description' />
                 </span>
-                <FieldWrapper fieldName='description' placeHolder={formatMessage({ id: 'answer_description' })} />
+                <FieldWrapper fieldName='answer-description' placeHolder={formatMessage({ id: 'answer_description' })} />
               </div>
             </div>
 
             {/* Visual description */}
             {!fetching && !isCreating && (
-              <div className='row mb-4'>
+              <div className='row mb-2'>
                 <div className='col-md-12 col-xs-12'>
                   <span className='text-left pl-1 pb-1'>
                     <FormattedMessage id='answer_visual_description' />
