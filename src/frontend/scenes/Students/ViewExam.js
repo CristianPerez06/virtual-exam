@@ -43,9 +43,10 @@ const ViewExam = (props) => {
     }
   )
 
+  if (fetching) return <Loading />
+
   return (
     <div className='view-exam border shadow p-3 mb-3 bg-white rounded'>
-      {fetching && <Loading />}
       {!fetching && exam && <ReadOnlyExam exam={exam} goBackPath='/students/manage-exams' />}
     </div>
   )

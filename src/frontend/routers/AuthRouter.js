@@ -11,7 +11,8 @@ import {
   AsyncExamTemplates,
   AsyncStudents,
   AsyncExams,
-  AsyncStudentExams
+  AsyncStudentExams,
+  AsyncMetrics
 } from './Lazyimports'
 import { ACCOUNT_ACTION_TYPES } from '../common/constants'
 import { useAuthContext } from '../hooks'
@@ -64,6 +65,7 @@ const AuthRouter = () => {
             <Route path='/students' name='Students' component={AsyncStudents} />
             <Route path='/exams' name='Exams' component={AsyncExams} />
             <Route path='/student-exams' name='Student Exams' component={AsyncStudentExams} />
+            <Route path='/metrics' name='Metrics' component={AsyncMetrics} />
             <Route path='/settings' name='Settings' component={AsyncSettings} />
             <Route name='/error' component={Error} />
             <Route name='Page Not Found' component={PageNotFound} />

@@ -51,7 +51,7 @@ export const COOKIE_NAMES = {
   USER: APP_NAME + 'User',
   TOKEN: APP_NAME + 'Token',
   LOCALE: APP_NAME + 'Locale',
-  ROLE: APP_NAME + 'Role',
+  ROLE: APP_NAME + 'Role'
 }
 
 export const GRAPHQL_ERRORS = {

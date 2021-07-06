@@ -55,8 +55,7 @@ const AddExerciseSelector = (props) => {
       variables: { templateId: examTemplateId, exerciseId: selectedExercise.value },
       update: (cache, result) => {
         const variables = { id: examTemplateId }
-        const updatedTemplateExercisesList = syncCacheOnAddTemplateExercise(cache, result.data.addExerciseToExamTemplate, variables)
-        onSuccess(updatedTemplateExercisesList.data)
+        syncCacheOnAddTemplateExercise(cache, result.data.addExerciseToExamTemplate, variables)
       }
     })
   }

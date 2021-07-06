@@ -10,9 +10,9 @@ const getValidExercises = (courseId) => {
     },
     {
       $lookup: {
-        from: 'answers', 
-        localField: '_id', 
-        foreignField: 'exerciseId', 
+        from: 'answers',
+        localField: '_id',
+        foreignField: 'exerciseId',
         as: 'answers'
       }
     },
@@ -25,11 +25,11 @@ const getValidExercises = (courseId) => {
     },
     {
       $project: {
-        _id: 1, 
-        name: 1, 
-        courseId: 1, 
-        unitId: 1, 
-        hasCorrectAnswer: 1, 
+        _id: 1,
+        name: 1,
+        courseId: 1,
+        unitId: 1,
+        hasCorrectAnswer: 1,
         answersCount: {
           $size: '$answers'
         }
@@ -37,11 +37,11 @@ const getValidExercises = (courseId) => {
     },
     {
       $project: {
-        _id: 1, 
-        name: 1, 
-        courseId: 1, 
-        unitId: 1, 
-        hasCorrectAnswer: 1, 
+        _id: 1,
+        name: 1,
+        courseId: 1,
+        unitId: 1,
+        hasCorrectAnswer: 1,
         hasCorrectAnswersCount: {
           $gte: ['$answersCount', EXERCISES_VALIDATION_PARAMETERS.MINIMUM_ANSWERS_AMOUNT]
         }
@@ -49,7 +49,7 @@ const getValidExercises = (courseId) => {
     },
     {
       $match: {
-        hasCorrectAnswer: true, 
+        hasCorrectAnswer: true,
         hasCorrectAnswersCount: true
       }
     }

@@ -58,12 +58,6 @@ const CourseEditor = (props) => {
       })
   }
 
-  const validateBeforeSubmit = (values) => {
-    const errors = {}
-    if (!values.name) { errors.name = formatMessage({ id: 'common_field_error.required' }) }
-    return errors
-  }
-
   // Queries and mutations
   const { loading: fetching } = useQuery(
     GET_COURSE,
@@ -92,7 +86,6 @@ const CourseEditor = (props) => {
     <div className='course-editor border shadow p-3 mb-3 bg-white rounded'>
       <Form
         onSubmit={onSubmit}
-        validate={validateBeforeSubmit}
         initialValues={initialValues}
         render={({ handleSubmit, pristine }) => (
           <form onSubmit={handleSubmit}>

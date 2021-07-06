@@ -74,13 +74,6 @@ const UnitsEditor = (props) => {
       })
   }
 
-  const validateBeforeSubmit = (values) => {
-    const errors = {}
-    if (!values.name) { errors.name = formatMessage({ id: 'common_field_error.required' }) }
-    if (!values.courseId) { errors.courseId = formatMessage({ id: 'common_field_error.required' }) }
-    return errors
-  }
-
   // Queries and mutations
   const { loading: fetching } = useQuery(
     GET_UNIT,
@@ -107,13 +100,12 @@ const UnitsEditor = (props) => {
     <div className='unit-editor border shadow p-3 mb-3 bg-white rounded'>
       <Form
         onSubmit={onSubmit}
-        validate={validateBeforeSubmit}
         initialValues={initialValues}
         render={({ handleSubmit, pristine }) => (
           <form onSubmit={handleSubmit}>
             <TranslatableTitle isCreating={isCreating} entityName='unit' />
 
-            <div className='row d-flex justify-content-center mb-4'>
+            <div className='row d-flex justify-content-center mb-2'>
               <div className='col-md-10 col-xs-12'>
                 <span className='text-left pl-1 pb-1'>
                   <FormattedMessage id='common_entity.course' />

@@ -11,7 +11,7 @@ const debug = require('debug')('virtual-exam:exam-templates-resolver')
 const init = () => {
   maintainIndex({
     shared: true,
-    collectionName: 'courses',
+    collectionName: 'exam-templates',
     indexVersion: 1,
     spec: { 'name.text': 'text' },
     options: {
@@ -116,7 +116,7 @@ const resolver = {
       return { id: id, data: data, count: data.length }
     }
   },
-  
+
   Mutation: {
     createExamTemplate: async (parent, args, context) => {
       debug('Running createExamTemplate mutation with params:', args)

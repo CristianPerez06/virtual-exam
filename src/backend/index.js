@@ -45,6 +45,7 @@ const { answerDefs, answerResolvers } = require('./api/answer/index')
 const { templateDefs, templateResolvers } = require('./api/template/index')
 const { assignedExamDefs, assignedExamResolvers } = require('./api/assignedExam/index')
 const { examDefs, examResolvers } = require('./api/exam/index')
+const { metricDefs, metricResolvers } = require('./api/metrics/index')
 
 // typeDefs & resolvers
 const typeDefs = [
@@ -55,7 +56,8 @@ const typeDefs = [
   answerDefs,
   templateDefs,
   assignedExamDefs,
-  examDefs
+  examDefs,
+  metricDefs
 ]
 const resolvers = [
   baseResolvers,
@@ -65,7 +67,8 @@ const resolvers = [
   answerResolvers,
   templateResolvers,
   assignedExamResolvers,
-  examResolvers
+  examResolvers,
+  metricResolvers
 ]
 
 const server = new ApolloServer({

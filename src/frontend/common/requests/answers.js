@@ -27,7 +27,7 @@ export const LIST_ANSWERS = gql`
   }
 `
 export const CREATE_ANSWER = gql`
-  mutation createAnswer($name: String!, $description: String!, $correct: Boolean, $exerciseId: ID!) {
+  mutation createAnswer($name: String!, $description: String, $correct: Boolean, $exerciseId: ID!) {
     createAnswer(name: $name, description: $description, correct: $correct, exerciseId: $exerciseId){
       id
       name
@@ -38,7 +38,7 @@ export const CREATE_ANSWER = gql`
   }
 `
 export const UPDATE_ANSWER = gql`
-  mutation updateAnswer($id: ID!, $name: String!, $description: String!, $correct: Boolean, $exerciseId: ID!) {
+  mutation updateAnswer($id: ID!, $name: String!, $description: String, $correct: Boolean, $exerciseId: ID!) {
     updateAnswer(id: $id, name: $name, description: $description, correct: $correct, exerciseId: $exerciseId){
       id
       name
