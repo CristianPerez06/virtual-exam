@@ -1,3 +1,4 @@
+const { prepMultipleResultsForUser } = require('../../utilities/prepResults')
 const { getExamMetrics, getExamsReportData } = require('./aggregates')
 
 const debug = require('debug')('virtual-exam:metric-resolver')
@@ -42,15 +43,10 @@ const resolver = {
       debug('Aggregate: ', aggregate)
 
       // Exec
-      const res = await collection.aggregate(aggregate).toArray()
-      debug('res', res)
-      // Results
-      const result = {
-        data: res,
-        count: res.length
-      }
+      const docs = await collection.aggregate(aggregate).toArray()
 
-      return result
+      // Results
+      return prepMultipleResultsForUser(docs)
     }
   }
 }

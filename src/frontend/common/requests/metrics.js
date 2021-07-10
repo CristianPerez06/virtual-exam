@@ -25,13 +25,13 @@ export const GET_EXAM_REPORTS_DATA = gql`
         updated
         completed
         exercises {
-          id
+          _id
           name
           points
           description
           descriptionUrl
           answers {
-            id
+            _id
             name
             description
             descriptionUrl

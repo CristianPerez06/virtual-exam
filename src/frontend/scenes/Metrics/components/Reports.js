@@ -55,7 +55,7 @@ const buttonProps = {
 
 const Reports = (props) => {
   // Props and params
-  const { disabled = true, intl } = props
+  const { disabled = true } = props
 
   const buttonProps = {
     className: 'mt-4',

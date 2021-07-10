@@ -10,7 +10,7 @@ const getExamMetrics = (dateStrFrom, dateStrTo) => {
         score: 1,
         updated: {
           $dateFromString: {
-            dateString: '$created'
+            dateString: '$updated'
           }
         }
       }
@@ -68,6 +68,25 @@ const getExamMetrics = (dateStrFrom, dateStrTo) => {
 
 const getExamsReportData = (dateStrFrom, dateStrTo) => {
   return [
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        idNumber: 1,
+        examTemplateId: 1,
+        courseId: 1,
+        courseName: 1,
+        exercises: 1,
+        created: 1,
+        completed: 1,
+        score: 1,
+        updated: {
+          $dateFromString: {
+            dateString: '$created'
+          }
+        }
+      }
+    },
     {
       $match: {
         completed: true,
