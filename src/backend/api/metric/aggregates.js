@@ -66,6 +66,21 @@ const getExamMetrics = (dateStrFrom, dateStrTo) => {
   ]
 }
 
+const getExamsReportData = (dateStrFrom, dateStrTo) => {
+  return [
+    {
+      $match: {
+        completed: true,
+        updated: {
+          $gte: new Date(dateStrFrom),
+          $lt: new Date(dateStrTo)
+        }
+      }
+    }
+  ]
+}
+
 module.exports = {
-  getExamMetrics
+  getExamMetrics,
+  getExamsReportData
 }

@@ -45,7 +45,7 @@ const { answerDefs, answerResolvers } = require('./api/answer/index')
 const { templateDefs, templateResolvers } = require('./api/template/index')
 const { assignedExamDefs, assignedExamResolvers } = require('./api/assignedExam/index')
 const { examDefs, examResolvers } = require('./api/exam/index')
-const { metricDefs, metricResolvers } = require('./api/metrics/index')
+const { metricDefs, metricResolvers } = require('./api/metric/index')
 
 // typeDefs & resolvers
 const typeDefs = [

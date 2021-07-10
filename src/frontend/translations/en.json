@@ -91,6 +91,7 @@
   "button.details": "Details",
   "button.edit_points": "Points",
   "button.metrics": "Metrics",
+  "button.generate_report": "Generate report",
 
   "course_name": "Course name",
   "course_created": "Course created succesfully",

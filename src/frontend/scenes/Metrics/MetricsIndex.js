@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
-import { Card, CardBody, CardHeader, Button } from 'reactstrap'
+import { Card, CardBody, CardHeader } from 'reactstrap'
 import { useQuery } from '@apollo/react-hooks'
 import { injectIntl, FormattedMessage } from 'react-intl'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getTranslatableErrors } from '../../common/graphqlErrorHandlers'
 import { CustomDatePicker, ChartsVerticalBar, ChartsHorizontalBar, LoadingInline } from '../../components/common'
-import { GET_EXAM_METRICS } from '../../common/requests/metrics'
+import { GET_EXAM_METRICS, GET_EXAM_REPORTS_DATA } from '../../common/requests/metrics'
 import { useAlert } from '../../hooks'
 import { subMonths } from 'date-fns'
+import Reports from './components/Reports'
 
 const MetricsIndex = (props) => {
   // Props and params
@@ -44,6 +45,7 @@ const MetricsIndex = (props) => {
   const [error, setError] = useState(false)
   const [verticalBarData, setVerticalBarData] = useState({})
   const [horizontalBarData, setHorizontalBarData] = useState({})
+  const [reportReady, setReportReady] = useState(false)
 
   // Hooks
   const { alertError } = useAlert()
@@ -95,6 +97,14 @@ const MetricsIndex = (props) => {
     setError(false)
   }
 
+  const onReportFetched = () => {
+    setReportReady(true)
+  }
+
+  const onReportError = () => {
+    setReportReady(false)
+  }
+
   const onError = (err) => {
     const { graphQLErrors } = err
     const translatableError = getTranslatableErrors(graphQLErrors)
@@ -127,6 +137,17 @@ const MetricsIndex = (props) => {
       fetchPolicy: 'network-only',
       onCompleted: onSuccess,
       onError
+    }
+  )
+
+  const { loading: fetchingReportData } = useQuery(
+    GET_EXAM_REPORTS_DATA,
+    {
+      variables: { dateFrom: dateFrom, dateTo: dateTo },
+      skip: !dateFrom || !dateTo,
+      fetchPolicy: 'network-only',
+      onCompleted: onReportFetched,
+      onError: onReportError
     }
   )
 
@@ -163,19 +184,7 @@ const MetricsIndex = (props) => {
               />
             </div>
             <div className='col-md-4 col-xs-12 text-center'>
-              <Button
-                // color={color}
-                // type={type}
-                // className='m-2'
-                // disabled={isDisabled}
-                // onClick={handleOnClick}
-                className='mt-4'
-                disabled
-              >
-                Generate report
-                {/* <FormattedMessage id={translatableTextId} /> */}
-                {/* {isLoading && <LoadingInline className='ml-3' />} */}
-              </Button>
+              <Reports disabled={fetchingReportData || !reportReady} />
             </div>
           </div>
 

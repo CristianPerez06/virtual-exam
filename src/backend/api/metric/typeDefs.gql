@@ -13,4 +13,5 @@ type ExamMetrics {
 
 extend type Query {
   getExamMetrics(dateFrom: String!, dateTo: String!): ExamMetrics
+  getExamsReportData(dateFrom: String!, dateTo: String!): Exams
 }

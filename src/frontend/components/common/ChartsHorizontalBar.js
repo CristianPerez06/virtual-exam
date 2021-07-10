@@ -23,7 +23,7 @@ const ChartsHorizontalBar = (props) => {
     }
   }
 
-  const showBar = (chartData || {}.labels).length > 0
+  const showBar = ((chartData || {}).labels || []).length > 0
   const style = showBar ? { minHeight: '200px' } : {}
 
   return (
